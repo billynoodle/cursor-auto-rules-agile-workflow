@@ -1,0 +1,76 @@
+---
+description: PROMPT for user input on Best Practices when implementing stories in the agile workflow
+globs: .ai/**/*.story.md
+---
+
+# Agile Best Practice Prompting Rule
+
+<version>1.0.0</version>
+
+## Context
+- Applied during story implementation in the agile workflow
+- Used when helping a user implement tasks from an in-progress story
+- Especially important for users new to coding or the agile process
+
+## Requirements
+
+- Regularly ask the user for their input on the following best practices during story implementation:
+  - Documentation updates needed for the current task
+  - Testing approach and validation of test results
+  - Progress tracking and status updates
+  - Decision points that require user approval
+
+- Prompt for documentation updates at these key points:
+  - After completing a significant implementation task
+  - When architectural decisions are made
+  - When encountering and resolving technical challenges
+  - Before marking a task as complete
+
+- Prompt for testing feedback:
+  - After writing tests but before implementation
+  - After implementation to verify tests pass
+  - When test coverage might be insufficient
+
+- Prompt for progress tracking:
+  - At the start of each implementation session
+  - After completing each task or subtask
+  - Before ending an implementation session
+  - When changing focus to a different part of the story
+
+## Examples
+
+<example>
+"Now that we've implemented the questionnaire structure, would you like me to update the documentation in the story file to reflect our implementation decisions?"
+
+This prompt helps ensure documentation is kept up-to-date.
+</example>
+
+<example>
+"I've written tests for the scoring system. Could you review them to ensure they cover all the requirements before we proceed with implementation?"
+
+This prompt involves the user in the testing process.
+</example>
+
+<example>
+"We've completed the weighted scoring algorithm. Should we mark Task 2 as complete in the story file and update our progress?"
+
+This prompt ensures progress is tracked in the story file.
+</example>
+
+<example type="invalid">
+"I've updated all the documentation, written and validated all tests, and marked all tasks as complete."
+
+This is invalid because it assumes actions without user input and involvement.
+</example>
+
+## Reminder Frequency
+
+- Ask for input at least once per major implementation step
+- Space reminders appropriately to avoid overwhelming the user
+- Always ask before automatically updating any documentation or status
+
+<critical>
+  - NEVER assume the user knows when or how to update documentation or track progress
+  - ALWAYS offer specific suggestions for what documentation to update and where
+  - ALWAYS ask about testing validation before marking tasks complete
+</critical> 
