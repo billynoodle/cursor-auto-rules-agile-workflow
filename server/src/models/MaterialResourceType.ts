@@ -1,5 +1,6 @@
 /**
- * Types of resource materials for SOP generation
+ * Enum for material resource types
+ * Used for categorizing resources in the SOP material finder
  */
 export enum MaterialResourceType {
   TEMPLATE = 'TEMPLATE',
@@ -9,5 +10,6 @@ export enum MaterialResourceType {
   STANDARD = 'STANDARD',
   GUIDELINE = 'GUIDELINE',
   EXAMPLE = 'EXAMPLE',
-  TRAINING = 'TRAINING'
+  TRAINING = 'TRAINING',
+  PROCEDURE = 'PROCEDURE'
 } 

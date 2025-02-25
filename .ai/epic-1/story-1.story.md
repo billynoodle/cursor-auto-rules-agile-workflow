@@ -1,5 +1,6 @@
 # Epic-1: Core Assessment Framework Development for Allied Health Practices
 # Story-1: Design Comprehensive Business Assessment Questionnaire Structure with Weighted Scoring System for Allied Health Practices (Initial Focus: Physiotherapy)
+
 ## Story
 
 **As an** allied health practitioner (initially focusing on physiotherapists)
@@ -42,48 +43,52 @@ Story Points: 6
    11. - [ ] Research discipline extension architecture patterns
    12. - [ ] Document findings and insights
 
-2. - [ ] Design Assessment Categories and Modules
-   1. - [ ] Define comprehensive set of assessment categories with relative importance weights (initial implementation for physiotherapy)
-   2. - [ ] Create module structure for each category with priority rankings
-   3. - [ ] Design scaling approach for modules based on practice size
-   4. - [ ] Determine scoring methodology and normalization approach with country-specific considerations
-   5. - [ ] Design category aggregation formula for overall business health score
-   6. - [ ] Create framework for custom variable integration
-   7. - [ ] Identify SOP-relevant assessment areas and tag accordingly for RAG model use
-   8. - [ ] Design score interpretation framework with positioning scale and action prompts
-   9. - [ ] Create metadata structure for SOP material finder integration
-   10. - [ ] Design extensible architecture for discipline-specific plugins
-   11. - [ ] Write tests for module structure and scoring validation
+2. - [x] Design Assessment Categories and Modules
+   1. - [x] Define comprehensive set of assessment categories with relative importance weights (initial implementation for physiotherapy)
+   2. - [x] Create module structure for each category with priority rankings
+   3. - [x] Design scaling approach for modules based on practice size
+   4. - [x] Determine scoring methodology and normalization approach with country-specific considerations
+   5. - [x] Design category aggregation formula for overall business health score
+   6. - [x] Create framework for custom variable integration
+   7. - [x] Identify SOP-relevant assessment areas and tag accordingly for RAG model use
+   8. - [x] Design score interpretation framework with positioning scale and action prompts
+   9. - [x] Create metadata structure for SOP material finder integration
+   10. - [x] Design extensible architecture for discipline-specific plugins
+   11. - [x] Write tests for module structure and scoring validation
 
-3. - [ ] Develop Question Framework
-   1. - [ ] Design question types (multiple choice, Likert scale, numeric, text)
-   2. - [ ] Create question weighting system based on business impact (initial weights for physiotherapy)
-   3. - [ ] Develop question dependency logic and skip patterns
-   4. - [ ] Design answer option scoring scales (1-5, 1-10, percentage-based)
-   5. - [ ] Create formulas for calculating section and module scores
-   6. - [ ] Develop scaling logic to adjust question complexity based on practice size
-   7. - [ ] Design framework for country-specific question variants
-   8. - [ ] Create system for custom variable questions
-   9. - [ ] Add SOP relevance metadata to question schema with RAG model compatibility
-   10. - [ ] Design material finder tags for connecting questions to relevant resources
-   11. - [ ] Create action prompt mapping for score interpretation
-   12. - [ ] Design extension points for discipline-specific questions
-   13. - [ ] Write tests for question framework and scoring logic
+3. - [x] Develop Question Framework
+   1. - [x] Design question types (multiple choice, Likert scale, numeric, text)
+   2. - [x] Create question weighting system based on business impact (initial weights for physiotherapy)
+   3. - [x] Develop question dependency logic and skip patterns
+   4. - [x] Design answer option scoring scales (1-5, 1-10, percentage-based)
+   5. - [x] Create formulas for calculating section and module scores
+   6. - [x] Develop scaling logic to adjust question complexity based on practice size
+   7. - [x] Design framework for country-specific question variants
+   8. - [x] Create system for custom variable questions
+   9. - [x] Add SOP relevance metadata to question schema with RAG model compatibility
+   10. - [x] Design material finder tags for connecting questions to relevant resources
+   11. - [x] Create action prompt mapping for score interpretation
+   12. - [x] Design extension points for discipline-specific questions
+   13. - [x] Write tests for question framework and scoring logic
 
-4. - [ ] Create Sample Questions
-   1. - [ ] Draft 10-15 sample questions per module with assigned weights for physiotherapy as the initial discipline
-   2. - [ ] Include questions covering all major business aspects (financial, operations, marketing, staffing, compliance, patients/clients, facilities, geography, technology, automation)
-   3. - [ ] Create size-specific question variants for different practice scales
-   4. - [ ] Define answer options for each question with corresponding scores
-   5. - [ ] Map questions to potential recommendations and improvement metrics
-   6. - [ ] Create sample scoring scenarios to validate the system
-   7. - [ ] Develop country-specific question variants (Australia as default)
-   8. - [ ] Create examples of custom variable questions
-   9. - [ ] Tag questions relevant to SOP generation with RAG model parameters
-   10. - [ ] Add material finder metadata to relevant questions
-   11. - [ ] Create sample score interpretations and action prompts for different scoring scenarios
-   12. - [ ] Identify which questions are universal vs. discipline-specific
+4. - [x] Create Sample Questions
+   1. - [x] Draft 10-15 sample questions per module with assigned weights for physiotherapy as the initial discipline
+   2. - [x] Include questions covering all major business aspects (financial, operations, marketing, staffing, compliance, patients/clients, facilities, geography, technology, automation)
+   3. - [x] Create size-specific question variants for different practice scales
+   4. - [x] Define answer options for each question with corresponding scores
+   5. - [x] Map questions to potential recommendations and improvement metrics
+   6. - [x] Create sample scoring scenarios to validate the system
+   7. - [x] Develop country-specific question variants (Australia as default)
+   8. - [x] Create examples of custom variable questions
+   9. - [x] Tag questions relevant to SOP generation with RAG model parameters
+   10. - [x] Add material finder metadata to relevant questions
+   11. - [x] Create sample score interpretations and action prompts for different scoring scenarios
+   12. - [x] Identify which questions are universal vs. discipline-specific
    13. - [ ] Write tests for question validation and score calculation
+   14. - [-] Develop comprehensive tooltips for all questions with plain language explanations
+   15. - [-] Create enhanced tooltips for complex financial and compliance questions with examples and metric explanations
+   16. - [ ] Review all tooltips for clarity, jargon elimination, and quantifiable context
+   17. - [ ] Test tooltips with non-technical users to ensure comprehensibility
 
 5. - [ ] Design Initial UI Wireframes
    1. - [ ] Create wireframes for questionnaire navigation with simplicity focus
@@ -99,6 +104,128 @@ Story Points: 6
    11. - [ ] Create wireframes for SOP material finder interface
    12. - [ ] Design discipline selection and configuration interface
    13. - [ ] Write tests for UI components
+   14. - [ ] Design tooltip presentation with focus on readability and accessibility
+   15. - [ ] Create wireframes for interactive tooltip components with expandable examples
+   16. - [ ] Design mobile-friendly tooltip layout for small screens
+   17. - [ ] Create visual indicators for questions with enhanced tooltips for complex topics
+
+## Progress Notes
+
+### 2024-07-31: Implemented Core Module Framework
+
+- Created ModuleService with comprehensive methods for managing and filtering assessment modules
+- Implemented validation logic to ensure module integrity (id, name, category, applicable disciplines, etc.)
+- Developed specialized methods for handling discipline-specific and country-specific module content
+- Created sample physiotherapy assessment modules covering key areas:
+  - Financial Health
+  - Operational Efficiency
+  - Patient Management
+  - Technology Integration
+  - Staffing and Professional Development
+- Each module includes:
+  - Practice size scaling (Solo to Enterprise)
+  - Weighted scoring
+  - Benchmarks with performance indicators
+  - SOP relevance tagging
+  - Score interpretation with position-based recommendations
+  - Support for country-specific and discipline-specific variations
+- Implemented test suite for all ModuleService functionality
+- Successfully completed key aspects of the assessment module design (Task 2)
+- Working on question framework implementation (Task 3)
+
+### 2024-08-01: Implemented Question Framework and Sample Questions
+
+- Created comprehensive question framework with support for:
+  - Multiple choice, numeric, and other question types
+  - Question weighting based on business impact
+  - Country-specific and discipline-specific variants
+  - Practice size scaling
+  - SOP relevance with RAG model parameters
+  - Material finder integration
+  - Score interpretation with position-based action prompts
+- Developed QuestionService with functionalities for:
+  - Creating and validating questions
+  - Filtering questions by module, category, discipline, practice size
+  - Handling discipline-specific and country-specific question variants
+- Created sample physiotherapy assessment questions for each module:
+  - Financial health questions covering financial tracking, practitioner utilization, and pricing
+  - Operations questions focusing on appointment management, patient wait times, and equipment maintenance
+  - Patient management questions addressing outcome measurement, feedback collection, and treatment completion
+  - Technology questions evaluating practice management software, telehealth usage, and digital tools
+  - Staffing questions covering onboarding, continuing education, and performance evaluation
+- Questions include detailed metadata for:
+  - Weight and impact areas
+  - Tracking periods
+  - Benchmark references
+  - SOP relevance with content mapping
+  - Material finder integration
+  - Position-based action prompts
+- Successfully completed development of question framework (Task 3)
+- Started work on advancing task 4 (Create Sample Questions)
+
+### 2024-08-03: Expanded Question Modules with Additional Categories
+
+- Implemented Geography module with comprehensive questions covering:
+  - Location strategy questions addressing catchment area analysis, accessibility, proximity to referral sources, and competitor density
+  - Demographic analysis questions examining demographic trends, service alignment with demographics, aging populations, income distribution, and cultural diversity
+- Created Automation module with detailed questions covering:
+  - Process automation questions focused on administrative automation, scheduling, patient engagement, revenue cycle management, and business intelligence
+  - AI integration questions assessing clinical decision support, patient triage, predictive analytics, virtual assistants, and treatment personalization
+- Expanded Patient Care module with additional question sets:
+  - Patient experience questions addressing satisfaction metrics, feedback collection, service recovery, patient journey mapping, and treatment completion
+  - Clinical pathway questions focusing on standardized care, evidence updates, variance tracking, provider compliance, and decision support tools
+- Successfully completed implementation of all ten assessment categories defined in AssessmentCategory enum:
+  - Financial, Operations, Marketing, Staffing, Compliance, Patients, Facilities, Geography, Technology, and Automation
+- All new questions include:
+  - Detailed help text with quantifiable metrics
+  - Impact areas with business relevance
+  - Practice size considerations
+  - Score interpretation with actionable recommendations
+  - SOP relevance metadata for future generation
+- Implemented modular file structure for all question categories to support maintainability and extensibility
+- Completed Task 4 (Create Sample Questions) with comprehensive coverage of all assessment areas
+- Remaining tasks include:
+  - Write tests for question validation and score calculation (Task 4.13)
+  - Design UI wireframes (Task 5)
+
+### 2024-08-04: Enhanced Question Tooltips and Accessibility
+
+- Updated requirements to emphasize the importance of comprehensive, jargon-free tooltips for all questions
+- Identified need for enhanced tooltip development with particular focus on:
+  - Financial questions: Adding clear explanations of financial metrics, ratios, and accounting concepts
+  - Compliance questions: Providing plain-language explanations of regulatory requirements and standards
+  - Technical questions: Simplifying technology concepts for practitioners without technical backgrounds
+- Added new tasks (4.14-4.17) focused specifically on tooltip development and testing
+- Revised Question Schema to emphasize helpText as an essential tooltip feature with specific guidelines:
+  - Must use plain language accessible to non-technical users
+  - Should avoid jargon or clearly explain technical terms when necessary
+  - Must include relevant metrics and contextual information
+  - Should explain why the question matters to the practice's success
+  - For complex topics, must provide comprehensive explanations with examples
+- Established tooltip review process to ensure all explanations meet accessibility standards
+- Determined need for user testing of tooltips with practitioners from various backgrounds
+- Prioritized complex financial and compliance questions for enhanced tooltip development
+- Identified financial topics requiring special attention:
+  - Overhead ratio calculations and significance
+  - Cash flow management concepts
+  - Revenue cycle metrics
+  - Profit margin analysis
+  - Expense categorization
+- All tooltips will include quantifiable context (industry benchmarks, metrics, etc.) to help users understand the significance of their answers
+
+### 2024-08-05: Tooltip Readability Review Initiative
+
+- **ACTION REQUIRED**: Conduct comprehensive review of all question helpText for readability and clarity
+- Review will focus on ensuring all tooltips meet the plain language guidelines established in the requirements
+- Special attention needed for:
+  - Eliminating unnecessary technical jargon or clearly explaining it when unavoidable
+  - Breaking down complex concepts into simple, digestible explanations
+  - Using concrete examples that practitioners can relate to
+  - Ensuring consistent tone and language difficulty across all tooltips
+  - Verifying that tooltip length is appropriate (comprehensive but not overwhelming)
+- Several examples of enhanced tooltips have been implemented (financial and compliance questions) that can serve as models
+- All team members should review tooltips in their respective areas of expertise
+- Readability testing with non-technical users will be scheduled following the review
 
 ## Constraints
 
@@ -117,6 +244,10 @@ Story Points: 6
 - Architecture must support easy extension to new allied health disciplines
 - Core assessment modules must be reusable across disciplines
 - Discipline-specific components must be isolated through well-defined interfaces
+- All questions must have clear, comprehensive tooltips (helpText) that explain terms and concepts in plain language
+- Complex financial and compliance questions must have especially detailed tooltips with examples and definitions
+- Tooltips must avoid jargon and technical terminology whenever possible, or explain such terms clearly when unavoidable
+- Tooltips should include quantifiable context (e.g., industry benchmarks, common metrics) to help users understand the significance of their answers
 
 ## Data Models / Schema
 
@@ -246,7 +377,7 @@ interface Question {
     condition: string;
   };
   benchmarkReference?: string;
-  helpText?: string; // Explanation or context for the question
+  helpText?: string; // Essential tooltip explanation that must use plain language, avoid jargon, include relevant metrics/context, and provide comprehensive information for complex topics (especially financial/compliance). Should clarify why the question matters to the practice.
   impactAreas?: string[]; // Business areas impacted by this question
   applicablePracticeSizes: PracticeSize[]; // Which practice sizes this question applies to
   countrySpecific?: {
@@ -871,4 +1002,7 @@ graph TD
 - Story update to incorporate SOP relevance in assessment framework
 - PRD update to focus MVP on physiotherapists, add score interpreter, specify RAG models for SOPs, and include SOP material finder
 - Story update to align with focused MVP approach and new features
-- Story update to improve extensibility for future allied health disciplines while maintaining physiotherapy MVP focus 
+- Story update to improve extensibility for future allied health disciplines while maintaining physiotherapy MVP focus
+- Implementation of ModuleService with comprehensive methods for module management
+- Creation of sample physiotherapy assessment modules covering key practice areas
+- Implementation of test suite for ModuleService functionality 

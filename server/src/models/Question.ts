@@ -8,7 +8,7 @@ import { ScorePosition } from './ScorePosition';
 import { MaterialResourceType } from './MaterialResourceType';
 
 /**
- * Represents a question in the assessment questionnaire
+ * Interface representing a question in the assessment framework
  */
 export interface Question {
   id: string;
@@ -24,6 +24,8 @@ export interface Question {
     text: string;
   }>;
   weight: number; // Importance factor (1-10)
+  minScore?: number; // For numeric questions
+  maxScore?: number; // For numeric questions
   dependsOn?: {
     questionId: string;
     condition: string;
@@ -41,6 +43,7 @@ export interface Question {
         text: string;
       }>;
       benchmarkReference?: string;
+      helpText?: string;
     }
   };
   disciplineSpecific?: {
@@ -53,6 +56,7 @@ export interface Question {
       }>;
       weight?: number; // Discipline-specific weight adjustment
       benchmarkReference?: string;
+      helpText?: string;
     }
   };
   trackingPeriod?: string; // Recommended tracking frequency

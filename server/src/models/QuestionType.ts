@@ -1,5 +1,5 @@
 /**
- * Types of questions in the assessment
+ * Enum for question types in the assessment framework
  */
 export enum QuestionType {
   MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
