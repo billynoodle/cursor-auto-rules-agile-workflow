@@ -1,0 +1,15 @@
+/**
+ * Categories for assessment modules and questions
+ */
+export enum AssessmentCategory {
+  FINANCIAL = 'FINANCIAL',
+  OPERATIONS = 'OPERATIONS',
+  MARKETING = 'MARKETING',
+  STAFFING = 'STAFFING',
+  COMPLIANCE = 'COMPLIANCE',
+  PATIENTS = 'PATIENTS',
+  FACILITIES = 'FACILITIES',
+  GEOGRAPHY = 'GEOGRAPHY',
+  TECHNOLOGY = 'TECHNOLOGY',
+  AUTOMATION = 'AUTOMATION'
+} 

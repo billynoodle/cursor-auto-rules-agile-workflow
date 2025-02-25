@@ -1,6 +1,5 @@
 # Epic-1: Core Assessment Framework Development for Allied Health Practices
 # Story-1: Design Comprehensive Business Assessment Questionnaire Structure with Weighted Scoring System for Allied Health Practices (Initial Focus: Physiotherapy)
-
 ## Story
 
 **As an** allied health practitioner (initially focusing on physiotherapists)
@@ -9,7 +8,7 @@
 
 ## Status
 
-Draft
+In Progress
 
 ## Context
 
