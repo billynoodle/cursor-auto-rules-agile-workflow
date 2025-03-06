@@ -1,0 +1,240 @@
+---
+description: IMPLEMENT consistent architectural patterns and error handling to ENHANCE reliability and maintainability
+globs: **/*.{ts,js,tsx,jsx,py,rb,cs,java,php,go,swift,kt,vue,svelte,scala,rs}
+---
+
+# Architecture Patterns and Practices
+
+<version>1.0.0</version>
+
+## Context
+- Applied when designing system components and services
+- Critical for maintaining system reliability and scalability
+- Essential for consistent error handling and logging
+- Important for ensuring maintainable and extensible code
+
+## Requirements
+- Implement clean architecture with clear separation of concerns
+- Follow consistent error handling and logging patterns
+- Establish performance monitoring and profiling
+- Design for scalability from the beginning
+- Document architectural decisions and trade-offs
+- Implement centralized configuration management
+- Follow explicit dependency injection patterns
+
+## Clean Architecture Patterns
+
+### Layer Separation
+```
+┌─────────────────┐
+│   Presentation  │  UI Components, API Controllers
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   Application   │  Use Cases, Application Services
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│     Domain      │  Entities, Business Rules, Domain Services
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Infrastructure  │  Repositories, External Services, Frameworks
+└─────────────────┘
+```
+
+- Each layer must depend only on the layer directly below it
+- Domain layer must have no external dependencies
+- Use interfaces to decouple implementation details
+- Apply Dependency Inversion Principle at layer boundaries
+
+## Error Handling and Logging
+
+### Error Handling Pattern
+- Create custom error hierarchy extending from base Error class
+- Categorize errors by domain and type
+- Include context data with all errors
+- Handle errors at appropriate abstraction levels
+- Translate technical errors to user-friendly messages at boundaries
+
+### Logging Requirements
+- Implement structured logging with consistent format
+- Log at appropriate severity levels (DEBUG, INFO, WARN, ERROR, FATAL)
+- Include correlation IDs for request tracing
+- Redact sensitive information automatically
+- Configure different log destinations based on environment
+- Include performance metrics in logs for critical operations
+
+## Examples
+
+<example>
+// GOOD: Clean architecture with proper error handling
+// domain/assessment/assessment-service.ts
+export class AssessmentService {
+  constructor(
+    private readonly questionRepository: QuestionRepository,
+    private readonly scoringEngine: ScoringEngine,
+    private readonly logger: Logger
+  ) {}
+
+  async scoreAssessment(assessmentId: string): Promise<AssessmentScore> {
+    try {
+      this.logger.info('Scoring assessment', { assessmentId });
+      
+      const assessment = await this.questionRepository.findById(assessmentId);
+      if (!assessment) {
+        throw new AssessmentNotFoundError(assessmentId);
+      }
+      
+      const responses = await this.questionRepository.getResponses(assessmentId);
+      const score = this.scoringEngine.calculateScore(responses);
+      
+      this.logger.info('Assessment scored successfully', { 
+        assessmentId, 
+        score: score.totalScore,
+        executionTimeMs: performance.now() - startTime
+      });
+      
+      return score;
+    } catch (error) {
+      if (error instanceof AssessmentNotFoundError) {
+        this.logger.warn('Assessment not found', { assessmentId });
+        throw error; // Rethrow domain errors
+      }
+      
+      this.logger.error('Failed to score assessment', { 
+        assessmentId,
+        error: error.message,
+        stack: error.stack
+      });
+      
+      // Translate infrastructure errors to domain errors
+      throw new AssessmentScoringError(
+        `Failed to score assessment: ${error.message}`,
+        { cause: error }
+      );
+    }
+  }
+}
+
+// infrastructure/error/domain-errors.ts
+export class DomainError extends Error {
+  constructor(message: string, public readonly context?: Record<string, any>) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+export class AssessmentNotFoundError extends DomainError {
+  constructor(assessmentId: string) {
+    super(`Assessment with ID ${assessmentId} not found`);
+  }
+}
+
+export class AssessmentScoringError extends DomainError {
+  constructor(message: string, context?: Record<string, any>) {
+    super(message, context);
+  }
+}
+</example>
+
+<example type="invalid">
+// BAD: Mixed concerns and poor error handling
+function scoreAssessment(assessmentId) {
+  // Direct database access in business logic
+  const assessment = db.query(`SELECT * FROM assessments WHERE id = ${assessmentId}`);
+  
+  if (!assessment) {
+    return { error: 'Not found' }; // Inconsistent error pattern
+  }
+  
+  // Complex business logic mixed with data access
+  const responses = db.query(`SELECT * FROM responses WHERE assessment_id = ${assessmentId}`);
+  let score = 0;
+  
+  for (const response of responses) {
+    // Business rules embedded in data processing
+    score += calculateQuestionScore(response);
+  }
+  
+  try {
+    // Direct service calls without abstraction
+    emailService.sendScoreEmail(assessment.userEmail, score);
+  } catch (e) {
+    console.log('Email error', e); // Poor logging
+  }
+  
+  // Inconsistent return format
+  return { score };
+}
+</example>
+
+## Performance Monitoring
+
+### Key Performance Indicators
+- Request latency (p50, p90, p99)
+- Error rate by endpoint and type
+- Database query performance
+- Memory usage patterns
+- CPU utilization
+- Concurrent user capacity
+
+### Monitoring Implementation
+```typescript
+// middleware/performance-monitoring.ts
+export function performanceMonitor(req, res, next) {
+  const requestStartTime = performance.now();
+  const requestId = generateRequestId();
+  
+  // Attach to request context
+  req.context = {
+    requestId,
+    startTime: requestStartTime
+  };
+  
+  // Track response metrics
+  res.on('finish', () => {
+    const duration = performance.now() - requestStartTime;
+    const statusCode = res.statusCode;
+    
+    logger.info('Request completed', {
+      requestId,
+      path: req.path,
+      method: req.method,
+      statusCode,
+      durationMs: duration.toFixed(2),
+      contentLength: res.get('Content-Length') || 0
+    });
+    
+    metrics.recordHttpRequest({
+      path: req.path,
+      method: req.method,
+      statusCode,
+      durationMs: duration
+    });
+  });
+  
+  next();
+}
+```
+
+## Configuration Management
+
+- Use environment-specific configuration files
+- Validate configuration at startup
+- Implement secrets management separate from code
+- Create typed configuration interfaces
+- Centralize configuration access through a service
+- Document all configuration options
+
+## Scalability Design
+
+- Implement stateless services where possible
+- Design for horizontal scaling
+- Use caching strategically for read-heavy operations
+- Implement database indexing based on query patterns
+- Design for eventual consistency where appropriate
+- Implement rate limiting and backpressure mechanisms 

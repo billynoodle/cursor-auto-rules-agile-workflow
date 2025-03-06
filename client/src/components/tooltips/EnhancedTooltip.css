@@ -1,0 +1,114 @@
+/* Enhanced Tooltip Styles */
+
+.enhanced-tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.enhanced-tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+  position: relative;
+}
+
+.tooltip-icon {
+  margin-left: 6px;
+  font-size: 0.9em;
+  color: #555;
+  opacity: 0.85;
+  vertical-align: middle;
+}
+
+.enhanced-tooltip-content {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  background-color: white;
+  color: #333;
+  padding: 12px 16px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  width: 100%;
+  min-width: 250px;
+  max-width: 350px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: normal;
+  text-align: left;
+  border: 1px solid #eaeaea;
+  animation: tooltipFadeIn 0.2s ease-in-out;
+}
+
+/* Add arrow at the bottom of the tooltip */
+.enhanced-tooltip-content::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  margin-left: -8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.1));
+}
+
+/* Highlighted content styles */
+.tooltip-metric {
+  color: #2c7be5;
+  font-weight: 600;
+  background-color: rgba(44, 123, 229, 0.1);
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.tooltip-example {
+  color: #27ae60;
+  font-style: italic;
+}
+
+.tooltip-key-concept {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* Animation */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .enhanced-tooltip-content {
+    position: fixed;
+    left: 5%;
+    right: 5%;
+    bottom: 20px;
+    width: 90%;
+    max-width: none;
+    z-index: 1010;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .enhanced-tooltip-content::after {
+    display: none;
+  }
+}
+
+/* Accessibility focus styles */
+.enhanced-tooltip-trigger:focus-visible {
+  outline: 2px solid #2c7be5;
+  outline-offset: 2px;
+  border-radius: 4px;
+} 

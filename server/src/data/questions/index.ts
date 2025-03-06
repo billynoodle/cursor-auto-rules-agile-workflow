@@ -33,4 +33,44 @@ export * from './facilities';
 export * from './geography';
 
 // Automation module exports
-export * from './automation'; 
+export * from './automation';
+
+// Import individual question sets
+import * as financial from './financial';
+import * as operations from './operations';
+import * as patientCare from './patient-care';
+import * as technology from './technology';
+import * as staffing from './staffing';
+import * as marketing from './marketing';
+import * as compliance from './compliance';
+import * as facilities from './facilities';
+import * as geography from './geography';
+import * as automation from './automation';
+import { Question } from '../../models/Question';
+
+/**
+ * Loads all questions from all categories
+ * 
+ * @returns An array of all questions
+ */
+export function loadAllQuestions(): Question[] {
+  // Collect all question arrays from all modules
+  const allQuestionArrays = [
+    ...Object.values(financial),
+    ...Object.values(operations),
+    ...Object.values(patientCare),
+    ...Object.values(technology),
+    ...Object.values(staffing),
+    ...Object.values(marketing),
+    ...Object.values(compliance),
+    ...Object.values(facilities),
+    ...Object.values(geography),
+    ...Object.values(automation)
+  ];
+  
+  // Flatten all question arrays
+  return allQuestionArrays
+    .filter(item => Array.isArray(item)) // Keep only arrays
+    .flat() // Flatten arrays of questions
+    .filter(q => q && q.id); // Ensure only valid question objects
+} 

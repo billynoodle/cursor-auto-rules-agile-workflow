@@ -77,6 +77,9 @@ The initial MVP will focus exclusively on physiotherapists, with a phased approa
 - Extensible architecture to support multiple allied health disciplines through a plugin system
 - Generated SOPs and documentation must comply with relevant healthcare standards and regulations
 - Initial MVP focused exclusively on physiotherapy practices with discipline-specific metrics and benchmarks
+- Row-Level Security (RLS) implementation for protecting sensitive practice data
+- Secure authentication and authorization through Supabase Auth
+- Real-time data synchronization using Supabase Realtime capabilities
 
 ## Assessment Methodology
 
@@ -216,6 +219,17 @@ The initial MVP will focus exclusively on physiotherapists, with a phased approa
 - Webhook support for custom integrations
 - Document management system integration for SOP storage and distribution
 
+### Supabase Integration
+- Authentication and user management through Supabase Auth with JWT validation
+- Row-Level Security (RLS) policies for fine-grained data access control
+- Realtime subscriptions for live assessment data and collaborative editing
+- Storage capabilities for SOP documents, templates, and practice resources
+- Edge Functions for serverless processing of complex assessment calculations
+- PostgreSQL functions and triggers for data validation and business logic
+- Secure API access with built-in rate limiting and security features
+- Webhook triggers for integration with external systems
+- Database change tracking for audit logs and version control
+
 ## Phased Rollout Approach
 ### Phase 1: Physiotherapy MVP (Current)
 - Complete assessment framework tailored specifically to physiotherapy practices
@@ -320,7 +334,7 @@ Story-10: Create documentation and guidelines for developing new discipline plug
 ## Tech Stack
 - Languages: JavaScript/TypeScript, Python
 - Frameworks: React, Node.js, Flask
-- Database: PostgreSQL
+- Database: Supabase (PostgreSQL-based with built-in Auth, Storage, and Realtime features)
 - Cloud Infrastructure: AWS/Azure
 - Analytics: TensorFlow, Pandas
 - Visualization: D3.js, Chart.js
@@ -349,4 +363,9 @@ Story-10: Create documentation and guidelines for developing new discipline plug
 - Multi-discipline practice assessment with cross-discipline optimization
 - Specialized modules for unique allied health niches
 - Expansion to other healthcare disciplines beyond allied health
-- Cross-discipline referral optimization for multi-discipline practices 
+- Cross-discipline referral optimization for multi-discipline practices
+- Leverage Supabase Edge Functions for distributed processing of assessment data
+- Implement Supabase Realtime for collaborative SOP editing and annotations
+- Utilize Supabase Storage for secure, structured document management
+- Implement advanced Row-Level Security (RLS) policies for multi-tenant data access
+- Create custom PostgreSQL functions for complex business logic and reporting 

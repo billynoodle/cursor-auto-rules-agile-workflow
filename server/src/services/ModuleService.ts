@@ -102,8 +102,8 @@ export class ModuleService {
       throw new Error('Module must have a valid category');
     }
     
-    // Ensure module has applicable disciplines
-    if (!module.applicableDisciplines || module.applicableDisciplines.length === 0) {
+    // Ensure module has applicable disciplines if it's not a universal module
+    if (!module.universalModule && (!module.applicableDisciplines || module.applicableDisciplines.length === 0)) {
       throw new Error('Module must have at least one applicable discipline');
     }
     

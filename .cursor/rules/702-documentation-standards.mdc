@@ -1,0 +1,227 @@
+---
+description: DOCUMENT code, processes, and SOPs with consistent standards to ENSURE clarity and maintainability
+globs: **/*.{md,mdx,ts,js,tsx,jsx,py,rb,cs,java,php,go,swift,kt,vue,svelte,scala,rs}
+alwaysApply: false
+---
+
+# Documentation and SOP Standards
+
+<version>1.0.0</version>
+
+## Context
+- Applied when creating or updating documentation
+- Used for maintaining SOPs and process documentation
+- Essential for code documentation and API references
+- Important for knowledge transfer and onboarding
+
+## Requirements
+- Implement consistent documentation styles across code and documentation files
+- Maintain comprehensive SOP version control
+- Document architecture decisions with proper context
+- Generate API documentation from source code comments
+- Use clear, concise language in all documentation
+- Include usage examples for all public APIs and components
+- Implement documentation review as part of development workflow
+
+## Code Documentation Standards
+
+### TypeScript/JavaScript
+```typescript
+/**
+ * Calculates the weighted score for an assessment response.
+ * 
+ * @param {Response} response - The user's response to a question
+ * @param {Question} question - The question being answered
+ * @param {ScoringOptions} [options] - Optional scoring configuration
+ * @returns {Score} The calculated score with breakdown
+ * 
+ * @example
+ * const response = { questionId: 'q1', value: 5 };
+ * const question = { id: 'q1', weight: 2 };
+ * const score = calculateScore(response, question);
+ * // Returns: { value: 10, breakdown: { weighted: 10, raw: 5 } }
+ * 
+ * @throws {InvalidResponseError} If the response value is outside the valid range
+ */
+function calculateScore(
+  response: Response, 
+  question: Question, 
+  options?: ScoringOptions
+): Score {
+  // Implementation
+}
+```
+
+### Python
+```python
+def calculate_score(response: Response, question: Question, options: Optional[ScoringOptions] = None) -> Score:
+    """
+    Calculates the weighted score for an assessment response.
+    
+    Args:
+        response: The user's response to a question
+        question: The question being answered
+        options: Optional scoring configuration
+        
+    Returns:
+        The calculated score with breakdown
+        
+    Raises:
+        InvalidResponseError: If the response value is outside the valid range
+        
+    Example:
+        >>> response = {"question_id": "q1", "value": 5}
+        >>> question = {"id": "q1", "weight": 2}
+        >>> calculate_score(response, question)
+        {"value": 10, "breakdown": {"weighted": 10, "raw": 5}}
+    """
+    # Implementation
+```
+
+## SOP Documentation Standards
+
+### SOP Structure
+```markdown
+# Standard Operating Procedure: [SOP Name]
+
+## Version Information
+| Version | Date | Author | Approved By | Changes |
+|---------|------|--------|-------------|---------|
+| 1.0.0   | YYYY-MM-DD | [Author] | [Approver] | Initial version |
+
+## Purpose
+Clear statement of what this SOP is intended to accomplish.
+
+## Scope
+Definition of what is covered by this SOP and what is not.
+
+## Responsibilities
+List of roles and their responsibilities in this process.
+
+## Prerequisites
+Any requirements that must be met before beginning this procedure.
+
+## Procedure
+1. Step-by-step instructions
+2. With clear, actionable items
+3. Including screenshots or diagrams where helpful
+
+## Validation
+How to verify the procedure was completed successfully.
+
+## Related Documents
+- Links to related SOPs
+- References to external standards
+- Supporting documentation
+
+## Definitions
+Glossary of terms used in this document.
+```
+
+## Examples
+
+<example>
+# Standard Operating Procedure: Assessment Data Export
+
+## Version Information
+| Version | Date | Author | Approved By | Changes |
+|---------|------|--------|-------------|---------|
+| 1.0.0   | 2023-06-15 | Jane Smith | John Doe | Initial version |
+| 1.1.0   | 2023-09-22 | Jane Smith | John Doe | Added CSV format support |
+
+## Purpose
+This SOP describes the process for exporting assessment data from the system in various formats for analysis and reporting.
+
+## Scope
+This procedure covers the export of completed assessment data including responses, scores, and recommendations. It does not cover data import or modification processes.
+
+## Responsibilities
+- **Administrator**: Authorize data export requests
+- **Data Analyst**: Execute export operations and validate output
+- **Privacy Officer**: Review export requests for compliance with privacy policies
+
+## Prerequisites
+- Administrative access to the system
+- Completed assessments ready for export
+- Appropriate data handling authorization
+
+## Procedure
+1. Log into the administration portal using your credentials
+2. Navigate to Data Management > Exports
+3. Select the date range for assessment data to export
+   ![Date Range Selection](mdc:images/export-date-range.png)
+4. Choose the export format (JSON, CSV, or PDF)
+5. Select optional fields to include:
+   - User demographics
+   - Score breakdowns
+   - Recommendations
+6. Click "Generate Export"
+7. When processing completes, download the export file
+8. Verify the file contains the expected data
+
+## Validation
+- Open the exported file to confirm it contains data for all selected assessments
+- Verify column headers match expected format
+- Sample check at least 3 records against the system to ensure accuracy
+
+## Related Documents
+- [Data Handling Policy](mdc:policies/data-handling.md)
+- [Export Format Specifications](mdc:technical/export-formats.md)
+- [Troubleshooting Common Export Issues](mdc:support/export-troubleshooting.md)
+
+## Definitions
+- **Assessment**: A completed evaluation including all responses and scores
+- **Export Format**: The file format used for the exported data (JSON, CSV, PDF)
+- **Score Breakdown**: Detailed scoring information showing how the total was calculated
+</example>
+
+<example type="invalid">
+# Export Data
+
+Export data from the system by going to the admin panel and clicking export. Choose the format you want and download the file.
+
+If it doesn't work, try again or contact support.
+</example>
+
+## Architecture Decision Documentation
+
+### ADR Template
+```markdown
+# Architecture Decision Record: [Title]
+
+## Status
+[Proposed | Accepted | Deprecated | Superseded by [ADR-XXX](mdc:XXX-filename.md)]
+
+## Context
+What is the issue that we're seeing that is motivating this decision or change?
+
+## Decision
+What is the change that we're proposing and/or doing?
+
+## Consequences
+What becomes easier or more difficult to do because of this change?
+
+## Alternatives Considered
+What other approaches did we consider and why were they not chosen?
+
+## Validation
+How will we know that this change is successful?
+```
+
+## Version Control for Documentation
+
+### Document Versioning
+- Use semantic versioning (MAJOR.MINOR.PATCH) for all SOPs and documentation
+- Increment MAJOR for backward-incompatible changes
+- Increment MINOR for new functionality in a backward-compatible manner
+- Increment PATCH for backward-compatible bug fixes
+- Maintain a changelog for each document
+- Store documentation in version control system alongside code
+- Follow change review process for documentation updates
+
+### Documentation Review Process
+- Technical documentation requires peer review
+- SOPs require stakeholder sign-off
+- Perform regular documentation audits (quarterly)
+- Update documentation as part of feature development
+- Verify documentation accuracy through user testing 

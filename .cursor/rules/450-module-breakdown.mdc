@@ -1,6 +1,159 @@
 ---
-description: 
-globs: 
-alwaysApply: false
+description: BREAK DOWN large code files into smaller modules when they exceed 300 lines or contain multiple logical components to IMPROVE maintainability and code organization
+globs: **/*.{ts,js,tsx,jsx,py,rb,cs,java,php,go,swift,kt,vue,svelte,scala,rs}
 ---
- 
+
+# Automatic File Module Breakdown Rule
+
+<version>1.0.0</version>
+
+## Context
+- Applied when working with large code files (>300 lines)
+- Applied when files contain multiple distinct logical components
+- Used during refactoring or when creating new complex features
+- Applicable across multiple programming languages and frameworks
+
+## Requirements
+- Identify logical boundaries by functional domain, component type, or responsibility area
+- Create dedicated module files with clear naming conventions
+- Limit module size to 200-300 lines maximum per file
+- Ensure single responsibility focus for each module
+- Implement proper export/import structure appropriate for the language
+- Document module purpose and relationships
+
+## Examples
+
+### JavaScript/TypeScript
+
+<example>
+// Original large file: user-management.ts (500+ lines)
+
+// After breakdown:
+// user-authentication.ts
+export function authenticateUser(credentials) { /* ... */ }
+export function validateSession(token) { /* ... */ }
+
+// user-permissions.ts
+export function checkPermission(userId, resource) { /* ... */ }
+export function assignRole(userId, roleId) { /* ... */ }
+
+// index.ts (barrel file)
+export * from './user-authentication';
+export * from './user-permissions';
+</example>
+
+### Python
+
+<example>
+# Original large file: user_management.py (500+ lines)
+
+# After breakdown:
+# user_authentication.py
+def authenticate_user(credentials):
+    # Authentication logic
+    pass
+
+def validate_session(token):
+    # Session validation logic
+    pass
+
+# user_permissions.py
+def check_permission(user_id, resource):
+    # Permission checking logic
+    pass
+
+def assign_role(user_id, role_id):
+    # Role assignment logic
+    pass
+
+# __init__.py
+from .user_authentication import authenticate_user, validate_session
+from .user_permissions import check_permission, assign_role
+</example>
+
+<example type="invalid">
+// Bad breakdown - mixing unrelated functionality
+// user-mixed.ts
+export function authenticateUser(credentials) { /* ... */ }
+export function updateProductInventory(productId, quantity) { /* ... */ }
+export function sendNotification(userId, message) { /* ... */ }
+</example>
+
+## Language-Specific Patterns
+
+### JavaScript/TypeScript
+- Use ES modules (import/export)
+- Implement barrel files (index.ts/js) for consolidated exports
+- Follow named export patterns for better tree-shaking
+- Split React components by logical concern or feature
+
+### Python
+- Use proper package structure with __init__.py files
+- Split modules by functionality and use relative imports
+- Consider using dataclasses for data structures
+- Use type hints in larger codebases
+
+### Java/Kotlin
+- Follow package structure conventions
+- Use interfaces to define module boundaries
+- Split classes by responsibility adhering to SOLID principles
+- Use dependency injection to manage module relationships
+
+### C#
+- Use namespaces to organize code logically
+- Split large classes into partial classes where appropriate
+- Use interfaces to define clear boundaries
+- Follow proper project organization in solution
+
+### Web Frameworks
+- Vue/Svelte: Split components by feature, separate logic/presentation
+- Angular: Follow module/component architecture, use proper service isolation
+- React: Split by feature folders or component type
+
+## Module Organization Pattern
+
+### Data File Organization
+- Break by business domain or category
+- Maximum 15-20 items per file
+- Group similar items together
+- Create appropriate index/import files based on language
+
+### Service Implementation Organization
+- Break by functional area
+- Extract reusable utilities to separate files
+- Keep validator logic separate from core business logic
+- Maintain a clear public API through the main service
+
+### Naming Conventions
+- JavaScript/TypeScript: `{domain}-{type}.ts`
+- Python: `{domain}_{type}.py`
+- Java/Kotlin: `Domain{Type}.java`/`.kt`
+- C#: `Domain{Type}.cs`
+- Component files: Follow framework conventions
+
+### Import/Export System
+```typescript
+// JavaScript/TypeScript
+import { ComponentName } from './modules/domain/component-name';
+import { ComponentA, ComponentB } from './modules/domain';
+```
+
+```python
+# Python
+from .modules.domain.component_name import ComponentName
+from .modules.domain import ComponentA, ComponentB
+```
+
+```java
+// Java
+import com.example.modules.domain.ComponentName;
+import com.example.modules.domain.ComponentA;
+```
+
+### Documentation Requirements
+
+Each module must include:
+- Purpose comment at the top
+- Relationship to other modules
+- Clear export documentation appropriate for the language
+- Dependencies and usage instructions 

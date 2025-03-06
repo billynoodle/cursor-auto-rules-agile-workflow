@@ -1,0 +1,139 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+ALWAYS use when structuring tasks and implementing features to ensure proper Test-Driven Development practices. This rule enforces consistent TDD principles across all tasks and stories.
+
+# Test-Driven Development (TDD) Implementation Guide
+
+<version>1.0.0</version>
+
+## Purpose
+
+This guide ensures proper implementation of TDD principles across all stories and tasks in the Allied Health Business Assessment Tool project. It provides concrete guidance on how to structure tasks, write tests, and implement features in accordance with TDD principles.
+
+## TDD Workflow Requirements
+
+### 1. Foundational Principles
+
+- **Red-Green-Refactor Cycle**:
+  - Red: Write a failing test that defines the expected behavior
+  - Green: Write the minimum implementation code to make the test pass
+  - Refactor: Improve the code while keeping tests passing
+
+- **Tests First**: Always write tests before implementing functionality
+- **Small Increments**: Work in small, testable increments
+- **Continuous Validation**: Ensure tests pass before moving to the next feature
+
+### 2. Task Structuring
+
+Every major task group MUST include:
+
+1. Test creation subtasks that come BEFORE implementation subtasks
+2. Test validation subtasks that come AFTER implementation subtasks
+3. Refactoring subtasks where appropriate
+
+Example task structure:
+```
+1. - [ ] Implement Feature X
+   1. - [ ] Write tests for Feature X
+   2. - [ ] Implement Feature X
+   3. - [ ] Validate tests for Feature X
+   4. - [ ] Refactor Feature X if needed
+```
+
+### 3. Testing Requirements
+
+- **Coverage**: Aim for at least 80% test coverage for all new code
+- **Types**: Include unit, integration, and functional tests as appropriate
+- **Scope**: Tests should verify both happy paths and edge cases
+- **Independence**: Tests should be independent and not rely on other tests
+
+### 4. Story Structure TDD Additions
+
+For each story:
+
+1. Include a "Testing Approach" section in the Context that outlines:
+   - Test frameworks and tools to be used
+   - Critical test scenarios to cover 
+   - Any testing challenges specific to the story
+
+2. Begin each Task Group with test-related subtasks:
+   ```
+   1. - [ ] Feature X
+      1. - [ ] Write unit tests for Feature X
+      2. - [ ] Write integration tests for Feature X (if needed)
+      3. - [ ] Implement Feature X
+      4. - [ ] Verify all tests pass
+      5. - [ ] Refactor if needed while maintaining passing tests
+   ```
+
+3. Add a "Test Results" section to Progress Notes to document:
+   - Test coverage achieved
+   - Key test scenarios validated
+   - Any testing challenges encountered and resolved
+
+### 5. Tooltip Development TDD Approach
+
+When enhancing tooltips:
+
+1. Write tests first that verify:
+   - Readability metrics (e.g., Flesch-Kincaid reading level)
+   - Presence of required elements (examples, context, plain language)
+   - Compliance with jargon guidelines
+
+2. Test specific tooltip requirements:
+   - Financial tooltips must include calculation examples
+   - Compliance tooltips must explain regulatory context
+   - All tooltips must avoid undefined acronyms
+
+3. Implement tooltips only after tests are in place
+
+4. Validate tooltips against the tests
+
+## Implementation Guide
+
+This TDD approach should be applied immediately to all remaining tasks in the current story, particularly:
+
+1. Tooltip enhancement: Write tests for tooltip clarity, accessibility and completeness before enhancing more tooltips
+2. UI Wireframes: Write tests for wireframe components before designing them
+
+> 📋 **Quick Reference: TDD Implementation Checklist**
+> 
+> - [ ] Tests written before implementation
+> - [ ] Tests cover happy paths and edge cases
+> - [ ] Implementation makes tests pass
+> - [ ] Tests validated after implementation
+> - [ ] Code refactored while keeping tests passing
+> - [ ] Test coverage meets minimum threshold (80%)
+> - [ ] Test results documented in Progress Notes
+
+## Examples
+
+### Effective TDD Task Structure
+
+<example>
+4. - [ ] Enhance Question Tooltips
+   1. - [ ] Write tests for tooltip readability and completeness
+   2. - [ ] Create test fixtures with sample tooltip content
+   3. - [ ] Implement automated readability scoring tests
+   4. - [ ] Develop enhanced tooltip content to pass tests
+   5. - [ ] Validate tooltips against readability requirements
+   6. - [ ] Refactor tooltips to improve clarity while maintaining test compliance
+</example>
+
+### Ineffective Task Structure (Avoid)
+
+<example type="invalid">
+4. - [ ] Enhance Question Tooltips
+   1. - [ ] Create enhanced tooltip content
+   2. - [ ] Write tests to verify tooltips
+</example>
+
+<critical>
+- NEVER implement functionality without writing tests first
+- ALWAYS validate tests after implementation 
+- ALWAYS document test results in Progress Notes
+- NEVER skip test-first approach even for "simple" changes
+</critical> 

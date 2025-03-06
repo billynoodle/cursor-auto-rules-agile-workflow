@@ -1,0 +1,193 @@
+---
+description: ORGANIZE codebase with consistent file structure and clear module boundaries to IMPROVE maintainability and navigation
+globs: **/*.{ts,js,tsx,jsx,py,rb,cs,java,php,go,swift,kt,vue,svelte,scala,rs}
+---
+
+# File Organization and Structure
+
+<version>1.0.0</version>
+
+## Context
+- Applied when creating new components, modules, or services
+- Used during refactoring of complex or large files
+- Essential when adding features to existing codebases
+- Critical for maintaining consistent project architecture
+
+## Requirements
+- Enforce domain-driven organization for all code files
+- Keep files under 300 lines maximum (follow @450-module-breakdown.mdc)
+- Implement consistent naming conventions
+- Maintain clear separation of concerns
+- Create index files for public module APIs
+- Document module dependencies and relationships
+- Follow consistent import ordering patterns
+
+## File Structure Guidelines
+
+### Directory Organization
+```
+/
+├── /client                  # Frontend application
+│   ├── /src
+│   │   ├── /components      # Reusable UI components
+│   │   │   ├── /common      # Shared components across features
+│   │   │   └── /features    # Feature-specific components grouped by domain
+│   │   ├── /hooks           # Custom React hooks
+│   │   ├── /pages           # Page components with routing
+│   │   ├── /services        # API clients and service abstractions
+│   │   │   ├── /api         # API client implementation
+│   │   │   └── /domain      # Domain service implementation
+│   │   ├── /store           # State management
+│   │   │   ├── /slices      # Redux slices or equivalent
+│   │   │   └── /selectors   # State selectors
+│   │   ├── /types           # TypeScript type definitions
+│   │   └── /utils           # Utility functions
+│   └── /tests               # Test files mirroring src structure
+│
+├── /server                  # Backend application
+│   ├── /src
+│   │   ├── /api             # API routes and controllers
+│   │   │   ├── /v1          # API version 1
+│   │   │   └── /middleware  # API middlewares
+│   │   ├── /domain          # Domain business logic
+│   │   │   ├── /assessment  # Assessment domain
+│   │   │   └── /practice    # Practice domain
+│   │   ├── /services        # External service integrations
+│   │   └── /utils           # Utility functions
+│   └── /tests               # Test files mirroring src structure
+```
+
+### Naming Conventions
+- Files: `kebab-case.ts` for utilities and services
+- React Components: `PascalCase.tsx` 
+- Directories: `kebab-case` for general folders, `PascalCase` for component folders
+- Test Files: `{name}.{test|spec}.{ext}` matching the file they test
+
+## Examples
+
+<example>
+// GOOD: Domain-driven organization of assessment module
+// /server/src/domain/assessment/assessment-service.ts
+export class AssessmentService {
+  constructor(
+    private readonly questionRepository: QuestionRepository,
+    private readonly responseRepository: ResponseRepository
+  ) {}
+
+  async scoreAssessment(assessmentId: string): Promise<AssessmentScore> {
+    // Score calculation logic
+  }
+}
+
+// /server/src/domain/assessment/index.ts
+export * from './assessment-service';
+export * from './assessment-types';
+export * from './question-repository';
+export * from './response-repository';
+
+// /server/src/domain/assessment/assessment-types.ts
+export interface AssessmentQuestion {
+  id: string;
+  text: string;
+  weight: number;
+  options?: QuestionOption[];
+}
+
+export interface QuestionOption {
+  id: string;
+  text: string;
+  value: number;
+}
+
+// Usage in API controller
+// /server/src/api/v1/assessment-controller.ts
+import { AssessmentService } from '../../domain/assessment';
+
+export class AssessmentController {
+  constructor(private readonly assessmentService: AssessmentService) {}
+  
+  async scoreAssessment(req, res) {
+    const { assessmentId } = req.params;
+    const score = await this.assessmentService.scoreAssessment(assessmentId);
+    return res.json(score);
+  }
+}
+</example>
+
+<example type="invalid">
+// BAD: Mixed responsibilities and poor organization
+// /server/src/assessment.js
+const db = require('./database');
+const mail = require('./mail');
+const scoreCalculator = require('./score-calculator');
+
+// Assessment API endpoints
+app.get('/api/assessment/:id', async (req, res) => {
+  // API logic mixed with business logic
+  const data = await db.query('SELECT * FROM assessments WHERE id = ?', [req.params.id]);
+  return res.json(data);
+});
+
+// Assessment scoring function
+function calculateScore(responses) {
+  // Business logic mixed with API handlers
+  return scoreCalculator.calculate(responses);
+}
+
+// Email notification
+function sendScoreEmail(user, score) {
+  // Multiple responsibilities in a single file
+  mail.send(user.email, 'Your assessment score', `Score: ${score}`);
+}
+
+module.exports = {
+  calculateScore,
+  sendScoreEmail
+};
+</example>
+
+## Implementation Guidelines
+
+### Component Organization
+- Group related components into feature folders
+- Create dedicated folders for component variations
+- Abstract shared logic into custom hooks
+- Keep component files focused on presentation or container logic, not both
+
+### Service Layer Organization
+- Separate API clients from domain services
+- Use repository pattern for data access
+- Implement facade pattern for complex service interactions
+- Create clear service interfaces with domain types
+
+### State Management Organization
+- Group state by domain entity or feature
+- Create selectors for complex state derivation
+- Keep state normalized and minimal
+- Document state shape and update patterns
+
+### Import Organization
+```typescript
+// Standard import order
+// 1. External dependencies
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+// 2. Internal absolute imports (paths from tsconfig)
+import { AppState } from '@/types';
+import { ApiClient } from '@/services/api';
+
+// 3. Relative imports
+import { AssessmentQuestion } from '../../types';
+import { useAssessmentForm } from './hooks';
+import { QuestionComponent } from './components';
+
+// 4. Style imports
+import './styles.css';
+```
+
+### Documentation Requirements
+- Include purpose comment for each module
+- Document public API methods and parameters
+- Maintain README.md in each major directory
+- Include usage examples for complex components 
