@@ -1,0 +1,22 @@
+{
+  "name": "cursor-auto-rules-agile-workflow",
+  "version": "1.0.0",
+  "description": "Agile workflow project with consolidated testing",
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=tests/unit",
+    "test:integration": "jest --testPathPattern=tests/integration",
+    "test:e2e": "jest --testPathPattern=tests/e2e",
+    "test:coverage": "jest --coverage",
+    "test:tooltip": "node scripts/run-tooltip-tests.js",
+    "tooltip-trends": "node scripts/view-tooltip-trends.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.6",
+    "typescript": "^5.7.3"
+  }
+} 

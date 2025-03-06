@@ -21,9 +21,9 @@ if (!fs.existsSync(testResultsDir)) {
 console.log('Running tooltip review tests...');
 
 try {
-  // Run the tooltip integration tests
+  // Run the tooltip integration tests using the root configuration
   const output = execSync(
-    'cd server && npx jest ../tests/integration/tooltip/TooltipReviewIntegration.test.ts --verbose',
+    'npx jest tests/integration/tooltip --config=jest.config.js --verbose',
     { stdio: 'inherit' }
   );
   
@@ -42,7 +42,7 @@ try {
       if (index.tests && index.tests.length > 0) {
         console.log(`\nFound ${index.tests.length} historical test runs.`);
         console.log('You can view historical trends by running:');
-        console.log('node scripts/view-tooltip-trends.js');
+        console.log('npm run tooltip-trends');
       }
     }
   }

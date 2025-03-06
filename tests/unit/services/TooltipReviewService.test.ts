@@ -49,7 +49,7 @@ describe('TooltipReviewService', () => {
       const tooltipWithoutMetrics = 'Regular staff training ensures team skills stay current.';
       const enhanced = tooltipReviewService.enhanceTooltip(tooltipWithoutMetrics, 'STAFFING');
       
-      expect(enhanced).toContain('%') || expect(enhanced).toContain('$');
+      expect(enhanced.includes('%') || enhanced.includes('$')).toBe(true);
     });
 
     it('should add examples to tooltips without examples', () => {
