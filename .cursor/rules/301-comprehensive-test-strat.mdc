@@ -1,0 +1,712 @@
+---
+description: IMPLEMENT comprehensive testing strategy to ENSURE complete application coverage and quality
+globs: **/*.{ts,tsx,js,jsx}
+alwaysApply: false
+---
+---
+description: IMPLEMENT comprehensive testing strategy to ENSURE complete application coverage and quality
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+# Comprehensive Testing Strategy for Allied Health Business Assessment Tool
+
+<version>1.0.0</version>
+
+## Context
+- Apply when developing or maintaining any part of the Allied Health Business Assessment Tool
+- Use when planning sprints, creating stories, or implementing features
+- Reference when reviewing code or conducting quality assurance
+- Essential for ensuring application reliability, accuracy, and maintainability
+- Covers all assessment categories, question modules, scoring systems, and SOP generation
+
+## Requirements
+
+### 1. Testing Pyramid Structure
+- **Unit Tests**: 70% of total test count
+  - Test individual functions, methods, and components in isolation
+  - Mock all external dependencies
+  - Aim for >90% coverage of business logic
+  - Focus on question modules, scoring algorithms, and data transformations
+
+- **Integration Tests**: 20% of total test count
+  - Test interactions between components and services
+  - Verify correct data flow between system parts
+  - Focus on API contracts and service boundaries
+  - Test assessment module interactions and data aggregation
+
+- **End-to-End Tests**: 10% of total test count
+  - Test complete user flows and critical paths
+  - Verify system behavior from user perspective
+  - Cover key business scenarios
+  - Test full assessment completion and report generation
+
+### 2. Test-Driven Development Workflow
+- Write tests before implementing functionality (Red phase)
+- Implement minimum code to make tests pass (Green phase)
+- Refactor while maintaining passing tests (Refactor phase)
+- Document test approach in story planning
+- Apply TDD to all assessment modules and scoring algorithms
+
+### 3. Test Coverage Requirements
+- **Core Services**: Minimum 90% line coverage
+- **Assessment Modules**: Minimum 95% line coverage
+- **Scoring Algorithms**: 100% line coverage and branch coverage
+- **UI Components**: Minimum 80% line coverage
+- **API Endpoints**: 100% functional coverage
+- **SOP Generation**: 100% functional coverage
+- **Question Modules**: 100% data validation coverage
+- **Supabase Integration**: 100% functional coverage
+
+### 4. Testing by Application Layer
+
+#### 4.1 Data Layer
+- Test data models and validation for all question types
+- Verify database operations and transactions
+- Test data transformation and migration utilities
+- Ensure proper error handling for data operations
+- Test Row-Level Security (RLS) policies
+- Verify Supabase integration for data storage and retrieval
+
+#### 4.2 Assessment Module Testing
+- Test each assessment category module independently:
+  - Financial Health (revenue tracking, pricing strategy, expense management, cash flow)
+  - Operations and Workflow
+  - Marketing and Patient Acquisition
+  - Staff Management and Productivity
+  - Compliance and Risk Management
+  - Patient/Client Management
+  - Facilities and Equipment
+  - Geographic Market Analysis
+  - Technology Integration
+  - Automation Opportunities
+- Verify question loading and filtering by discipline
+- Test question applicability by practice size
+- Verify tracking period assignment
+- Test benchmark reference data accuracy
+- Validate score interpretation logic
+
+#### 4.3 Scoring System Testing
+- Test weight calculation for all question types
+- Verify score normalization across categories
+- Test percentile ranking calculations
+- Validate benchmark comparison logic
+- Test score aggregation across modules
+- Verify score interpretation and positioning
+- Test action prompt generation based on scores
+- Validate priority calculation for recommendations
+
+#### 4.4 API Layer
+- Test request validation and sanitization
+- Verify response formatting and status codes
+- Test authentication and authorization
+- Ensure proper error handling and logging
+- Test Supabase API integration
+- Verify webhook functionality for integrations
+
+#### 4.5 UI Layer
+- Test component rendering and state management
+- Verify user interactions and event handling
+- Test accessibility compliance
+- Ensure responsive design behavior
+- Test tooltip functionality and clarity
+- Verify visualization accuracy for reports
+- Test progress tracking and saving
+
+### 5. Specialized Testing Requirements
+
+#### 5.1 Question Module Testing
+- Test question loading for all 10 assessment categories
+- Verify question filtering by discipline type
+- Test question applicability by practice size
+- Verify question weighting and scoring
+- Test help text and tooltip content
+- Validate impact area assignments
+- Test tracking period assignment
+- Verify benchmark reference data
+- Test score interpretation logic
+- Validate action prompt generation
+
+#### 5.2 SOP Generation Testing
+- Test RAG model integration for content generation
+- Verify template selection based on practice profile
+- Test content customization for practice specifics
+- Verify compliance with regulations by country
+- Test document formatting and structure
+- Validate version control and tracking
+- Test approval workflow functionality
+- Verify export options (PDF, Word, HTML)
+- Test SOP material finder functionality
+- Verify resource discovery and relevance ranking
+
+#### 5.3 Discipline Plugin Testing
+- Test plugin architecture and interfaces
+- Verify discipline registry and configuration
+- Test discipline-specific question loading
+- Verify benchmark normalization across disciplines
+- Test discipline selection and configuration
+- Validate physiotherapy plugin as reference implementation
+- Test plugin validation framework
+
+#### 5.4 Supabase Integration Testing
+- **Authentication and Authorization**:
+  - Test user registration, login, and logout flows
+  - Verify JWT token validation and refresh
+  - Test role-based access control
+  - Verify password reset and email verification
+  - Test third-party authentication providers if used
+  - Validate session management and timeout handling
+
+- **Row-Level Security (RLS)**:
+  - Test RLS policy enforcement for each table
+  - Verify data access restrictions by user role
+  - Test multi-tenant data isolation
+  - Verify practice-specific data access controls
+  - Test RLS policies for shared resources
+  - Validate policy behavior during user role changes
+
+- **Realtime Subscriptions**:
+  - Test realtime data updates for assessment progress
+  - Verify collaborative editing functionality
+  - Test subscription connection handling and reconnection
+  - Verify event filtering and channel security
+  - Test performance under multiple concurrent subscriptions
+  - Validate data consistency during realtime updates
+
+- **Storage**:
+  - Test file upload and download operations
+  - Verify access control for stored documents
+  - Test file versioning and metadata handling
+  - Verify file type validation and size limits
+  - Test concurrent access to stored files
+  - Validate backup and recovery procedures
+
+- **Edge Functions**:
+  - Test serverless function execution
+  - Verify function authentication and authorization
+  - Test error handling and logging
+  - Verify function performance and timeout handling
+  - Test function integration with external services
+  - Validate function deployment and versioning
+
+- **PostgreSQL Functions and Triggers**:
+  - Test custom database functions
+  - Verify trigger execution and side effects
+  - Test transaction handling in functions
+  - Verify function performance with large datasets
+  - Test error handling in database functions
+  - Validate function security and access control
+
+- **API and Rate Limiting**:
+  - Test API endpoint access and response formats
+  - Verify rate limiting enforcement
+  - Test API versioning and backward compatibility
+  - Verify API error handling and status codes
+  - Test API performance under load
+  - Validate API documentation accuracy
+
+- **Webhooks**:
+  - Test webhook registration and management
+  - Verify webhook payload delivery
+  - Test webhook security (signing, authentication)
+  - Verify webhook retry logic
+  - Test webhook filtering and event selection
+  - Validate webhook integration with external systems
+
+#### 5.5 Performance Testing
+- Test response times under various loads
+- Verify system behavior under stress
+- Test resource utilization and optimization
+- Ensure scalability for expected growth
+- Test Supabase performance for data operations
+- Verify caching mechanisms for frequent queries
+
+#### 5.6 Security Testing
+- Test authentication and authorization flows
+- Verify Row-Level Security (RLS) policies
+- Test input validation and sanitization
+- Verify data encryption for sensitive information
+- Test for common vulnerabilities (OWASP Top 10)
+- Ensure proper data protection and privacy
+- Verify Supabase Auth integration
+
+### 6. Testing Infrastructure
+
+#### 6.1 Continuous Integration
+- Run unit and integration tests on every commit
+- Run E2E tests on pull requests and main branch
+- Block merges for failing tests
+- Generate and publish coverage reports
+- Implement automated security scanning
+- Set up performance benchmarking
+
+#### 6.2 Test Environment Management
+- Maintain isolated test environments
+- Reset test data between test runs
+- Simulate various user roles and permissions
+- Support parallel test execution
+- Maintain test Supabase instance with test data
+- Implement database seeding for consistent test data
+
+### 7. Test Maintenance
+- Review and update tests with feature changes
+- Remove obsolete tests promptly
+- Refactor tests for clarity and maintainability
+- Document test patterns and best practices
+- Update tests when question modules are modified
+- Maintain test data for all assessment categories
+
+## Examples
+
+### Effective Question Module Test
+
+<example>
+// Financial module test demonstrating comprehensive coverage
+describe('Financial Health - Revenue Tracking Questions', () => {
+  let questionService: QuestionService;
+  
+  beforeEach(() => {
+    questionService = new QuestionService();
+  });
+  
+  it('should load all revenue tracking questions', () => {
+    const questions = questionService.getQuestionsByModule('mod-financial-001');
+    expect(questions.length).toBeGreaterThan(0);
+    expect(questions[0].category).toBe(AssessmentCategory.FINANCIAL);
+  });
+  
+  it('should filter questions by discipline type', () => {
+    const questions = questionService.getQuestionsByDiscipline(
+      'mod-financial-001', 
+      DisciplineType.PHYSIOTHERAPY
+    );
+    
+    expect(questions.length).toBeGreaterThan(0);
+    expect(questions.every(q => 
+      q.applicableDisciplines.includes(DisciplineType.PHYSIOTHERAPY)
+    )).toBe(true);
+  });
+  
+  it('should filter questions by practice size', () => {
+    const questions = questionService.getQuestionsByPracticeSize(
+      'mod-financial-001',
+      PracticeSize.SMALL
+    );
+    
+    expect(questions.length).toBeGreaterThan(0);
+    expect(questions.every(q => 
+      q.applicablePracticeSizes.includes(PracticeSize.SMALL)
+    )).toBe(true);
+  });
+  
+  it('should calculate correct score for numeric question', () => {
+    const question = questionService.getQuestionById('fin-rev-001');
+    const score = questionService.calculateScore(question, 25);
+    
+    // 25% is in the healthy range (15-30%), should score well
+    expect(score).toBeGreaterThan(70);
+  });
+  
+  it('should provide appropriate action prompts for critical scores', () => {
+    const question = questionService.getQuestionById('fin-rev-001');
+    const interpretation = questionService.getScoreInterpretation(
+      question, 
+      ScorePosition.CRITICAL
+    );
+    
+    expect(interpretation.actionPrompts.length).toBeGreaterThan(0);
+    expect(interpretation.priority).toBeGreaterThanOrEqual(8);
+  });
+});
+</example>
+
+### Effective Supabase Integration Test
+
+<example>
+// Supabase integration test demonstrating comprehensive coverage
+describe('Supabase Integration - Row-Level Security', () => {
+  let supabase: SupabaseClient;
+  let adminSupabase: SupabaseClient;
+  let testUser: User;
+  let testPractice: Practice;
+  
+  beforeEach(async () => {
+    // Set up test environment with admin access
+    adminSupabase = createAdminClient();
+    
+    // Create test practice and user
+    testPractice = await createTestPractice(adminSupabase);
+    testUser = await createTestUser(adminSupabase, {
+      email: 'test@example.com',
+      password: 'securePassword123',
+      practiceId: testPractice.id,
+      role: 'practitioner'
+    });
+    
+    // Log in as test user
+    supabase = createClient(supabaseUrl, supabaseKey);
+    await supabase.auth.signInWithPassword({
+      email: 'test@example.com',
+      password: 'securePassword123'
+    });
+  });
+  
+  afterEach(async () => {
+    // Clean up test data
+    await adminSupabase.from('assessments').delete().eq('practice_id', testPractice.id);
+    await adminSupabase.from('practices').delete().eq('id', testPractice.id);
+    await adminSupabase.auth.admin.deleteUser(testUser.id);
+  });
+  
+  it('should enforce RLS policies for assessment data', async () => {
+    // Create assessment for test practice
+    const { data: assessment } = await adminSupabase
+      .from('assessments')
+      .insert({
+        practice_id: testPractice.id,
+        name: 'Test Assessment',
+        status: 'in_progress'
+      })
+      .select()
+      .single();
+    
+    // Create assessment for another practice
+    const otherPractice = await createTestPractice(adminSupabase);
+    await adminSupabase
+      .from('assessments')
+      .insert({
+        practice_id: otherPractice.id,
+        name: 'Other Assessment',
+        status: 'in_progress'
+      });
+    
+    // Test user should only see their practice's assessment
+    const { data: userAssessments } = await supabase
+      .from('assessments')
+      .select('*');
+    
+    expect(userAssessments.length).toBe(1);
+    expect(userAssessments[0].id).toBe(assessment.id);
+    expect(userAssessments[0].practice_id).toBe(testPractice.id);
+    
+    // Test user should not be able to access other practice's data
+    const { data: otherData, error: otherError } = await supabase
+      .from('assessments')
+      .select('*')
+      .eq('practice_id', otherPractice.id);
+    
+    expect(otherData.length).toBe(0);
+  });
+  
+  it('should enforce RLS policies for question responses', async () => {
+    // Create assessment and responses for test practice
+    const { data: assessment } = await adminSupabase
+      .from('assessments')
+      .insert({
+        practice_id: testPractice.id,
+        name: 'Test Assessment',
+        status: 'in_progress'
+      })
+      .select()
+      .single();
+    
+    await adminSupabase
+      .from('question_responses')
+      .insert({
+        assessment_id: assessment.id,
+        question_id: 'fin-rev-001',
+        response_value: '25',
+        score: 75
+      });
+    
+    // Test user should be able to read their own responses
+    const { data: responses } = await supabase
+      .from('question_responses')
+      .select('*')
+      .eq('assessment_id', assessment.id);
+    
+    expect(responses.length).toBe(1);
+    expect(responses[0].question_id).toBe('fin-rev-001');
+    
+    // Test user should be able to update their own responses
+    const { error: updateError } = await supabase
+      .from('question_responses')
+      .update({ response_value: '30', score: 70 })
+      .eq('assessment_id', assessment.id)
+      .eq('question_id', 'fin-rev-001');
+    
+    expect(updateError).toBeNull();
+    
+    // Create assessment for another practice
+    const otherPractice = await createTestPractice(adminSupabase);
+    const { data: otherAssessment } = await adminSupabase
+      .from('assessments')
+      .insert({
+        practice_id: otherPractice.id,
+        name: 'Other Assessment',
+        status: 'in_progress'
+      })
+      .select()
+      .single();
+    
+    await adminSupabase
+      .from('question_responses')
+      .insert({
+        assessment_id: otherAssessment.id,
+        question_id: 'fin-rev-001',
+        response_value: '40',
+        score: 60
+      });
+    
+    // Test user should not be able to read other practice's responses
+    const { data: otherResponses } = await supabase
+      .from('question_responses')
+      .select('*')
+      .eq('assessment_id', otherAssessment.id);
+    
+    expect(otherResponses.length).toBe(0);
+    
+    // Test user should not be able to update other practice's responses
+    const { error: otherUpdateError } = await supabase
+      .from('question_responses')
+      .update({ response_value: '50', score: 50 })
+      .eq('assessment_id', otherAssessment.id)
+      .eq('question_id', 'fin-rev-001');
+    
+    expect(otherUpdateError).not.toBeNull();
+  });
+});
+</example>
+
+### Effective Supabase Realtime Test
+
+<example>
+// Supabase Realtime test demonstrating subscription testing
+describe('Supabase Realtime - Collaborative Assessment Editing', () => {
+  let supabase: SupabaseClient;
+  let adminSupabase: SupabaseClient;
+  let testPractice: Practice;
+  let testAssessment: Assessment;
+  
+  beforeEach(async () => {
+    // Set up test environment
+    adminSupabase = createAdminClient();
+    supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Create test data
+    testPractice = await createTestPractice(adminSupabase);
+    const { data } = await adminSupabase
+      .from('assessments')
+      .insert({
+        practice_id: testPractice.id,
+        name: 'Realtime Test Assessment',
+        status: 'in_progress'
+      })
+      .select()
+      .single();
+    
+    testAssessment = data;
+    
+    // Log in as test user
+    await supabase.auth.signInWithPassword({
+      email: 'test@example.com',
+      password: 'securePassword123'
+    });
+  });
+  
+  afterEach(async () => {
+    // Clean up test data
+    await adminSupabase.from('assessments').delete().eq('id', testAssessment.id);
+    await adminSupabase.from('practices').delete().eq('id', testPractice.id);
+  });
+  
+  it('should receive realtime updates for question responses', (done) => {
+    // Set up subscription
+    const subscription = supabase
+      .channel('assessment-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'question_responses',
+          filter: `assessment_id=eq.${testAssessment.id}`
+        },
+        (payload) => {
+          // Verify payload contains the expected data
+          expect(payload.new.assessment_id).toBe(testAssessment.id);
+          expect(payload.new.question_id).toBe('fin-rev-001');
+          expect(payload.new.response_value).toBe('25');
+          
+          // Unsubscribe and complete test
+          subscription.unsubscribe();
+          done();
+        }
+      )
+      .subscribe();
+    
+    // Insert data to trigger the subscription
+    setTimeout(async () => {
+      await adminSupabase
+        .from('question_responses')
+        .insert({
+          assessment_id: testAssessment.id,
+          question_id: 'fin-rev-001',
+          response_value: '25',
+          score: 75
+        });
+    }, 100);
+  });
+  
+  it('should handle subscription reconnection', (done) => {
+    let reconnectCount = 0;
+    
+    // Set up subscription with reconnection handling
+    const subscription = supabase
+      .channel('assessment-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'assessments',
+          filter: `id=eq.${testAssessment.id}`
+        },
+        (payload) => {
+          expect(payload.new.status).toBe('completed');
+          subscription.unsubscribe();
+          done();
+        }
+      )
+      .on('error', (error) => {
+        console.error('Subscription error:', error);
+      })
+      .on('disconnect', () => {
+        reconnectCount++;
+      })
+      .on('reconnect', () => {
+        // Verify reconnection happened
+        expect(reconnectCount).toBeGreaterThan(0);
+        
+        // Update data after reconnection
+        adminSupabase
+          .from('assessments')
+          .update({ status: 'completed' })
+          .eq('id', testAssessment.id);
+      })
+      .subscribe();
+    
+    // Simulate disconnection
+    setTimeout(() => {
+      // Force channel to disconnect (implementation depends on testing framework)
+      subscription.unsubscribe();
+      
+      // Reconnect after a short delay
+      setTimeout(() => {
+        subscription.subscribe();
+      }, 100);
+    }, 100);
+  });
+});
+</example>
+
+### Effective SOP Generation Test
+
+<example>
+// SOP generation test demonstrating comprehensive validation
+describe('SOP Generation System', () => {
+  let sopService: SOPGenerationService;
+  let mockPracticeProfile: PracticeProfile;
+  
+  beforeEach(() => {
+    sopService = new SOPGenerationService();
+    mockPracticeProfile = createMockPracticeProfile(
+      DisciplineType.PHYSIOTHERAPY,
+      PracticeSize.SMALL,
+      Country.AUSTRALIA
+    );
+  });
+  
+  it('should select appropriate templates based on practice profile', () => {
+    const templates = sopService.getApplicableTemplates(
+      mockPracticeProfile,
+      SOPType.CLINICAL
+    );
+    
+    expect(templates.length).toBeGreaterThan(0);
+    expect(templates[0].applicableDisciplines).toContain(DisciplineType.PHYSIOTHERAPY);
+    expect(templates[0].applicableSizes).toContain(PracticeSize.SMALL);
+    expect(templates[0].applicableCountries).toContain(Country.AUSTRALIA);
+  });
+  
+  it('should generate customized SOP content using RAG model', async () => {
+    const sopContent = await sopService.generateSOPContent(
+      mockPracticeProfile,
+      SOPType.CLINICAL,
+      'patient-assessment-protocol'
+    );
+    
+    expect(sopContent).toBeDefined();
+    expect(sopContent.sections.length).toBeGreaterThan(0);
+    
+    // Content should be customized for the practice
+    expect(sopContent.content).toContain(mockPracticeProfile.name);
+    
+    // Should include required regulatory elements
+    expect(sopContent.complianceElements.length).toBeGreaterThan(0);
+  });
+  
+  it('should find relevant materials for SOP creation', async () => {
+    const materials = await sopService.findSOPMaterials(
+      mockPracticeProfile,
+      SOPType.CLINICAL,
+      'patient-assessment-protocol'
+    );
+    
+    expect(materials.length).toBeGreaterThan(0);
+    expect(materials.some(m => m.type === MaterialResourceType.REGULATORY)).toBe(true);
+    expect(materials.some(m => m.type === MaterialResourceType.TEMPLATE)).toBe(true);
+    
+    // Materials should be relevant to the discipline
+    expect(materials.every(m => 
+      m.applicableDisciplines.includes(DisciplineType.PHYSIOTHERAPY)
+    )).toBe(true);
+  });
+  
+  it('should export SOP in multiple formats', async () => {
+    const sopContent = await sopService.generateSOPContent(
+      mockPracticeProfile,
+      SOPType.CLINICAL,
+      'patient-assessment-protocol'
+    );
+    
+    const pdfExport = await sopService.exportSOP(sopContent, 'pdf');
+    expect(pdfExport).toBeDefined();
+    expect(pdfExport.mimeType).toBe('application/pdf');
+    
+    const docxExport = await sopService.exportSOP(sopContent, 'docx');
+    expect(docxExport).toBeDefined();
+    expect(docxExport.mimeType).toBe('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+  });
+});
+</example>
+
+### Ineffective Test Implementation
+
+<example type="invalid">
+// Test with poor isolation and incomplete coverage
+test('question module works', () => {
+  const questions = loadAllQuestions();
+  expect(questions.length).toBeGreaterThan(0);
+});
+</example>
+
+<critical>
+- NEVER implement features without corresponding tests
+- ALWAYS test all assessment categories and question modules
+- NEVER skip testing score calculation and interpretation logic
+- ALWAYS test SOP generation with various practice profiles
+- NEVER allow test coverage to fall below minimum thresholds
+- ALWAYS test discipline-specific functionality
+- NEVER skip testing Supabase RLS policies and security features
+- ALWAYS test realtime subscriptions for collaborative features
+</critical>
