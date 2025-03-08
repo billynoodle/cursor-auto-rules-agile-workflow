@@ -6,11 +6,16 @@
  */
 
 import { riskManagementQuestions } from './risk-management';
+import { regulatoryComplianceQuestions } from './regulatory-compliance';
 
 // Combine all compliance questions
 export const complianceQuestions = [
-  ...riskManagementQuestions
+  ...riskManagementQuestions,
+  ...regulatoryComplianceQuestions
 ];
 
 // Export individual question sets
-export { riskManagementQuestions };
+export { 
+  riskManagementQuestions,
+  regulatoryComplianceQuestions
+};
