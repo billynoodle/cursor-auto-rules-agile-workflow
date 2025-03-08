@@ -1,6 +1,8 @@
 ## Technical Summary
 This architecture defines a modern, secure, and scalable web application for allied health practitioners to assess and improve their business operations. The system employs a client-server architecture with a React frontend, Node.js/Express backend for complex business logic, and Supabase as the primary database and backend service. This hybrid approach leverages Supabase's PostgreSQL database, authentication, storage, and realtime capabilities while maintaining custom server-side processing for specialized business logic. The architecture prioritizes user experience, data security, and extensibility to accommodate future enhancements such as AI-powered analytics and integrations with practice management systems.
 
+A key architectural component is the Business Area Interconnectedness Analysis system, which identifies relationships between different business domains and provides actionable insights into how changes in one area impact others. This cross-domain analysis enables practitioners to make more informed decisions by understanding the broader implications of their business strategies.
+
 ## Technology Table
 
 | Technology | Description |
@@ -15,6 +17,7 @@ This architecture defines a modern, secure, and scalable web application for all
 | Jest | Testing framework for both frontend and backend |
 | AWS | Secondary cloud infrastructure provider for additional services if needed |
 | Chart.js | Data visualization library for assessment reports |
+| D3.js | Advanced data visualization library for interconnectedness diagrams and network graphs |
 | TailwindCSS | Utility-first CSS framework for styling |
 | Docker | Containerization for consistent development and deployment environments |
 | GitHub Actions | CI/CD pipeline for automated testing and deployment |
@@ -36,6 +39,8 @@ graph TD
     F -->|Realtime| J[Supabase Realtime]
     E -->|Complex Business Logic| K[Backend Services - Node.js]
     K -->|Database Operations| F
+    K -->|Analyzes| L[Interconnectedness Analysis Engine]
+    L -->|Stores Results| F
     
     style A fill:#f9f,stroke:#333
     style B fill:#bbf,stroke:#333
@@ -43,6 +48,7 @@ graph TD
     style F fill:#fbb,stroke:#333
     style G fill:#bff,stroke:#333
     style K fill:#fbb,stroke:#333
+    style L fill:#fcb,stroke:#333
 ```
 
 ### Component Architecture
@@ -65,6 +71,11 @@ graph TD
     O[Node.js Server] -->|Implements| G
     O -->|Implements| H
     O -->|Implements| I
+    P[Interconnectedness Engine] -->|Analyzes| D
+    P -->|Influences| G
+    P -->|Enhances| H
+    P -->|Feeds| Q[Network Visualization]
+    Q -->|Displays in| J
     
     style A fill:#f9f,stroke:#333
     style E fill:#bbf,stroke:#333
@@ -72,6 +83,34 @@ graph TD
     style I fill:#fbb,stroke:#333
     style K fill:#bff,stroke:#333
     style O fill:#fbb,stroke:#333
+    style P fill:#fcb,stroke:#333
+    style Q fill:#fcb,stroke:#333
+```
+
+### Interconnectedness Analysis Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as Assessment System
+    participant I as Interconnectedness Engine
+    participant V as Visualization Service
+    participant R as Recommendation Engine
+    
+    U->>A: Complete Assessment
+    A->>I: Process Assessment Data
+    I->>I: Identify Cross-Domain Relationships
+    I->>I: Calculate Impact Scores
+    I->>I: Generate Impact Statements
+    I->>I: Perform Keyword Analysis
+    I->>I: Calculate Question Interconnectedness
+    I->>V: Send Relationship Data
+    V->>V: Generate Network Diagrams
+    V->>V: Create Impact Flow Charts
+    I->>R: Provide Cross-Domain Impacts
+    R->>R: Prioritize Recommendations Based on Impact
+    R->>U: Present Enhanced Recommendations
+    V->>U: Display Interconnectedness Visualizations
 ```
 
 ### User Flow
@@ -83,6 +122,7 @@ sequenceDiagram
     participant S as Supabase
     participant N as Node.js Server
     participant R as Reporting Engine
+    participant I as Interconnectedness Engine
     
     U->>A: Login
     A->>S: Authenticate User
@@ -96,13 +136,16 @@ sequenceDiagram
     A->>N: Request Analysis
     N->>S: Retrieve Data
     N->>R: Process & Analyze
+    N->>I: Analyze Interconnections
+    I->>I: Identify Cross-Domain Impacts
+    I->>R: Enhance With Impact Data
     R->>N: Return Insights
-    N->>A: Return Recommendations
+    N->>A: Return Recommendations & Interconnections
     A->>U: Present Results Dashboard
     U->>A: Request Detailed Reports
     A->>N: Generate Reports
     N->>A: Return Formatted Reports
-    A->>U: Display Reports & Action Plans
+    A->>U: Display Reports, Action Plans & Impact Visualizations
     A->>S: Store Reports & Action Plans
 ```
 
@@ -148,7 +191,9 @@ sequenceDiagram
       "type": "enum(MULTIPLE_CHOICE, LIKERT_SCALE, NUMERIC, TEXT)",
       "options": ["array of strings, if applicable"],
       "weight": "float",
-      "benchmarkReference": "string"
+      "benchmarkReference": "string",
+      "interconnectednessScore": "float", // Score indicating cross-domain relevance
+      "relatedBusinessAreas": ["array of business areas this question relates to"]
     }
   ],
   "createdAt": "datetime",
@@ -197,7 +242,45 @@ sequenceDiagram
     }
   ],
   "implementationStatus": "enum(NOT_STARTED, IN_PROGRESS, COMPLETED, DEFERRED)",
+  "crossDomainImpacts": [
+    {
+      "impactedArea": "enum(FINANCIAL, OPERATIONS, MARKETING, STAFFING, COMPLIANCE)",
+      "impactScore": "float", // 1-10 scale
+      "impactStatement": "string"
+    }
+  ],
+  "interconnectednessScore": "float", // Higher scores indicate broader impact
   "userId": "uuid", // Reference to Supabase auth user
+  "createdAt": "datetime",
+  "updatedAt": "datetime"
+}
+```
+
+### Business Area Interconnectedness Schema
+```json
+{
+  "id": "uuid",
+  "practiceId": "uuid",
+  "sourceCategory": "enum(FINANCIAL, OPERATIONS, MARKETING, STAFFING, COMPLIANCE)",
+  "impactedCategory": "enum(FINANCIAL, OPERATIONS, MARKETING, STAFFING, COMPLIANCE)",
+  "impactScore": "float", // 1-10 scale
+  "impactStatement": "string",
+  "relatedSourceQuestions": ["array of question IDs"],
+  "relatedImpactedQuestions": ["array of question IDs"],
+  "keywords": ["array of common keywords"],
+  "createdAt": "datetime",
+  "updatedAt": "datetime"
+}
+```
+
+### Question Interconnectedness Schema
+```json
+{
+  "id": "uuid",
+  "questionId": "uuid",
+  "score": "float", // Interconnectedness score (higher = more interconnected)
+  "relatedAreas": ["array of business areas this question relates to"],
+  "keyInsight": "string", // Key insight about this question's cross-domain relevance
   "createdAt": "datetime",
   "updatedAt": "datetime"
 }
@@ -210,14 +293,21 @@ sequenceDiagram
 │   ├── /public              # Static assets
 │   ├── /src                 # Source code
 │   │   ├── /components      # Reusable UI components
+│   │   │   ├── /assessment  # Assessment-related components
+│   │   │   ├── /insights    # Insight and reporting components
+│   │   │   ├── /interconnect # Interconnectedness visualization components
 │   │   ├── /pages           # Page components
 │   │   ├── /hooks           # Custom React hooks
 │   │   ├── /services        # API service clients
 │   │   │   ├── /supabase    # Supabase client and services
-│   │   │   └── /api         # Custom API service clients
+│   │   │   ├── /api         # Custom API service clients
+│   │   │   ├── /analysis    # Analysis service clients
 │   │   ├── /store           # Redux store configuration
 │   │   ├── /types           # TypeScript type definitions
 │   │   └── /utils           # Utility functions
+│   │       ├── /formatters  # Data formatting utilities
+│   │       ├── /analysis    # Analysis helper functions
+│   │       ├── /visualization # Visualization utilities
 │   ├── package.json         # Frontend dependencies
 │   └── tsconfig.json        # TypeScript configuration
 │
@@ -229,7 +319,8 @@ sequenceDiagram
 │   │   ├── /services        # Business logic services
 │   │   │   ├── /assessment  # Assessment scoring and analysis
 │   │   │   ├── /reporting   # Report generation
-│   │   │   └── /sop         # SOP generation services
+│   │   │   ├── /sop         # SOP generation services
+│   │   │   ├── /interconnect # Interconnectedness analysis services
 │   │   ├── /utils           # Utility functions
 │   │   └── /validation      # Input validation schemas
 │   ├── package.json         # Backend dependencies
@@ -242,6 +333,8 @@ sequenceDiagram
 │
 ├── /tests                   # Test files
 │   ├── /unit                # Unit tests
+│   │   ├── /services        # Service tests
+│   │   ├── /interconnect    # Interconnectedness analysis tests
 │   ├── /integration         # Integration tests
 │   └── /e2e                 # End-to-end tests
 │
@@ -255,6 +348,66 @@ sequenceDiagram
 ├── .github                  # GitHub Actions workflows
 └── README.md                # Project overview
 ```
+
+## Interconnectedness Analysis Engine
+
+The Interconnectedness Analysis Engine is a critical component that analyzes relationships between different business areas and quantifies how changes in one domain impact others. This system helps practitioners make more informed decisions by understanding the broader implications of their business strategies.
+
+### Key Components
+
+#### Impact Analyzer
+- Analyzes assessment responses to identify cross-domain relationships
+- Calculates impact scores (1-10) between different business areas
+- Generates impact statements describing how areas influence each other
+- Customizes analysis based on practice profile and assessment results
+
+#### Keyword Analysis
+- Identifies common terminology across business modules
+- Performs frequency analysis to highlight prevalent cross-domain concepts
+- Maps terms to show where key concepts appear across the assessment
+- Helps identify common themes that bridge multiple business areas
+
+#### Question Interconnectedness Scorer
+- Scores questions based on their relevance to multiple business domains
+- Identifies questions with high cross-domain impact
+- Highlights questions that bridge three or more business areas
+- Provides insights into central business processes affecting multiple areas
+
+#### Network Visualization
+- Generates interactive network diagrams showing relationships between business areas
+- Creates impact flow charts illustrating how changes propagate
+- Provides heat maps highlighting the most interconnected areas
+- Uses D3.js for advanced, interactive data visualizations
+
+#### Prioritization Engine
+- Enhances recommendation prioritization with cross-domain impact data
+- Favors improvements with positive cascading effects
+- Adjusts impact weighting based on practice type and size
+- Helps practitioners focus on changes with the broadest positive impact
+
+### Implementation Approach
+
+The Interconnectedness Analysis Engine is implemented using a hybrid approach:
+1. Core algorithms run in the Node.js backend for complex analysis
+2. Results are stored in Supabase for efficient retrieval
+3. Visualization components render in the React frontend
+4. Real-time updates via Supabase Realtime when assessment data changes
+
+The engine uses a modular design pattern allowing for future enhancements:
+- Pluggable analysis algorithms for different practice types
+- Extensible visualization components for various data views
+- Framework for adding new business area relationships
+- Support for discipline-specific relationship models
+
+### Data Flow
+
+1. Assessment data is collected through the questionnaire
+2. Node.js backend processes responses to identify patterns
+3. Interconnectedness Engine analyzes cross-domain relationships
+4. Impact scores and statements are generated and stored
+5. Recommendation Engine incorporates relationship data
+6. Visualization components render network diagrams and impact charts
+7. User interface presents insights in context with assessment results
 
 ## Supabase Implementation Details
 
@@ -272,6 +425,7 @@ sequenceDiagram
 - PostgreSQL functions for simple business logic
 - Foreign key relationships to maintain data integrity
 - Indexes for optimized query performance
+- Custom tables for storing interconnectedness analysis results
 
 ### Storage
 - Supabase Storage for file management
@@ -285,6 +439,7 @@ sequenceDiagram
 - Live updates for assessment progress
 - Real-time notifications for completed assessments and recommendations
 - Subscription-based updates for dashboard metrics
+- Live updates to interconnectedness visualizations when data changes
 
 ### Node.js Server Responsibilities
 - Complex business logic that exceeds Supabase capabilities
@@ -294,6 +449,8 @@ sequenceDiagram
 - Integration with external APIs and services
 - Batch processing and scheduled tasks
 - Complex data transformations and analytics
+- Cross-domain impact analysis and interconnectedness scoring
+- Advanced network visualization data preparation
 
 ### Security Measures
 - Row-Level Security (RLS) policies for all Supabase tables
@@ -309,3 +466,4 @@ sequenceDiagram
 |--------|----------|-------------|
 | Initial Architecture | N/A | Initial system design and documentation | 
 | Supabase Integration | Story-1 | Added Supabase as primary database and backend service while maintaining Node.js server for complex business logic |
+| Interconnectedness Analysis | Story-14 | Added Business Area Interconnectedness Analysis Engine and related components |
