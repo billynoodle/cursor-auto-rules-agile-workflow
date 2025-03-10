@@ -1,17 +1,14 @@
 ---
 description: IMPLEMENT comprehensive testing with clear boundaries between test types to PREVENT overlap and ENSURE effective coverage
 globs: **/*.{test,spec}.{ts,js,tsx,jsx}
+alwaysApply: false
 ---
-
-# Testing Framework Organization
-
-<version>1.0.0</version>
-
 ## Context
 - Applied when implementing test suites across unit, integration, and end-to-end testing
 - Used during initial test creation and test refactoring
 - Critical for maintaining non-redundant test coverage
 - Important for CI pipeline optimization
+- Focused on React component testing with React Testing Library
 
 ## Requirements
 - Clearly delineate responsibilities for each testing layer
@@ -20,15 +17,18 @@ globs: **/*.{test,spec}.{ts,js,tsx,jsx}
 - Follow consistent naming conventions for test types
 - Configure test overlap detection tools
 - Document testing strategy for each module
+- Use test providers for consistent component context
 
 ## Test Layer Boundaries
 
 ### Unit Tests
 - MUST test individual functions, methods, and components in isolation
-- MUST mock all external dependencies
-- MUST NOT test integration between multiple real components
-- MUST follow naming pattern: `{component}.unit.test.{ext}`
+- MUST mock all external dependencies and services
+- MUST use test providers for component context when needed
+- MUST follow naming pattern: `{component}.test.{ext}` or `{component}.unit.test.{ext}`
+- MUST use React Testing Library for component testing
 - SHOULD achieve >80% code coverage for core business logic
+- SHOULD mock window/document objects when testing browser APIs
 
 ### Integration Tests
 - MUST test interactions between related modules and services
@@ -36,6 +36,7 @@ globs: **/*.{test,spec}.{ts,js,tsx,jsx}
 - MUST mock external services (databases, APIs)
 - MUST follow naming pattern: `{feature}.integration.test.{ext}`
 - SHOULD focus on API contracts and data flow
+- SHOULD test component integration with services
 
 ### End-to-End Tests
 - MUST test complete user flows and critical business scenarios
@@ -47,97 +48,89 @@ globs: **/*.{test,spec}.{ts,js,tsx,jsx}
 ## Examples
 
 <example>
-// GOOD: Clear unit test with proper isolation
-// user-authentication.unit.test.ts
-describe('UserAuthentication', () => {
+// GOOD: Clear unit test with proper isolation and test provider
+// TooltipUserTesting.test.tsx
+describe('TooltipUserTesting Component', () => {
+  const mockQuestionId = 'q123';
+  const mockTooltipText = 'Test tooltip text';
+  const mockOnFeedbackSubmit = jest.fn();
+  
   beforeEach(() => {
-    // Mock dependencies
-    jest.mock('../services/database');
-    jest.mock('../services/token-generator');
+    jest.useFakeTimers();
+    // Mock window APIs
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1024
+    });
   });
 
-  test('should validate user credentials', () => {
-    const result = UserAuthentication.validateCredentials({
-      username: 'testuser',
-      password: 'password123'
-    });
-    expect(result.isValid).toBe(true);
+  test('renders the component correctly', () => {
+    render(withTestProvider(TooltipUserTesting, {
+      questionId: mockQuestionId,
+      tooltipText: mockTooltipText,
+      onFeedbackSubmit: mockOnFeedbackSubmit
+    }));
+    
+    expect(screen.getByTestId('tooltip-container')).toBeInTheDocument();
   });
 });
 
-// GOOD: Integration test focused on module interaction
-// login-flow.integration.test.ts
-describe('Login Flow', () => {
+// GOOD: Integration test with service dependencies
+// TooltipTestingDemo.test.tsx
+describe('TooltipTestingDemo', () => {
   beforeEach(() => {
-    // Use real AuthService but mock external APIs
-    jest.mock('../services/external-api');
+    jest.clearAllMocks();
   });
 
-  test('should authenticate and generate session token', async () => {
-    const authService = new AuthService();
-    const tokenService = new TokenService();
+  test('submits feedback and shows history', async () => {
+    render(<TooltipTestingDemo />);
     
-    const user = await authService.authenticate('user', 'pass');
-    const token = await tokenService.generateFor(user);
+    fireEvent.click(screen.getByText('Show Tooltip'));
+    fireEvent.click(screen.getByLabelText('Clear (5)'));
     
-    expect(token).toBeTruthy();
-    expect(authService.currentUser).toEqual(user);
+    expect(tooltipUserTestingService.submitFeedback).toHaveBeenCalledWith({
+      questionId: 'demo-question',
+      clarityRating: 5,
+      feedbackText: '',
+      difficultTerms: []
+    });
   });
 });
 
 // GOOD: End-to-end test for critical user journey
-// user-onboarding.e2e.test.ts
+// UserOnboarding.e2e.test.tsx
 describe('User Onboarding Flow', () => {
-  test('should allow new user to register, verify email and complete profile', async () => {
-    await page.goto('/register');
-    await page.fill('input[name="email"]', 'new@example.com');
-    await page.fill('input[name="password"]', 'securepass');
-    await page.click('button[type="submit"]');
+  test('completes full onboarding process', async () => {
+    await page.goto('/onboarding');
+    await page.fill('[data-testid="name-input"]', 'Test User');
+    await page.click('[data-testid="submit-button"]');
     
-    // Verify redirect to email verification
-    expect(page.url()).toContain('/verify-email');
-    
-    // Simulate email verification
-    await verifyEmailForUser('new@example.com');
-    
-    // Complete profile
-    await page.goto('/complete-profile');
-    await page.fill('input[name="fullName"]', 'New User');
-    await page.click('button[type="submit"]');
-    
-    // Verify redirect to dashboard
     expect(page.url()).toContain('/dashboard');
   });
 });
 </example>
 
 <example type="invalid">
-// BAD: Overlapping test scenarios across layers
-// authentication.unit.test.ts
-test('should log user in and redirect to dashboard', async () => {
-  // This tests too much for a unit test
-  const result = await authService.login('user', 'pass');
-  await checkDatabaseForUserRecord('user');
-  await verifyRedirectToDashboard();
+// BAD: Unit test with unnecessary service dependencies
+test('submits feedback directly to service', async () => {
+  const result = await tooltipService.submitFeedback({
+    questionId: 'test',
+    feedback: 'test feedback'
+  });
+  expect(result.success).toBe(true);
 });
 
-// authentication.integration.test.ts
-test('should log user in and redirect to dashboard', async () => {
-  // Duplicates the same test from unit level
-  const result = await authService.login('user', 'pass');
-  await checkDatabaseForUserRecord('user');
-  await verifyRedirectToDashboard();
+// BAD: Integration test duplicating unit test coverage
+test('validates tooltip text', () => {
+  // This should be in unit tests
+  const tooltip = new TooltipValidator();
+  expect(tooltip.validate('test')).toBe(true);
 });
 
-// BAD: Unit test that's actually an integration test
-// user.unit.test.ts
-test('should create user and store in database', async () => {
-  // Not mocking the database - actually testing integration
-  const user = new User('test@example.com');
-  await user.save();
-  
-  const dbUser = await User.findByEmail('test@example.com');
-  expect(dbUser).toBeTruthy();
+// BAD: Missing test provider for component that needs context
+test('renders tooltip without provider', () => {
+  render(<TooltipUserTesting />); // Missing test provider
 });
 </example>
 
@@ -147,12 +140,20 @@ test('should create user and store in database', async () => {
 ```javascript
 // jest.config.js
 module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: [
+    '<rootDir>/src/setupTests.ts'
+  ],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+  },
   collectCoverage: true,
   collectCoverageFrom: [
-    "src/**/*.{js,jsx,ts,tsx}",
-    "!src/**/*.d.ts",
-    "!src/mocks/**/*",
-    "!src/types/**/*"
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/types/**/*'
   ],
   coverageThreshold: {
     global: {
@@ -161,20 +162,60 @@ module.exports = {
       lines: 80,
       statements: 80
     }
-  },
-  testMatch: [
-    "**/__tests__/**/*.{js,jsx,ts,tsx}",
-    "**/?(*.)+(spec|test).{js,jsx,ts,tsx}"
-  ],
-  // Use different setup files for different test types
-  setupFilesAfterEnv: [
-    "<rootDir>/src/setupTests.js",
-    "<rootDir>/src/setupIntegrationTests.js"
-  ]
+  }
 }
 ```
 
+### Test Setup
+```typescript
+// setupTests.ts
+import '@testing-library/jest-dom';
+import 'jest-extended';
+
+// Mock window methods commonly used in tests
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(),
+    removeListener: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  }))
+});
+```
+
+### Test Provider Pattern
+```typescript
+// TestProvider.tsx
+import React from 'react';
+
+interface TestProviderProps {
+  children: React.ReactNode;
+}
+
+export const TestProvider: React.FC<TestProviderProps> = ({ children }) => {
+  return (
+    <div data-testid="test-provider">
+      {children}
+    </div>
+  );
+};
+
+export const withTestProvider = (Component: React.ComponentType<any>, props: any = {}) => {
+  return (
+    <TestProvider>
+      <Component {...props} />
+    </TestProvider>
+  );
+};
+```
+
 ### Test Overlap Detection
-- Use custom scripts to detect similar test descriptions
+- Use Jest coverage reports to identify overlapping test coverage
+- Implement custom scripts to detect similar test descriptions
 - Track test coverage overlap between different test suites
-- Implement automated warnings for duplicative tests 
+- Configure ESLint rules to enforce test boundaries

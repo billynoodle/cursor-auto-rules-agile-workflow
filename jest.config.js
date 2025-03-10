@@ -1,32 +1,35 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
-  roots: [
-    '<rootDir>/tests',
-  ],
-  testMatch: [
-    '**/?(*.)+(spec|test).ts?(x)'
-  ],
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/client/src/setupTests.ts'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/server/src/$1',
-    '^@client/(.*)$': '<rootDir>/client/src/$1'
+    '^@client/(.*)$': '<rootDir>/client/src/$1',
+    '^@server/(.*)$': '<rootDir>/server/src/$1',
+    '^@tests/(.*)$': '<rootDir>/tests/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
   },
-  collectCoverage: true,
-  coverageDirectory: 'test-results/coverage',
-  collectCoverageFrom: [
-    'server/src/**/*.ts',
-    'client/src/**/*.ts?(x)',
-    '!**/node_modules/**',
-    '!**/*.d.ts'
+  testMatch: [
+    '<rootDir>/tests/**/*.test.ts',
+    '<rootDir>/tests/**/*.test.tsx'
   ],
-  setupFilesAfterEnv: [
-    '<rootDir>/tests/utils/setup.ts'
-  ],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      tsconfig: 'tsconfig.json',
-    }],
-  }
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      tsconfig: 'tsconfig.json'
+    }]
+  },
+  moduleDirectories: ['node_modules', 'client/node_modules'],
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.json'
+    }
+  },
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
 }; 

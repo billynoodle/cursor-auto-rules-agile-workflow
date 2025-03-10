@@ -1,6 +1,6 @@
-import { ResearchDocumentationService } from '@/services/ResearchDocumentationService';
-import { AssessmentCategory } from '@/services/../models/AssessmentCategory';
-import { DisciplineType } from '@/services/../models/DisciplineType';
+import { ResearchDocumentationService } from '@server/services/ResearchDocumentationService';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { DisciplineType } from '@server/models/DisciplineType';
 
 describe('ResearchDocumentationService', () => {
   let documentationService: ResearchDocumentationService;

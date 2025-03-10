@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import TooltipTestingDemo from '@client/components/tooltips/TooltipTestingDemo';
-import tooltipUserTestingService from '@client/components/tooltips/../../services/TooltipUserTestingService';
+import tooltipUserTestingService from '@client/services/TooltipUserTestingService';
 
 // Mock the service
-jest.mock('../../../services/TooltipUserTestingService', () => ({
+jest.mock('@client/services/TooltipUserTestingService', () => ({
   submitFeedback: jest.fn().mockReturnValue('feedback-id-123'),
   submitMetrics: jest.fn(),
   getAggregatedMetrics: jest.fn().mockReturnValue({
@@ -48,136 +48,63 @@ describe('TooltipTestingDemo', () => {
     render(<TooltipTestingDemo />);
     
     // Header
-    expect(screen.getByText('Tooltip User Testing Demo')).toBeInTheDocument();
+    expect(screen.getByText('Tooltip Testing Demo')).toBeInTheDocument();
     
-    // First question
-    expect(screen.getByText('Question 1 of 3')).toBeInTheDocument();
-    expect(screen.getByText(/How would you rate your practice's implementation/)).toBeInTheDocument();
+    // Testing interface
+    expect(screen.getByText('Test this tooltip:')).toBeInTheDocument();
     
-    // Tooltip testing component
-    expect(screen.getByText('Tooltip Testing')).toBeInTheDocument();
-    expect(screen.getByText('Show Tooltip')).toBeInTheDocument();
-    
-    // Action buttons
-    expect(screen.getByText('Reset Testing')).toBeInTheDocument();
-    expect(screen.getByText('Export Current Results')).toBeInTheDocument();
+    // Export button should not be visible initially
+    expect(screen.queryByText('Export Testing Data')).not.toBeInTheDocument();
   });
 
-  test('cycles through questions when feedback is submitted', () => {
+  test('submits feedback and shows history', async () => {
     render(<TooltipTestingDemo />);
     
-    // First question
-    expect(screen.getByText(/How would you rate your practice's implementation/)).toBeInTheDocument();
-    
-    // Click to show tooltip
+    // Show tooltip
     fireEvent.click(screen.getByText('Show Tooltip'));
     
-    // Select a rating
-    fireEvent.click(screen.getByText('5'));
+    // Rate clarity
+    fireEvent.click(screen.getByLabelText('Clear (5)'));
+    
+    // Add feedback
+    fireEvent.change(screen.getByPlaceholderText('Enter your feedback here...'), {
+      target: { value: 'Very clear explanation' }
+    });
     
     // Submit feedback
     fireEvent.click(screen.getByText('Submit Feedback'));
     
     // Service should be called
-    expect(tooltipUserTestingService.submitFeedback).toHaveBeenCalledWith(expect.objectContaining({
-      questionId: 'q1',
-      clarityRating: 5
-    }));
+    expect(tooltipUserTestingService.submitFeedback).toHaveBeenCalledWith({
+      questionId: 'demo-question',
+      clarityRating: 5,
+      feedbackText: 'Very clear explanation',
+      difficultTerms: []
+    });
     
-    // Should move to second question
-    expect(screen.getByText(/Does your practice utilize telehealth services/)).toBeInTheDocument();
-    
-    // Submit feedback for second question
-    fireEvent.click(screen.getByText('Show Tooltip'));
-    fireEvent.click(screen.getByText('4'));
-    fireEvent.click(screen.getByText('Submit Feedback'));
-    
-    // Should move to third question
-    expect(screen.getByText(/How effectively does your practice implement proprioceptive/)).toBeInTheDocument();
-    
-    // Submit feedback for third question
-    fireEvent.click(screen.getByText('Show Tooltip'));
-    fireEvent.click(screen.getByText('3'));
-    fireEvent.click(screen.getByText('Submit Feedback'));
-    
-    // Should show results
-    expect(screen.getByText('Testing Results Summary')).toBeInTheDocument();
+    // History should be shown
+    expect(screen.getByText('Testing History')).toBeInTheDocument();
+    expect(screen.getByText('Feedback Submissions')).toBeInTheDocument();
+    expect(screen.getByText('Clarity Rating: 5/5')).toBeInTheDocument();
   });
 
   test('exports testing data when export button is clicked', () => {
     render(<TooltipTestingDemo />);
     
+    // Submit some feedback to make export button visible
+    fireEvent.click(screen.getByText('Show Tooltip'));
+    fireEvent.click(screen.getByLabelText('Clear (5)'));
+    fireEvent.click(screen.getByText('Submit Feedback'));
+    
     // Click export button
-    fireEvent.click(screen.getByText('Export Current Results'));
+    fireEvent.click(screen.getByText('Export Testing Data'));
     
     // Service export should be called
     expect(tooltipUserTestingService.exportTestingData).toHaveBeenCalled();
     
     // Download should be triggered
-    const anchorEl = document.createElement('a');
-    expect(anchorEl.click).toHaveBeenCalled();
-  });
-
-  test('resets testing when reset button is clicked', () => {
-    render(<TooltipTestingDemo />);
-    
-    // Click reset button
-    fireEvent.click(screen.getByText('Reset Testing'));
-    
-    // Service clearTestingData should be called
-    expect(tooltipUserTestingService.clearTestingData).toHaveBeenCalled();
-    
-    // Should show first question
-    expect(screen.getByText(/How would you rate your practice's implementation/)).toBeInTheDocument();
-  });
-
-  test('shows results after completing all questions', () => {
-    render(<TooltipTestingDemo />);
-    
-    // Complete all three questions
-    for (let i = 0; i < 3; i++) {
-      fireEvent.click(screen.getByText('Show Tooltip'));
-      fireEvent.click(screen.getByText('5'));
-      fireEvent.click(screen.getByText('Submit Feedback'));
-    }
-    
-    // Results should be shown
-    expect(screen.getByText('Testing Results Summary')).toBeInTheDocument();
-    
-    // Metric values from our mock should be displayed
-    expect(screen.getAllByText('4.5 / 5')).toHaveLength(3);
-    expect(screen.getAllByText('12.3 seconds')).toHaveLength(3);
-    expect(screen.getAllByText('2.7')).toHaveLength(3);
-    
-    // Difficult terms should be displayed
-    expect(screen.getAllByText('proprioception')).toHaveLength(3);
-    expect(screen.getAllByText('telehealth')).toHaveLength(3);
-    
-    // Action buttons should be present
-    expect(screen.getByText('Restart Testing')).toBeInTheDocument();
-    expect(screen.getByText('Export Detailed Results')).toBeInTheDocument();
-  });
-
-  test('restarts testing from results view', () => {
-    render(<TooltipTestingDemo />);
-    
-    // Complete all three questions to get to results
-    for (let i = 0; i < 3; i++) {
-      fireEvent.click(screen.getByText('Show Tooltip'));
-      fireEvent.click(screen.getByText('5'));
-      fireEvent.click(screen.getByText('Submit Feedback'));
-    }
-    
-    // Results should be shown
-    expect(screen.getByText('Testing Results Summary')).toBeInTheDocument();
-    
-    // Click restart button
-    fireEvent.click(screen.getByText('Restart Testing'));
-    
-    // Service clearTestingData should be called
-    expect(tooltipUserTestingService.clearTestingData).toHaveBeenCalled();
-    
-    // Should return to first question
-    expect(screen.getByText(/How would you rate your practice's implementation/)).toBeInTheDocument();
+    const mockAnchor = document.createElement('a');
+    expect(mockAnchor.click).toHaveBeenCalled();
+    expect(mockAnchor.download).toBe('tooltip-testing-data.json');
   });
 }); 

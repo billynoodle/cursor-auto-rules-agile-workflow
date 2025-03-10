@@ -1,12 +1,12 @@
 import '@jest/globals';
-import { ModuleService } from '@/services/ModuleService';
-import { Module } from '@/services/../models/AssessmentModule';
-import { AssessmentCategory } from '@/services/../models/AssessmentCategory';
-import { DisciplineType } from '@/services/../models/DisciplineType';
-import { PracticeSize } from '@/services/../models/PracticeSize';
-import { Country } from '@/services/../models/Country';
-import { ScorePosition } from '@/services/../models/ScorePosition';
-import { SOPType } from '@/services/../models/SOPType';
+import { ModuleService } from '@server/services/ModuleService';
+import { Module } from '@server/models/AssessmentModule';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { DisciplineType } from '@server/models/DisciplineType';
+import { PracticeSize } from '@server/models/PracticeSize';
+import { Country } from '@server/models/Country';
+import { ScorePosition } from '@server/models/ScorePosition';
+import { SOPType } from '@server/models/SOPType';
 
 describe('ModuleService', () => {
   let moduleService: ModuleService;

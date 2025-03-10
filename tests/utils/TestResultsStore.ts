@@ -35,7 +35,7 @@ export class TestResultsStore {
    */
   constructor(testType: string) {
     this.testType = testType;
-    this.baseDir = path.join(process.cwd(), 'test-results', testType);
+    this.baseDir = path.join(process.cwd(), 'tests', 'test-results', testType);
     
     // Ensure directory exists
     if (!fs.existsSync(this.baseDir)) {

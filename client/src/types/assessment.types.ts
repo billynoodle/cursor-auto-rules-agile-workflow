@@ -52,8 +52,8 @@ export interface QuestionOption {
 export interface Question {
   id: string;
   text: string;
-  type: QuestionType | string;
-  category: AssessmentCategory | string;
+  type: QuestionType;
+  category: AssessmentCategory;
   moduleId: string;
   weight: number;
   helpText?: string;
@@ -72,17 +72,17 @@ export interface Question {
 export interface Module {
   id: string;
   name: string;
+  category: AssessmentCategory;
   description: string;
-  category: AssessmentCategory | string;
   order: number;
   estimatedTimeMinutes: number;
   weight: number;
-  questions?: Question[];
   minScore: number;
   maxScore: number;
   applicableDisciplines: string[];
   universalModule: boolean;
   applicablePracticeSizes: string[];
+  questions?: Question[];
 }
 
 /**

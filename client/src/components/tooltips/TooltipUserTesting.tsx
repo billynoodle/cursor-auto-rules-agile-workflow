@@ -122,7 +122,10 @@ const TooltipUserTesting: React.FC<TooltipUserTestingProps> = ({
   };
 
   return (
-    <div className="tooltip-user-testing">
+    <div 
+      className={`tooltip-testing-container ${isMobileView ? 'mobile-view' : ''}`}
+      data-testid="tooltip-container"
+    >
       <div className="testing-header">
         <h3>Tooltip Testing</h3>
         <div className="test-controls">

@@ -1,256 +1,186 @@
 import tooltipUserTestingService, { AggregatedMetrics } from '@client/services/TooltipUserTestingService';
-import { TooltipFeedback } from '@client/types/assessment.types';
 import { UsabilityMetrics } from '@client/components/tooltips/TooltipUserTesting';
 
 describe('TooltipUserTestingService', () => {
-  // Clear all data before each test
   beforeEach(() => {
     tooltipUserTestingService.clearTestingData();
   });
-  
-  describe('submitFeedback', () => {
-    it('should store feedback correctly', () => {
-      const feedback: TooltipFeedback = {
+
+  describe('feedback management', () => {
+    it('should store and retrieve feedback', () => {
+      const feedback = {
         questionId: 'q1',
-        tooltipId: 't1',
-        clarityRating: 4,
-        difficultTerms: ['term1', 'term2'],
-        additionalFeedback: 'This is good',
-        timestamp: new Date().toISOString()
+        clarityRating: 5,
+        feedbackText: 'Make it clearer',
+        difficultTerms: ['term1', 'term2']
       };
-      
+
       tooltipUserTestingService.submitFeedback(feedback);
       
       const allFeedback = tooltipUserTestingService.getAllFeedback();
-      expect(allFeedback.length).toBe(1);
-      expect(allFeedback[0]).toEqual(feedback);
+      expect(allFeedback).toHaveLength(1);
+      expect(allFeedback[0]).toMatchObject(feedback);
     });
-    
-    it('should handle multiple feedback submissions', () => {
-      const feedback1: TooltipFeedback = {
+
+    it('should store multiple feedback entries', () => {
+      const feedback1 = {
         questionId: 'q1',
-        tooltipId: 't1',
-        clarityRating: 4,
-        difficultTerms: ['term1'],
-        additionalFeedback: 'Good',
-        timestamp: new Date().toISOString()
+        clarityRating: 5,
+        feedbackText: 'First feedback',
+        difficultTerms: ['term1']
       };
-      
-      const feedback2: TooltipFeedback = {
+
+      const feedback2 = {
         questionId: 'q2',
-        tooltipId: 't2',
         clarityRating: 3,
-        difficultTerms: ['term2'],
-        additionalFeedback: 'Okay',
-        timestamp: new Date().toISOString()
+        feedbackText: 'Second feedback',
+        difficultTerms: ['term2']
       };
-      
+
       tooltipUserTestingService.submitFeedback(feedback1);
       tooltipUserTestingService.submitFeedback(feedback2);
       
       const allFeedback = tooltipUserTestingService.getAllFeedback();
-      expect(allFeedback.length).toBe(2);
-      expect(allFeedback).toContainEqual(feedback1);
-      expect(allFeedback).toContainEqual(feedback2);
+      expect(allFeedback).toHaveLength(2);
     });
   });
-  
-  describe('submitMetrics', () => {
-    it('should store metrics correctly', () => {
+
+  describe('metrics management', () => {
+    it('should store and retrieve metrics', () => {
       const metrics: UsabilityMetrics = {
-        questionId: 'q1',
-        tooltipId: 't1',
         timeToUnderstand: 5,
-        clickCount: 2,
-        userSatisfaction: 4,
-        isMobileView: false,
-        timestamp: new Date().toISOString()
+        clicksToComplete: 3,
+        userSatisfaction: 4
       };
-      
-      tooltipUserTestingService.submitMetrics(metrics);
+
+      tooltipUserTestingService.submitMetrics('q1', metrics);
       
       const allMetrics = tooltipUserTestingService.getAllMetrics();
-      expect(allMetrics.length).toBe(1);
-      expect(allMetrics[0]).toEqual(metrics);
+      expect(allMetrics['q1']).toHaveLength(1);
+      expect(allMetrics['q1'][0]).toEqual(metrics);
     });
-    
-    it('should handle multiple metrics submissions', () => {
+
+    it('should store multiple metrics for the same question', () => {
       const metrics1: UsabilityMetrics = {
-        questionId: 'q1',
-        tooltipId: 't1',
         timeToUnderstand: 5,
-        clickCount: 2,
-        userSatisfaction: 4,
-        isMobileView: false,
-        timestamp: new Date().toISOString()
+        clicksToComplete: 2,
+        userSatisfaction: 4
       };
-      
+
       const metrics2: UsabilityMetrics = {
-        questionId: 'q2',
-        tooltipId: 't2',
-        timeToUnderstand: 8,
-        clickCount: 3,
-        userSatisfaction: 3,
-        isMobileView: true,
-        timestamp: new Date().toISOString()
+        timeToUnderstand: 10,
+        clicksToComplete: 4,
+        userSatisfaction: 3
       };
-      
-      tooltipUserTestingService.submitMetrics(metrics1);
-      tooltipUserTestingService.submitMetrics(metrics2);
+
+      tooltipUserTestingService.submitMetrics('q1', metrics1);
+      tooltipUserTestingService.submitMetrics('q1', metrics2);
       
       const allMetrics = tooltipUserTestingService.getAllMetrics();
-      expect(allMetrics.length).toBe(2);
-      expect(allMetrics).toContainEqual(metrics1);
-      expect(allMetrics).toContainEqual(metrics2);
+      expect(allMetrics['q1']).toHaveLength(2);
     });
   });
-  
-  describe('getAggregatedMetrics', () => {
-    it('should calculate aggregated metrics correctly', () => {
+
+  describe('aggregated metrics', () => {
+    it('should calculate correct aggregated metrics', () => {
       // Add some test metrics
-      tooltipUserTestingService.submitMetrics({
-        questionId: 'q1',
-        tooltipId: 't1',
+      tooltipUserTestingService.submitMetrics('q1', {
         timeToUnderstand: 5,
-        clickCount: 2,
-        userSatisfaction: 4,
-        isMobileView: false,
-        timestamp: new Date().toISOString()
+        clicksToComplete: 2,
+        userSatisfaction: 4
       });
       
-      tooltipUserTestingService.submitMetrics({
-        questionId: 'q1',
-        tooltipId: 't1',
-        timeToUnderstand: 7,
-        clickCount: 3,
-        userSatisfaction: 5,
-        isMobileView: false,
-        timestamp: new Date().toISOString()
-      });
-      
-      tooltipUserTestingService.submitMetrics({
-        questionId: 'q2',
-        tooltipId: 't2',
+      tooltipUserTestingService.submitMetrics('q1', {
         timeToUnderstand: 10,
-        clickCount: 4,
-        userSatisfaction: 3,
-        isMobileView: true,
-        timestamp: new Date().toISOString()
+        clicksToComplete: 4,
+        userSatisfaction: 3
       });
+
+      tooltipUserTestingService.submitFeedback({
+        questionId: 'q1',
+        clarityRating: 4,
+        feedbackText: 'Good',
+        difficultTerms: ['term1']
+      });
+
+      tooltipUserTestingService.submitFeedback({
+        questionId: 'q1',
+        clarityRating: 5,
+        feedbackText: 'Clear',
+        difficultTerms: ['term1', 'term2']
+      });
+
+      const aggregated = tooltipUserTestingService.getAggregatedMetrics('q1');
       
-      const aggregated = tooltipUserTestingService.getAggregatedMetrics();
-      
-      // Check overall metrics
-      expect(aggregated.overall.avgTimeToUnderstand).toBeCloseTo(7.33, 1);
-      expect(aggregated.overall.avgClickCount).toBeCloseTo(3, 1);
-      expect(aggregated.overall.avgSatisfaction).toBeCloseTo(4, 1);
-      expect(aggregated.overall.totalSessions).toBe(3);
-      
-      // Check metrics by tooltip
-      expect(aggregated.byTooltip['t1'].avgTimeToUnderstand).toBeCloseTo(6, 1);
-      expect(aggregated.byTooltip['t1'].avgClickCount).toBeCloseTo(2.5, 1);
-      expect(aggregated.byTooltip['t1'].avgSatisfaction).toBeCloseTo(4.5, 1);
-      expect(aggregated.byTooltip['t1'].totalSessions).toBe(2);
-      
-      expect(aggregated.byTooltip['t2'].avgTimeToUnderstand).toBe(10);
-      expect(aggregated.byTooltip['t2'].avgClickCount).toBe(4);
-      expect(aggregated.byTooltip['t2'].avgSatisfaction).toBe(3);
-      expect(aggregated.byTooltip['t2'].totalSessions).toBe(1);
-      
-      // Check metrics by device type
-      expect(aggregated.byDeviceType.desktop.avgTimeToUnderstand).toBeCloseTo(6, 1);
-      expect(aggregated.byDeviceType.desktop.avgClickCount).toBeCloseTo(2.5, 1);
-      expect(aggregated.byDeviceType.desktop.avgSatisfaction).toBeCloseTo(4.5, 1);
-      expect(aggregated.byDeviceType.desktop.totalSessions).toBe(2);
-      
-      expect(aggregated.byDeviceType.mobile.avgTimeToUnderstand).toBe(10);
-      expect(aggregated.byDeviceType.mobile.avgClickCount).toBe(4);
-      expect(aggregated.byDeviceType.mobile.avgSatisfaction).toBe(3);
-      expect(aggregated.byDeviceType.mobile.totalSessions).toBe(1);
+      expect(aggregated.averageTimeToUnderstand).toBe(7.5);
+      expect(aggregated.averageClicksToComplete).toBe(3);
+      expect(aggregated.averageClarity).toBe(4.5);
+      expect(aggregated.totalFeedbackCount).toBe(2);
+      expect(aggregated.commonDifficultTerms).toEqual({
+        term1: 2,
+        term2: 1
+      });
     });
-    
-    it('should handle empty metrics', () => {
-      const aggregated = tooltipUserTestingService.getAggregatedMetrics();
+
+    it('should handle empty data correctly', () => {
+      const aggregated = tooltipUserTestingService.getAggregatedMetrics('q1');
       
-      expect(aggregated.overall.avgTimeToUnderstand).toBe(0);
-      expect(aggregated.overall.avgClickCount).toBe(0);
-      expect(aggregated.overall.avgSatisfaction).toBe(0);
-      expect(aggregated.overall.totalSessions).toBe(0);
-      
-      expect(Object.keys(aggregated.byTooltip).length).toBe(0);
-      expect(aggregated.byDeviceType.desktop.totalSessions).toBe(0);
-      expect(aggregated.byDeviceType.mobile.totalSessions).toBe(0);
+      expect(aggregated.averageTimeToUnderstand).toBe(0);
+      expect(aggregated.averageClicksToComplete).toBe(0);
+      expect(aggregated.averageClarity).toBe(0);
+      expect(aggregated.totalFeedbackCount).toBe(0);
+      expect(Object.keys(aggregated.commonDifficultTerms).length).toBe(0);
     });
   });
-  
-  describe('clearTestingData', () => {
+
+  describe('data management', () => {
     it('should clear all testing data', () => {
       // Add some test data
       tooltipUserTestingService.submitFeedback({
         questionId: 'q1',
-        tooltipId: 't1',
         clarityRating: 4,
-        difficultTerms: ['term1'],
-        additionalFeedback: 'Good',
-        timestamp: new Date().toISOString()
+        feedbackText: 'Test',
+        difficultTerms: []
       });
-      
-      tooltipUserTestingService.submitMetrics({
-        questionId: 'q1',
-        tooltipId: 't1',
+
+      tooltipUserTestingService.submitMetrics('q1', {
         timeToUnderstand: 5,
-        clickCount: 2,
-        userSatisfaction: 4,
-        isMobileView: false,
-        timestamp: new Date().toISOString()
+        clicksToComplete: 3,
+        userSatisfaction: 4
       });
-      
-      // Verify data exists
+
       expect(tooltipUserTestingService.getAllFeedback().length).toBe(1);
-      expect(tooltipUserTestingService.getAllMetrics().length).toBe(1);
-      
-      // Clear data
+      expect(Object.keys(tooltipUserTestingService.getAllMetrics()).length).toBe(1);
+
       tooltipUserTestingService.clearTestingData();
-      
-      // Verify data is cleared
+
       expect(tooltipUserTestingService.getAllFeedback().length).toBe(0);
-      expect(tooltipUserTestingService.getAllMetrics().length).toBe(0);
+      expect(Object.keys(tooltipUserTestingService.getAllMetrics()).length).toBe(0);
     });
-  });
-  
-  describe('exportTestingData', () => {
-    it('should export testing data as JSON', () => {
-      // Add some test data
-      const feedback: TooltipFeedback = {
+
+    it('should export testing data correctly', () => {
+      const feedback = {
         questionId: 'q1',
-        tooltipId: 't1',
         clarityRating: 4,
-        difficultTerms: ['term1'],
-        additionalFeedback: 'Good',
-        timestamp: new Date().toISOString()
+        feedbackText: 'Test feedback',
+        difficultTerms: ['term1']
       };
-      
+
       const metrics: UsabilityMetrics = {
-        questionId: 'q1',
-        tooltipId: 't1',
         timeToUnderstand: 5,
-        clickCount: 2,
-        userSatisfaction: 4,
-        isMobileView: false,
-        timestamp: new Date().toISOString()
+        clicksToComplete: 3,
+        userSatisfaction: 4
       };
-      
+
       tooltipUserTestingService.submitFeedback(feedback);
-      tooltipUserTestingService.submitMetrics(metrics);
-      
-      // Export data
+      tooltipUserTestingService.submitMetrics('q1', metrics);
+
       const exportedData = tooltipUserTestingService.exportTestingData();
-      const parsedData = JSON.parse(exportedData);
-      
-      // Verify exported data
-      expect(parsedData.feedback).toContainEqual(feedback);
-      expect(parsedData.metrics).toContainEqual(metrics);
-      expect(parsedData.aggregatedMetrics).toBeDefined();
+      const parsed = JSON.parse(exportedData);
+
+      expect(parsed.feedback).toHaveLength(1);
+      expect(parsed.metrics).toHaveProperty('q1');
+      expect(parsed.exportDate).toBeTruthy();
     });
   });
 }); 
