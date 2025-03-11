@@ -83,15 +83,23 @@ const TooltipUserTesting: React.FC<TooltipUserTestingProps> = ({
     setDifficultTerms(difficultTerms.filter(t => t !== term));
   };
 
-  const handleSubmitFeedback = () => {
+  const handleClarityRating = (rating: number) => {
+    setClarityRating(rating);
+  };
+
+  const handleFeedbackChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFeedbackText(event.target.value);
+  };
+
+  const handleSubmit = () => {
     // Calculate time spent understanding tooltip
     const timeToUnderstand = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
     
     const feedback: TooltipFeedback = {
       questionId,
       clarityRating,
-      feedbackText,
-      difficultTerms
+      feedback: feedbackText,
+      timestamp: new Date().toISOString()
     };
 
     const metrics: UsabilityMetrics = {
@@ -160,7 +168,7 @@ const TooltipUserTesting: React.FC<TooltipUserTestingProps> = ({
               <button
                 key={rating}
                 className={`rating-btn ${clarityRating === rating ? 'selected' : ''}`}
-                onClick={() => setClarityRating(rating)}
+                onClick={() => handleClarityRating(rating)}
                 aria-label={`Rate ${rating} out of 5`}
               >
                 {rating}
@@ -174,8 +182,8 @@ const TooltipUserTesting: React.FC<TooltipUserTestingProps> = ({
           <textarea
             id="feedback"
             value={feedbackText}
-            onChange={(e) => setFeedbackText(e.target.value)}
-            placeholder="Please share your thoughts on this tooltip's clarity and usefulness..."
+            onChange={handleFeedbackChange}
+            placeholder="Please provide any feedback to improve this tooltip..."
             rows={4}
           />
         </div>
@@ -212,7 +220,7 @@ const TooltipUserTesting: React.FC<TooltipUserTestingProps> = ({
         
         <button 
           className="submit-feedback-btn"
-          onClick={handleSubmitFeedback}
+          onClick={handleSubmit}
           disabled={clarityRating === 0}
         >
           Submit Feedback

@@ -3,48 +3,32 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { QuestionnaireNavigation } from '@client/components/assessment/QuestionnaireNavigation';
-import { AssessmentCategory, Module } from '@client/types/assessment.types';
+import { AssessmentCategory, Module } from '@client/types';
 
 describe('QuestionnaireNavigation', () => {
   const mockModules: Module[] = [
     {
       id: 'financial-1',
       name: 'Financial Health',
-      category: AssessmentCategory.FINANCIAL,
       description: 'Financial assessment module',
-      order: 1,
       estimatedTimeMinutes: 15,
-      weight: 8,
-      minScore: 0,
-      maxScore: 100,
-      applicableDisciplines: ['PHYSIOTHERAPY'],
-      universalModule: true,
-      applicablePracticeSizes: ['SMALL', 'MEDIUM', 'LARGE']
+      category: AssessmentCategory.FINANCIAL
     },
     {
       id: 'operations-1',
       name: 'Operations',
-      category: AssessmentCategory.OPERATIONS,
       description: 'Operations assessment module',
-      order: 2,
       estimatedTimeMinutes: 20,
-      weight: 7,
-      minScore: 0,
-      maxScore: 100,
-      applicableDisciplines: ['PHYSIOTHERAPY'],
-      universalModule: true,
-      applicablePracticeSizes: ['SMALL', 'MEDIUM', 'LARGE']
+      category: AssessmentCategory.OPERATIONS
     }
   ];
 
   const defaultProps = {
     modules: mockModules,
-    currentModuleId: 'financial-1',
-    onModuleChange: jest.fn(),
-    progress: {
-      'financial-1': 0.5,
-      'operations-1': 0
-    }
+    currentModule: 'financial-1',
+    currentCategory: AssessmentCategory.FINANCIAL,
+    onModuleSelect: jest.fn(),
+    onCategorySelect: jest.fn()
   };
 
   beforeEach(() => {
@@ -68,55 +52,26 @@ describe('QuestionnaireNavigation', () => {
     expect(otherModule).not.toHaveClass('active');
   });
 
-  test('shows progress indicators correctly', () => {
-    render(<QuestionnaireNavigation {...defaultProps} />);
-    
-    const financialProgress = screen.getByTestId('progress-financial-1');
-    const operationsProgress = screen.getByTestId('progress-operations-1');
-    
-    expect(financialProgress).toHaveStyle({ width: '50%' });
-    expect(operationsProgress).toHaveStyle({ width: '0%' });
-  });
-
-  test('calls onModuleChange when clicking a different module', () => {
+  test('calls onModuleSelect when clicking a different module', () => {
     render(<QuestionnaireNavigation {...defaultProps} />);
     
     fireEvent.click(screen.getByText('Operations'));
     
-    expect(defaultProps.onModuleChange).toHaveBeenCalledWith('operations-1');
+    expect(defaultProps.onModuleSelect).toHaveBeenCalledWith('operations-1');
   });
 
-  test('shows estimated time for each module', () => {
+  test('calls onCategorySelect when clicking a category', () => {
     render(<QuestionnaireNavigation {...defaultProps} />);
     
-    expect(screen.getByText('15 min')).toBeInTheDocument();
-    expect(screen.getByText('20 min')).toBeInTheDocument();
-  });
-
-  test('displays module descriptions on hover', () => {
-    render(<QuestionnaireNavigation {...defaultProps} testShowDescription="financial-1" />);
+    fireEvent.click(screen.getByText(AssessmentCategory.OPERATIONS));
     
-    const description = screen.getByTestId('module-description-financial-1');
-    expect(description).toHaveTextContent('Financial assessment module');
+    expect(defaultProps.onCategorySelect).toHaveBeenCalledWith(AssessmentCategory.OPERATIONS);
   });
 
   test('handles empty modules array gracefully', () => {
     render(<QuestionnaireNavigation {...defaultProps} modules={[]} />);
     
-    expect(screen.getByTestId('questionnaire-nav')).toBeInTheDocument();
-    expect(screen.queryByRole('button')).not.toBeInTheDocument();
-  });
-
-  test('handles missing progress values', () => {
-    render(
-      <QuestionnaireNavigation
-        {...defaultProps}
-        progress={{}}
-      />
-    );
-    
-    const financialProgress = screen.getByTestId('progress-financial-1');
-    expect(financialProgress).toHaveStyle({ width: '0%' });
+    expect(screen.queryByRole('button')).toBeInTheDocument();
   });
 
   test('maintains tab order for accessibility', () => {

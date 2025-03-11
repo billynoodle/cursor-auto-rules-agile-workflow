@@ -1,67 +1,48 @@
-import React, { useState } from 'react';
-import { Module } from '../../types/assessment.types';
+import React from 'react';
+import { AssessmentCategory, Module } from '@client/types/assessment.types';
 import './QuestionnaireNavigation.css';
 
 interface QuestionnaireNavigationProps {
   modules: Module[];
-  currentModuleId: string;
-  onModuleChange: (moduleId: string) => void;
-  progress: Record<string, number>;
-  testShowDescription?: string;
+  currentModule: string;
+  currentCategory: AssessmentCategory;
+  onModuleSelect: (moduleId: string) => void;
+  onCategorySelect: (category: AssessmentCategory) => void;
 }
 
-function QuestionnaireNavigation({
+export const QuestionnaireNavigation: React.FC<QuestionnaireNavigationProps> = ({
   modules,
-  currentModuleId,
-  onModuleChange,
-  progress,
-  testShowDescription
-}: QuestionnaireNavigationProps) {
-  const [hoveredModule, setHoveredModule] = useState<string | null>(null);
+  currentModule,
+  currentCategory,
+  onModuleSelect,
+  onCategorySelect
+}) => {
+  const categories = Object.values(AssessmentCategory) as AssessmentCategory[];
 
   return (
-    <nav className="questionnaire-nav" data-testid="questionnaire-nav">
-      <div className="module-list">
-        {modules.map((module) => {
-          const isActive = module.id === currentModuleId;
-          const moduleProgress = progress[module.id] || 0;
-
-          return (
-            <button
-              key={module.id}
-              className={`module-item ${isActive ? 'active' : ''}`}
-              onClick={() => onModuleChange(module.id)}
-              onMouseEnter={() => setHoveredModule(module.id)}
-              onMouseLeave={() => setHoveredModule(null)}
-              tabIndex={0}
-            >
-              <div className="module-header">
-                <span className="module-name">{module.name}</span>
-                <span className="estimated-time">{module.estimatedTimeMinutes} min</span>
-              </div>
-              
-              <div className="progress-bar">
-                <div
-                  className="progress-fill"
-                  data-testid={`progress-${module.id}`}
-                  style={{ width: `${moduleProgress * 100}%` }}
-                />
-              </div>
-
-              {(hoveredModule === module.id || testShowDescription === module.id) && (
-                <div 
-                  className="module-description"
-                  data-testid={`module-description-${module.id}`}
-                >
-                  {module.description}
-                </div>
-              )}
-            </button>
-          );
-        })}
+    <nav className="questionnaire-navigation">
+      <div className="module-navigation">
+        {modules.map((module) => (
+          <button
+            key={module.id}
+            onClick={() => onModuleSelect(module.id)}
+            className={currentModule === module.id ? 'active' : ''}
+          >
+            {module.name}
+          </button>
+        ))}
+      </div>
+      <div className="category-navigation">
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => onCategorySelect(category)}
+            className={currentCategory === category ? 'active' : ''}
+          >
+            {category}
+          </button>
+        ))}
       </div>
     </nav>
   );
-}
-
-export { QuestionnaireNavigation }; 
+}; 

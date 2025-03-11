@@ -6,9 +6,11 @@ interface TestProviderProps {
 
 export const TestProvider: React.FC<TestProviderProps> = ({ children }) => {
   return (
-    <div data-testid="test-provider">
-      {children}
-    </div>
+    <React.StrictMode>
+      <div data-testid="test-provider">
+        {children}
+      </div>
+    </React.StrictMode>
   );
 };
 

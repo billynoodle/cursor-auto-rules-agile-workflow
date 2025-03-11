@@ -48,35 +48,38 @@ describe('TooltipUserTesting Component', () => {
   const mockOnMetricsCollected = jest.fn();
   
   beforeEach(() => {
-    jest.useFakeTimers();
-    // Mock window.innerWidth
+    // Mock window properties and methods
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: 1024 // Default to desktop view
+      value: 1024
     });
 
-    // Mock window.addEventListener
+    // Mock window event listeners
+    const listeners: { [key: string]: EventListenerOrEventListenerObject[] } = {};
     window.addEventListener = jest.fn((event: string, callback: EventListenerOrEventListenerObject) => {
-      if (event === 'resize') {
-        if (typeof callback === 'function') {
-          callback.call(window, new Event('resize'));
-        } else {
-          callback.handleEvent.call(window, new Event('resize'));
-        }
+      if (!listeners[event]) {
+        listeners[event] = [];
       }
-    }) as any;
-    window.removeEventListener = jest.fn();
-    mockOnFeedbackSubmit.mockClear();
-    mockOnMetricsCollected.mockClear();
+      listeners[event].push(callback);
+      // Immediately call the callback for resize events
+      if (event === 'resize' && typeof callback === 'function') {
+        callback(new Event('resize'));
+      }
+    });
+    window.removeEventListener = jest.fn((event: string, callback: EventListenerOrEventListenerObject) => {
+      if (listeners[event]) {
+        listeners[event] = listeners[event].filter(cb => cb !== callback);
+      }
+    });
+
+    // Reset all mocks
+    jest.clearAllMocks();
   });
   
   afterEach(() => {
-    jest.useRealTimers();
+    // Clean up after each test
     jest.clearAllMocks();
-    // Clean up window mocks
-    window.addEventListener = window.addEventListener;
-    window.removeEventListener = window.removeEventListener;
   });
 
   it('renders the user testing interface correctly', () => {

@@ -1,5 +1,5 @@
-import { TooltipFeedback } from '../types/assessment.types';
-import { UsabilityMetrics } from '../components/tooltips/TooltipUserTesting';
+import { TooltipFeedback, UsabilityMetrics, isTooltipFeedback, isUsabilityMetrics } from '../types';
+import { UsabilityMetrics as OldUsabilityMetrics } from '../components/tooltips/TooltipUserTesting';
 
 /**
  * Interface for aggregated tooltip testing metrics
@@ -16,32 +16,48 @@ export interface AggregatedMetrics {
  * Service for managing tooltip user testing feedback and metrics
  */
 class TooltipUserTestingService {
-  private feedbackResults: TooltipFeedback[] = [];
+  private feedbackHistory: TooltipFeedback[] = [];
+  private feedbackAnalytics = {
+    averageClarityRating: 0,
+    totalFeedback: 0,
+    feedbackByQuestion: new Map<string, TooltipFeedback[]>()
+  };
   private metricsResults: { [questionId: string]: UsabilityMetrics[] } = {};
   
   /**
    * Submit feedback from a user testing session
    * @param feedback Feedback data from user
-   * @returns The ID of the submitted feedback
    */
-  submitFeedback(feedback: TooltipFeedback): string {
-    const feedbackId = `feedback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    // Store feedback with generated ID
-    this.feedbackResults.push({
-      ...feedback,
-      id: feedbackId
-    } as TooltipFeedback & { id: string });
-    
-    return feedbackId;
+  submitFeedback(feedback: TooltipFeedback): void {
+    if (!isTooltipFeedback(feedback)) {
+      throw new Error('Invalid feedback format');
+    }
+    this.feedbackHistory.push(feedback);
+    this.updateAnalytics(feedback);
+  }
+  
+  private updateAnalytics(feedback: TooltipFeedback): void {
+    // Update total feedback count
+    this.feedbackAnalytics.totalFeedback++;
+
+    // Update average clarity rating
+    const totalRatings = this.feedbackHistory.reduce((sum, item) => sum + item.clarityRating, 0);
+    this.feedbackAnalytics.averageClarityRating = totalRatings / this.feedbackAnalytics.totalFeedback;
+
+    // Update feedback by question
+    const questionFeedback = this.feedbackAnalytics.feedbackByQuestion.get(feedback.questionId) || [];
+    questionFeedback.push(feedback);
+    this.feedbackAnalytics.feedbackByQuestion.set(feedback.questionId, questionFeedback);
   }
   
   /**
    * Submit usability metrics from a user testing session
-   * @param questionId The question ID associated with the metrics
-   * @param metrics The usability metrics collected
    */
   submitMetrics(questionId: string, metrics: UsabilityMetrics): void {
+    if (!isUsabilityMetrics(metrics)) {
+      throw new Error('Invalid metrics format');
+    }
+    
     if (!this.metricsResults[questionId]) {
       this.metricsResults[questionId] = [];
     }
@@ -54,8 +70,8 @@ class TooltipUserTestingService {
    * @param questionId The question ID to filter by
    * @returns Array of feedback for the specified question
    */
-  getFeedbackByQuestionId(questionId: string): TooltipFeedback[] {
-    return this.feedbackResults.filter(feedback => feedback.questionId === questionId);
+  getFeedbackByQuestion(questionId: string): TooltipFeedback[] {
+    return this.feedbackAnalytics.feedbackByQuestion.get(questionId) || [];
   }
   
   /**
@@ -73,10 +89,9 @@ class TooltipUserTestingService {
    * @returns Aggregated metrics for the specified question
    */
   getAggregatedMetrics(questionId: string): AggregatedMetrics {
-    const feedback = this.getFeedbackByQuestionId(questionId);
+    const feedback = this.getFeedbackByQuestion(questionId);
     const metrics = this.getMetricsByQuestionId(questionId);
     
-    // Initialize aggregated metrics
     const aggregated: AggregatedMetrics = {
       averageClarity: 0,
       averageTimeToUnderstand: 0,
@@ -97,12 +112,14 @@ class TooltipUserTestingService {
     
     // Count difficult terms
     feedback.forEach(item => {
-      item.difficultTerms.forEach(term => {
-        if (!aggregated.commonDifficultTerms[term]) {
-          aggregated.commonDifficultTerms[term] = 0;
-        }
-        aggregated.commonDifficultTerms[term]++;
-      });
+      if (item.difficultTerms) {
+        item.difficultTerms.forEach(term => {
+          if (!aggregated.commonDifficultTerms[term]) {
+            aggregated.commonDifficultTerms[term] = 0;
+          }
+          aggregated.commonDifficultTerms[term]++;
+        });
+      }
     });
     
     return aggregated;
@@ -112,8 +129,8 @@ class TooltipUserTestingService {
    * Get all feedback results
    * @returns All feedback results
    */
-  getAllFeedback(): TooltipFeedback[] {
-    return [...this.feedbackResults];
+  getFeedbackHistory(): TooltipFeedback[] {
+    return [...this.feedbackHistory];
   }
   
   /**
@@ -130,7 +147,7 @@ class TooltipUserTestingService {
    */
   exportTestingData(): string {
     const exportData = {
-      feedback: this.feedbackResults,
+      feedback: this.feedbackHistory,
       metrics: this.metricsResults,
       exportDate: new Date().toISOString()
     };
@@ -142,8 +159,21 @@ class TooltipUserTestingService {
    * Clear all testing data
    */
   clearTestingData(): void {
-    this.feedbackResults = [];
+    this.feedbackHistory = [];
     this.metricsResults = {};
+    this.feedbackAnalytics = {
+      averageClarityRating: 0,
+      totalFeedback: 0,
+      feedbackByQuestion: new Map<string, TooltipFeedback[]>()
+    };
+  }
+
+  getAverageClarityRating(): number {
+    return this.feedbackAnalytics.averageClarityRating;
+  }
+
+  getTotalFeedbackCount(): number {
+    return this.feedbackAnalytics.totalFeedback;
   }
 }
 

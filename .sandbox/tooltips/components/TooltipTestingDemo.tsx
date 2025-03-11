@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import TooltipUserTesting from './TooltipUserTesting';
-import { TooltipFeedback } from '../../types/assessment.types';
-import { UsabilityMetrics } from './TooltipUserTesting';
+import { TooltipFeedback, UsabilityMetrics } from '../../types';
 import tooltipUserTestingService from '../../services/TooltipUserTestingService';
 
 /**
@@ -9,12 +8,14 @@ import tooltipUserTestingService from '../../services/TooltipUserTestingService'
  * Shows how to use the TooltipUserTesting component and handle its data
  */
 const TooltipTestingDemo: React.FC = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
   const [feedbackHistory, setFeedbackHistory] = useState<TooltipFeedback[]>([]);
   const [metricsHistory, setMetricsHistory] = useState<UsabilityMetrics[]>([]);
 
   const handleFeedbackSubmit = (feedback: TooltipFeedback) => {
-    tooltipUserTestingService.submitFeedback(feedback);
+    console.log('Feedback submitted:', feedback);
     setFeedbackHistory([...feedbackHistory, feedback]);
+    setShowTooltip(false);
   };
 
   const handleMetricsCollected = (metrics: UsabilityMetrics) => {
@@ -36,44 +37,38 @@ const TooltipTestingDemo: React.FC = () => {
   };
 
   return (
-    <div className="tooltip-testing-demo">
-      <h2>Tooltip Testing Demo</h2>
-      
-      <div className="demo-section">
-        <h3>Test this tooltip:</h3>
-        <TooltipUserTesting
-          questionId="demo-question"
-          tooltipText="This is a sample tooltip that explains a complex concept in simple terms. It should be clear and helpful to users."
-          onFeedbackSubmit={handleFeedbackSubmit}
-          onMetricsCollected={handleMetricsCollected}
-        />
+    <div className="tooltip-demo">
+      <div className="demo-controls">
+        <button onClick={() => setShowTooltip(!showTooltip)}>
+          {showTooltip ? 'Hide Tooltip' : 'Show Tooltip'}
+        </button>
       </div>
 
-      {(feedbackHistory.length > 0 || metricsHistory.length > 0) && (
+      {showTooltip && (
+        <TooltipUserTesting
+          questionId="demo-1"
+          tooltipText="This is a demo tooltip to test the user feedback functionality."
+          onFeedbackSubmit={handleFeedbackSubmit}
+        />
+      )}
+
+      {feedbackHistory.length > 0 && (
+        <div className="feedback-history">
+          <h3>Feedback History</h3>
+          {feedbackHistory.map((feedback, index) => (
+            <div key={index} className="feedback-item">
+              <p><strong>Clarity Rating:</strong> {feedback.clarityRating}/5</p>
+              <p><strong>Feedback:</strong> {feedback.feedback}</p>
+              <p><strong>Timestamp:</strong> {new Date(feedback.timestamp).toLocaleString()}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {(metricsHistory.length > 0) && (
         <div className="testing-history">
           <h3>Testing History</h3>
           
-          {feedbackHistory.length > 0 && (
-            <div className="feedback-history">
-              <h4>Feedback Submissions</h4>
-              <ul>
-                {feedbackHistory.map((feedback, index) => (
-                  <li key={index}>
-                    <strong>Clarity Rating:</strong> {feedback.clarityRating}/5
-                    <br />
-                    <strong>Feedback:</strong> {feedback.feedbackText}
-                    {feedback.difficultTerms.length > 0 && (
-                      <>
-                        <br />
-                        <strong>Difficult Terms:</strong> {feedback.difficultTerms.join(', ')}
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
           {metricsHistory.length > 0 && (
             <div className="metrics-history">
               <h4>Usability Metrics</h4>
