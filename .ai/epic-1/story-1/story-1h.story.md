@@ -185,3 +185,70 @@ interface Question {
   };
 }
 ```
+
+## Test Environment Setup
+
+### Test Configuration Schema
+```typescript
+// tests/setupTests.ts
+import '@testing-library/jest-dom';
+import { configure } from '@testing-library/react';
+import * as ReactDOM from 'react-dom/client';
+import { createElement } from 'react';
+import { act } from '@testing-library/react';
+
+// Testing Library Configuration
+interface TestConfig {
+  testIdAttribute: string;  // Attribute used for querying elements
+}
+
+// React Root Configuration
+interface RootConfig {
+  elementId: string;        // ID of root element for React rendering
+  container: HTMLElement;   // Root container element
+}
+
+// Test Environment Setup
+{
+  config: TestConfig;       // Testing library configuration
+  root: RootConfig;        // React root configuration
+  cleanup: () => void;     // Cleanup function for after tests
+  beforeAll: () => void;   // Setup function for before tests
+}
+```
+
+### Test Environment Features
+- Custom test ID attribute configuration
+- React 18 concurrent mode initialization
+- Automated cleanup after each test
+- Console logging for debugging
+- Mock implementations for external dependencies
+- Proper React hooks initialization
+- Test environment validation
+
+### Test Setup Implementation
+```typescript
+// Configure testing library
+configure({ testIdAttribute: 'data-testid' });
+
+// Create root element for React
+const rootElement = document.createElement('div');
+rootElement.id = 'root';
+document.body.appendChild(rootElement);
+
+// Mock CSS modules
+jest.mock('*.css', () => ({}));
+
+// Initialize React hooks before tests
+beforeAll(async () => {
+  const root = ReactDOM.createRoot(rootElement);
+  await act(async () => {
+    root.render(createElement('div'));
+  });
+});
+
+// Clean up after each test
+afterEach(() => {
+  jest.clearAllMocks();
+});
+```

@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
+  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for numeric question without min/max score",
+  "executionTime": 0.9378750000000764,
+  "memoryUsage": 281696,
+  "timestamp": "2025-03-12T01:44:59.265Z",
+  "type": "test"
+}

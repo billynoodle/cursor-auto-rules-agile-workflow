@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2020",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -9,27 +11,28 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["*"],
       "@client/*": ["client/src/*"],
-      "@server/*": ["server/src/*"],
-      "@tests/*": ["tests/*"]
+      "@server/*": ["server/src/*"]
     },
-    "types": ["node", "jest", "@testing-library/jest-dom"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./client/src/types"
+    ],
+    "plugins": [
+      { "name": "typescript-plugin-css-modules" }
+    ]
   },
   "include": [
     "client/src/**/*",
     "server/src/**/*",
-    "tests/**/*"
+    "tests/**/*",
+    "client/src/types/module-augmentation.d.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 } 

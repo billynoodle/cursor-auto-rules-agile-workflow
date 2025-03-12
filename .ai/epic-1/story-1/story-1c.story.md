@@ -20,5 +20,4 @@
    14. - [x] Validate tests against implemented questions
    15. - [x] Develop comprehensive tooltips for all questions with plain language explanations
    16. - [x] Create enhanced tooltips for complex financial and compliance questions with examples and metric explanations
-   17. - [x] Review all tooltips for clarity, jargon elimination, and quantifiable context
-   18. - [x] Test tooltips with non-technical users to ensure comprehensibility
+  

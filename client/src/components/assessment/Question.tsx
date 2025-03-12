@@ -1,5 +1,4 @@
 import React from 'react';
-import QuestionTooltip from '../tooltips/QuestionTooltip';
 import './Question.css';
 
 interface QuestionOption {
@@ -19,15 +18,15 @@ interface QuestionProps {
 }
 
 /**
- * Question component for displaying assessment questions with enhanced tooltips
+ * Question component for displaying assessment questions
  * 
  * Features:
  * - Supports multiple question types (multiple choice, numeric, text, Likert scale)
- * - Enhanced tooltips with metrics and examples
+ * - Help text display
  * - Accessible design
  * - Mobile-friendly layout
  */
-const Question: React.FC<QuestionProps> = ({
+export function Question({
   id,
   text,
   helpText,
@@ -35,7 +34,7 @@ const Question: React.FC<QuestionProps> = ({
   options = [],
   value,
   onChange
-}) => {
+}: QuestionProps): JSX.Element {
   // Render different input types based on question type
   const renderQuestionInput = () => {
     switch (type) {
@@ -109,9 +108,10 @@ const Question: React.FC<QuestionProps> = ({
         <h3 id={`question-${id}`} className="question-text">
           {text}
           {helpText && (
-            <QuestionTooltip helpText={helpText}>
+            <div className="help-text" aria-label="Help text">
               <span className="visually-hidden">More information about this question</span>
-            </QuestionTooltip>
+              <p>{helpText}</p>
+            </div>
           )}
         </h3>
       </div>
@@ -121,6 +121,6 @@ const Question: React.FC<QuestionProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default Question; 

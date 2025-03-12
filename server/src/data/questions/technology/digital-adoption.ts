@@ -229,5 +229,134 @@ export const digitalAdoptionQuestions: Question[] = [
         contentPriority: 7
       }
     }
+  },
+  {
+    id: 'tech-dig-006',
+    text: 'How well integrated is your practice management software with your clinical workflow systems?',
+    type: QuestionType.LIKERT_SCALE,
+    category: AssessmentCategory.TECHNOLOGY,
+    moduleId: 'mod-technology-001',
+    applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+    universalQuestion: true,
+    weight: 9,
+    minScore: 0,
+    maxScore: 10,
+    helpText: 'System integration directly impacts operational efficiency. Poor integration can lead to duplicate data entry and workflow bottlenecks.',
+    impactAreas: ['Operational efficiency', 'Workflow automation', 'Data accuracy'],
+    applicablePracticeSizes: [
+      PracticeSize.SOLO,
+      PracticeSize.SMALL,
+      PracticeSize.MEDIUM,
+      PracticeSize.LARGE,
+      PracticeSize.ENTERPRISE
+    ],
+    trackingPeriod: 'Quarterly',
+    benchmarkReference: 'Leading practices achieve 9-10; <6 indicates significant integration gaps',
+    sopRelevance: {
+      relevant: true,
+      sopTypes: [SOPType.TECHNOLOGY, SOPType.ADMINISTRATIVE]
+    },
+    materialFinder: {
+      resourceTypes: [MaterialResourceType.PROCEDURE],
+      keywords: ['integration', 'workflow', 'efficiency']
+    },
+    scoreInterpretation: {
+      [ScorePosition.CRITICAL]: {
+        interpretation: 'Poor system integration is severely impacting your operational efficiency',
+        actionPrompts: [
+          'Evaluate current system integrations',
+          'Identify workflow bottlenecks',
+          'Consider upgrading to more integrated solutions'
+        ],
+        priority: 9,
+        timeframe: 'Within 3 months'
+      }
+    }
+  },
+  {
+    id: 'tech-dig-007',
+    text: 'What percentage of your clinical and administrative workflows are automated through technology?',
+    type: QuestionType.NUMERIC,
+    category: AssessmentCategory.TECHNOLOGY,
+    moduleId: 'mod-technology-001',
+    applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+    universalQuestion: true,
+    weight: 8,
+    minScore: 0,
+    maxScore: 100,
+    helpText: 'Workflow automation reduces manual effort, improves efficiency, and reduces errors. Each automated workflow can save 2-5 hours per week per staff member.',
+    impactAreas: ['Operational efficiency', 'Staff productivity', 'Error reduction'],
+    applicablePracticeSizes: [
+      PracticeSize.SOLO,
+      PracticeSize.SMALL,
+      PracticeSize.MEDIUM,
+      PracticeSize.LARGE,
+      PracticeSize.ENTERPRISE
+    ],
+    trackingPeriod: 'Quarterly',
+    benchmarkReference: 'Leading practices achieve >70%; <40% indicates significant automation gaps',
+    sopRelevance: {
+      relevant: true,
+      sopTypes: [SOPType.TECHNOLOGY, SOPType.ADMINISTRATIVE]
+    },
+    materialFinder: {
+      resourceTypes: [MaterialResourceType.PROCEDURE],
+      keywords: ['automation', 'workflow', 'efficiency']
+    },
+    scoreInterpretation: {
+      [ScorePosition.CRITICAL]: {
+        interpretation: 'Low automation levels are impacting operational efficiency',
+        actionPrompts: [
+          'Identify manual workflows that could be automated',
+          'Implement workflow automation tools',
+          'Train staff on automated processes'
+        ],
+        priority: 8,
+        timeframe: 'Within 6 months'
+      }
+    }
+  },
+  {
+    id: 'tech-dig-008',
+    text: 'How effectively does your scheduling system integrate with other operational systems (billing, EMR, patient communications)?',
+    type: QuestionType.LIKERT_SCALE,
+    category: AssessmentCategory.TECHNOLOGY,
+    moduleId: 'mod-technology-001',
+    applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+    universalQuestion: true,
+    weight: 9,
+    minScore: 0,
+    maxScore: 10,
+    helpText: 'Scheduling system integration impacts appointment management, billing efficiency, and patient communication. Poor integration can lead to scheduling conflicts and revenue loss.',
+    impactAreas: ['Scheduling efficiency', 'Revenue cycle', 'Patient communication'],
+    applicablePracticeSizes: [
+      PracticeSize.SOLO,
+      PracticeSize.SMALL,
+      PracticeSize.MEDIUM,
+      PracticeSize.LARGE,
+      PracticeSize.ENTERPRISE
+    ],
+    trackingPeriod: 'Quarterly',
+    benchmarkReference: 'Leading practices achieve 9-10; <6 indicates significant integration gaps',
+    sopRelevance: {
+      relevant: true,
+      sopTypes: [SOPType.TECHNOLOGY, SOPType.ADMINISTRATIVE]
+    },
+    materialFinder: {
+      resourceTypes: [MaterialResourceType.PROCEDURE],
+      keywords: ['scheduling', 'integration', 'efficiency']
+    },
+    scoreInterpretation: {
+      [ScorePosition.CRITICAL]: {
+        interpretation: 'Poor scheduling system integration is impacting operational efficiency',
+        actionPrompts: [
+          'Evaluate current scheduling system integrations',
+          'Identify scheduling workflow bottlenecks',
+          'Consider upgrading to more integrated scheduling solutions'
+        ],
+        priority: 9,
+        timeframe: 'Within 3 months'
+      }
+    }
   }
 ]; 

@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/ModuleService.test.ts",
+  "testName": "ModuleService searchModules should find modules by category",
+  "executionTime": 0.32095799999979135,
+  "memoryUsage": 128496,
+  "timestamp": "2025-03-12T02:02:06.292Z",
+  "type": "test"
+}

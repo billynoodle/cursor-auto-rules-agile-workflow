@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/TooltipReviewService.test.ts",
+  "testName": "TooltipReviewService reviewTooltip should identify tooltips that need improvement",
+  "executionTime": 0.4912909999998192,
+  "memoryUsage": 109016,
+  "timestamp": "2025-03-12T01:35:44.356Z",
+  "type": "test"
+}

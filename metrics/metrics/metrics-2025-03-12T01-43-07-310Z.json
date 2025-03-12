@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/TooltipReviewService.test.ts",
+  "testName": "TooltipReviewService reviewTooltip should detect examples in tooltip text",
+  "executionTime": 0.5448749999995925,
+  "memoryUsage": 162008,
+  "timestamp": "2025-03-12T01:43:07.310Z",
+  "type": "test"
+}

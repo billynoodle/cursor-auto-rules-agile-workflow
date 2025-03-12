@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
+  "testName": "QuestionService - Core Functionality Question Retrieval Methods should retrieve discipline-specific questions",
+  "executionTime": 0.5009589999999662,
+  "memoryUsage": 267512,
+  "timestamp": "2025-03-12T01:39:37.654Z",
+  "type": "test"
+}

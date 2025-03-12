@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
+  "testName": "QuestionService - Compliance Questions Country-Specific Content should return Australia-specific content for compliance questions",
+  "executionTime": 0.16570899999987887,
+  "memoryUsage": 259424,
+  "timestamp": "2025-03-12T01:35:44.430Z",
+  "type": "test"
+}

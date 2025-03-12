@@ -2,12 +2,10 @@
  * Enum for assessment question types
  */
 export enum QuestionType {
+  SCALE = 'SCALE',
   MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
-  LIKERT_SCALE = 'LIKERT_SCALE',
-  NUMERIC = 'NUMERIC',
-  TEXT = 'TEXT',
-  MATRIX = 'MATRIX',
-  RANKING = 'RANKING'
+  YES_NO = 'YES_NO',
+  TEXT = 'TEXT'
 }
 
 /**
@@ -51,19 +49,14 @@ export interface QuestionOption {
  */
 export interface Question {
   id: string;
-  text: string;
-  type: QuestionType;
-  category: AssessmentCategory;
   moduleId: string;
-  weight: number;
-  helpText?: string;
-  options?: QuestionOption[];
-  universalQuestion: boolean;
-  applicableDisciplines: string[];
-  applicablePracticeSizes: string[];
-  trackingPeriod?: string;
-  benchmarkReference?: string;
-  impactAreas?: string[];
+  category: AssessmentCategory;
+  type: QuestionType;
+  text: string;
+  tooltip?: string;
+  options?: string[];
+  minValue?: number;
+  maxValue?: number;
 }
 
 /**
@@ -72,17 +65,9 @@ export interface Question {
 export interface Module {
   id: string;
   name: string;
-  category: AssessmentCategory;
   description: string;
-  order: number;
   estimatedTimeMinutes: number;
-  weight: number;
-  minScore: number;
-  maxScore: number;
-  applicableDisciplines: string[];
-  universalModule: boolean;
-  applicablePracticeSizes: string[];
-  questions?: Question[];
+  categories: AssessmentCategory[];
 }
 
 /**
@@ -115,6 +100,6 @@ export interface ModuleScore {
 export interface TooltipFeedback {
   questionId: string;
   clarityRating: number;
-  feedbackText: string;
-  difficultTerms: string[];
+  feedback: string;
+  timestamp: string;
 } 

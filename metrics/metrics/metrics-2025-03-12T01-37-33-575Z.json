@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
+  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for numeric question with invalid min/max range",
+  "executionTime": 0.32212499999968713,
+  "memoryUsage": 285600,
+  "timestamp": "2025-03-12T01:37:33.575Z",
+  "type": "test"
+}

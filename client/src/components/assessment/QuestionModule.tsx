@@ -32,14 +32,14 @@ interface QuestionModuleProps {
  * - Progress indicator
  * - Mobile-friendly design
  */
-const QuestionModule: React.FC<QuestionModuleProps> = ({
+export function QuestionModule({
   id,
   title,
   description,
   questions,
   onAnswerChange,
   answers
-}) => {
+}: QuestionModuleProps): JSX.Element {
   const [isExpanded, setIsExpanded] = useState(true);
   
   // Calculate completion percentage
@@ -48,65 +48,49 @@ const QuestionModule: React.FC<QuestionModuleProps> = ({
     ? Math.round((answeredQuestions.length / questions.length) * 100) 
     : 0;
   
-  // Toggle module expansion
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
   return (
     <div className="question-module">
-      <div className="module-header" onClick={toggleExpand}>
-        <div className="module-title-container">
-          <h2 className="module-title">{title}</h2>
-          <div className="module-progress">
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${completionPercentage}%` }}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={completionPercentage}
-                role="progressbar"
-              />
-            </div>
-            <span className="progress-text">{completionPercentage}% complete</span>
-          </div>
-        </div>
-        <button 
-          className="module-toggle"
+      <div className="module-header">
+        <button
+          className="module-title"
+          onClick={toggleExpand}
           aria-expanded={isExpanded}
-          aria-controls={`module-content-${id}`}
+          aria-controls={`${id}-content`}
         >
-          {isExpanded ? '−' : '+'}
+          <h2>{title}</h2>
+          <div className="progress-bar" role="progressbar" aria-valuenow={completionPercentage} aria-valuemin={0} aria-valuemax={100}>
+            <div className="progress-fill" style={{ width: `${completionPercentage}%` }} />
+          </div>
         </button>
       </div>
-      
-      {isExpanded && (
-        <div id={`module-content-${id}`} className="module-content">
-          {description && (
-            <div className="module-description">
-              <p>{description}</p>
-            </div>
-          )}
-          
-          <div className="module-questions">
-            {questions.map(question => (
-              <Question
-                key={question.id}
-                id={question.id}
-                text={question.text}
-                helpText={question.helpText}
-                type={question.type}
-                options={question.options}
-                value={answers[question.id]}
-                onChange={(value) => onAnswerChange(question.id, value)}
-              />
-            ))}
-          </div>
+
+      <div
+        id={`${id}-content`}
+        className={`module-content ${isExpanded ? 'expanded' : ''}`}
+        role="region"
+        aria-labelledby={`${id}-title`}
+        hidden={!isExpanded}
+      >
+        {description && <p className="module-description">{description}</p>}
+        <div className="questions-list">
+          {questions.map((question) => (
+            <Question
+              key={question.id}
+              id={question.id}
+              text={question.text}
+              helpText={question.helpText}
+              type={question.type}
+              options={question.options}
+              value={answers[question.id]}
+              onChange={(value) => onAnswerChange(question.id, value)}
+            />
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
-};
-
-export default QuestionModule; 
+} 

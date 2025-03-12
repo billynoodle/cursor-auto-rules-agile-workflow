@@ -1,0 +1,12 @@
+{
+  "executionTime": 34.91645800000015,
+  "memoryUsage": 877736,
+  "timestamp": "2025-03-12T02:02:06.204Z",
+  "type": "suite"
+}rconnectedness.test.ts",
+  "testName": "Business Area Interconnectedness Specific Business Impacts should verify Technology impact on Operations",
+  "executionTime": 2.5354590000001735,
+  "memoryUsage": 5613528,
+  "timestamp": "2025-03-12T02:02:06.204Z",
+  "type": "test"
+}

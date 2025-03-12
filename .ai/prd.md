@@ -1,6 +1,6 @@
 # Product Requirements Document (PRD) for Allied Health Business Assessment Tool
 
-## Status: Draft
+## Status: In Progress
 
 ## Introduction
 The Allied Health Business Assessment Tool is a comprehensive digital solution designed to help allied health practitioners conduct in-depth, quantifiable analyses of their business operations, financial health, and growth opportunities. This tool will enable practitioners to identify strengths, weaknesses, and actionable insights through a weighted scoring system that provides concrete, data-driven metrics for business performance. The platform delivers a simple, intuitive user experience while offering deep analytical capabilities to optimize practice management, improve patient care, and increase profitability.
@@ -84,6 +84,22 @@ The initial MVP will focus exclusively on physiotherapists, with a phased approa
 - Row-Level Security (RLS) implementation for protecting sensitive practice data
 - Secure authentication and authorization through Supabase Auth
 - Real-time data synchronization using Supabase Realtime capabilities
+
+### Testing Requirements
+- Comprehensive test coverage for all components and business logic
+- Proper test environment setup with React 18 concurrent features
+- Automated test execution in CI/CD pipeline
+- Component testing using React Testing Library
+- Integration testing for API endpoints and data flow
+- End-to-end testing for critical user journeys
+- Performance testing for response times and load handling
+- Security testing for authentication and authorization
+- Cross-browser compatibility testing
+- Accessibility testing (WCAG compliance)
+- Test logging and debugging capabilities
+- Mock implementations for external dependencies
+- Regular test maintenance and updates
+- Test documentation and coverage reporting
 
 ## Assessment Methodology
 

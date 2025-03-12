@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "testId": "tooltip-review-results",
+    "timestamp": "2025-03-12T02:35:40.664Z",
+    "testName": "tooltip-review-results",
+    "testType": "integration",
+    "status": "passed"
+  },
+  "data": {
+    "timestamp": "2025-03-12T02:35:40.663Z",
+    "totalTooltips": 4,
+    "tooltipsWithMetrics": 1,
+    "tooltipsWithExamples": 0,
+    "tooltipsWithPlainLanguage": 0,
+    "tooltipsWithJargon": 1,
+    "tooltipsNeedingImprovement": 4,
+    "percentWithMetrics": 25,
+    "percentWithExamples": 0,
+    "percentNeedingImprovement": 100,
+    "detailedResults": [
+      {
+        "id": "fin-exp-001",
+        "category": "FINANCIAL",
+        "text": "What is your practice's overhead ratio?",
+        "helpText": "Overhead ratio shows what percentage of your income goes to running costs before paying practitioners. For example, if your practice makes $300,000 per year and spends $150,000 on expenses (not counting payments to practitioners), your overhead ratio is 50%. Most successful practices keep this under 45%.",
+        "wordCount": 46,
+        "readabilityScore": 77.94565217391305,
+        "hasMetrics": true,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Include practical examples to illustrate the concept",
+          "Expand explanation to provide more comprehensive context"
+        ],
+        "enhancedHelpText": "To put it simply, overhead ratio shows what percentage of your income goes to running costs before paying practitioners. For example, if your practice makes $300,000 per year and spends $150,000 on expenses (not counting payments to practitioners), your overhead ratio is 50%. Most successful practices keep this under 45%. For example, tracking this weekly rather than monthly often identifies cost-saving opportunities faster. This has a direct effect on cash flow and profitability."
+      },
+      {
+        "id": "comp-risk-001",
+        "category": "COMPLIANCE",
+        "text": "When was your last compliance risk assessment conducted?",
+        "helpText": "A compliance risk assessment is simply a check-up of your practice's ability to follow healthcare rules and regulations. Think of it like a safety inspection for your business.",
+        "wordCount": 28,
+        "readabilityScore": 81.04761904761904,
+        "hasMetrics": false,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [
+          "compliance"
+        ],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Explain or replace jargon terms: compliance",
+          "Add specific numbers, percentages, or metrics to provide context",
+          "Include practical examples to illustrate the concept",
+          "Expand explanation to provide more comprehensive context"
+        ],
+        "enhancedHelpText": "In everyday terms, a compliance risk assessment is simply a check-up of your practice's ability to follow healthcare rules and regulations. Think of it like a safety inspection for your business. Compliance issues in this area typically result in penalties of $5,000-$10,000 per occurrence. For example, implementing a checklist for this process can prevent common compliance issues. Addressing this properly protects your practice from penalties and reputation damage."
+      },
+      {
+        "id": "tech-dig-001",
+        "category": "TECHNOLOGY",
+        "text": "Do you use digital tools to track patient outcomes?",
+        "helpText": "Digital outcome tracking improves treatment success rates.",
+        "wordCount": 7,
+        "readabilityScore": 69.67857142857143,
+        "hasMetrics": false,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Add specific numbers, percentages, or metrics to provide context",
+          "Include practical examples to illustrate the concept"
+        ],
+        "enhancedHelpText": "In basic terms, digital outcome tracking improves treatment success rates. Addressing this can lead to 10-15% better outcomes. For example, top-performing practices have clear protocols for this. This affects multiple aspects of practice performance."
+      },
+      {
+        "id": "staff-train-001",
+        "category": "STAFFING",
+        "text": "How frequently do staff receive training?",
+        "helpText": "Regular staff training ensures team skills stay current.",
+        "wordCount": 8,
+        "readabilityScore": 79.25,
+        "hasMetrics": false,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Add specific numbers, percentages, or metrics to provide context",
+          "Include practical examples to illustrate the concept",
+          "Expand explanation to provide more comprehensive context"
+        ],
+        "enhancedHelpText": "This means regular staff training ensures team skills stay current. Studies show a 15-20% improvement when this area is optimized. For example, top-performing practices have clear protocols for this. This plays an important role in your overall practice success."
+      }
+    ]
+  }
+}

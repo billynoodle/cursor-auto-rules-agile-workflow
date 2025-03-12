@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
+  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for invalid question category",
+  "executionTime": 0.8856670000000122,
+  "memoryUsage": 288000,
+  "timestamp": "2025-03-12T01:39:37.641Z",
+  "type": "test"
+}

@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
+  "testName": "QuestionService - All Modules Question Types Across Modules should retrieve multiple choice questions across modules",
+  "executionTime": 0.2964590000001408,
+  "memoryUsage": 330424,
+  "timestamp": "2025-03-12T01:34:04.777Z",
+  "type": "test"
+}

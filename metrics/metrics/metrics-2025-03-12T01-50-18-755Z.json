@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/TooltipReviewService.test.ts",
+  "testName": "TooltipReviewService enhanceTooltip should add examples to tooltips without examples",
+  "executionTime": 0.5067500000000109,
+  "memoryUsage": 103376,
+  "timestamp": "2025-03-12T01:50:18.755Z",
+  "type": "test"
+}

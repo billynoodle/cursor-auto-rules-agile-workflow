@@ -1,0 +1,7 @@
+{
+  "timestamp": "2025-03-10-20-11",
+  "testSuite": "unit-tests",
+  "status": "completed",
+  "resultsFile": "results.json",
+  "coverageDir": "coverage"
+}

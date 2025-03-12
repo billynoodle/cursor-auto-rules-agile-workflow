@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
+  "testName": "QuestionService - All Modules Patient Care Module Questions should retrieve patient care questions by category",
+  "executionTime": 0.2678750000004584,
+  "memoryUsage": 325168,
+  "timestamp": "2025-03-12T01:35:44.869Z",
+  "type": "test"
+}

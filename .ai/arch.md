@@ -308,45 +308,46 @@ sequenceDiagram
 │   │       ├── /formatters  # Data formatting utilities
 │   │       ├── /analysis    # Analysis helper functions
 │   │       ├── /visualization # Visualization utilities
-│   ├── package.json         # Frontend dependencies
-│   └── tsconfig.json        # TypeScript configuration
-│
-├── /server                  # Backend Node.js/Express application
-│   ├── /src                 # Source code
-│   │   ├── /api             # API routes and controllers
-│   │   ├── /config          # Configuration files
-│   │   ├── /middleware      # Express middleware
-│   │   ├── /services        # Business logic services
-│   │   │   ├── /assessment  # Assessment scoring and analysis
-│   │   │   ├── /reporting   # Report generation
-│   │   │   ├── /sop         # SOP generation services
-│   │   │   ├── /interconnect # Interconnectedness analysis services
-│   │   ├── /utils           # Utility functions
-│   │   └── /validation      # Input validation schemas
-│   ├── package.json         # Backend dependencies
-│   └── tsconfig.json        # TypeScript configuration
-│
-├── /supabase                # Supabase configuration
-│   ├── /functions           # Edge Functions for simple operations
-│   ├── /migrations          # Database migrations
-│   └── /seed                # Seed data scripts
-│
-├── /tests                   # Test files
-│   ├── /unit                # Unit tests
-│   │   ├── /services        # Service tests
-│   │   ├── /interconnect    # Interconnectedness analysis tests
-│   ├── /integration         # Integration tests
-│   └── /e2e                 # End-to-end tests
-│
-├── /docs                    # Documentation
-│   ├── /api                 # API documentation
-│   └── /user                # User guides
-│
-├── /scripts                 # Build and deployment scripts
-│
-├── docker-compose.yml       # Docker configuration
-├── .github                  # GitHub Actions workflows
-└── README.md                # Project overview
+│   │   ├── package.json         # Frontend dependencies
+│   │   └── tsconfig.json        # TypeScript configuration
+│   │
+│   ├── /server                  # Backend Node.js/Express application
+│   │   ├── /src                 # Source code
+│   │   │   ├── /api             # API routes and controllers
+│   │   │   ├── /config          # Configuration files
+│   │   │   ├── /middleware      # Express middleware
+│   │   │   ├── /services        # Business logic services
+│   │   │   │   ├── /assessment  # Assessment scoring and analysis
+│   │   │   │   ├── /reporting   # Report generation
+│   │   │   │   ├── /sop         # SOP generation services
+│   │   │   │   ├── /interconnect # Interconnectedness analysis services
+│   │   │   │   ├── /utils           # Utility functions
+│   │   │   │   └── /validation      # Input validation schemas
+│   │   │   ├── package.json         # Backend dependencies
+│   │   │   └── tsconfig.json        # TypeScript configuration
+│   │   │
+│   │   ├── /supabase                # Supabase configuration
+│   │   │   ├── /functions           # Edge Functions for simple operations
+│   │   │   ├── /migrations          # Database migrations
+│   │   │   └── /seed                # Seed data scripts
+│   │   │
+│   │   ├── /tests                   # Test files
+│   │   │   ├── /unit                # Unit tests
+│   │   │   │   ├── /services        # Service tests
+│   │   │   │   ├── /interconnect    # Interconnectedness analysis tests
+│   │   │   │   └── /integration         # Integration tests
+│   │   │   └── /e2e                 # End-to-end tests
+│   │   │
+│   │   ├── /docs                    # Documentation
+│   │   │   ├── /api                 # API documentation
+│   │   │   └── /user                # User guides
+│   │   │
+│   │   ├── /scripts                 # Build and deployment scripts
+│   │   │
+│   │   └── docker-compose.yml       # Docker configuration
+│   │
+│   └── .github                  # GitHub Actions workflows
+│       └── README.md                # Project overview
 ```
 
 ## Interconnectedness Analysis Engine
@@ -467,3 +468,27 @@ The engine uses a modular design pattern allowing for future enhancements:
 | Initial Architecture | N/A | Initial system design and documentation | 
 | Supabase Integration | Story-1 | Added Supabase as primary database and backend service while maintaining Node.js server for complex business logic |
 | Interconnectedness Analysis | Story-14 | Added Business Area Interconnectedness Analysis Engine and related components |
+
+## Testing Framework
+
+### Test Setup and Configuration
+- Jest as the primary testing framework
+- React Testing Library for component testing
+- Configured with custom test environment in `tests/setupTests.ts`
+- React 18 concurrent features enabled for testing
+- Proper initialization of React hooks and context
+- Automated cleanup after each test
+- Console logging for test environment debugging
+- Mock implementations for CSS modules and external dependencies
+
+### Test Environment Features
+```typescript
+// tests/setupTests.ts configuration
+- Custom test ID attribute for component queries
+- Root element creation for React rendering
+- React 18 concurrent mode initialization
+- Automated mock cleanup after each test
+- Console logging for environment setup tracking
+```
+
+### Test Organization

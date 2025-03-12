@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
+  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for question without applicable practice sizes",
+  "executionTime": 0.5829170000001795,
+  "memoryUsage": 280976,
+  "timestamp": "2025-03-12T01:39:37.644Z",
+  "type": "test"
+}

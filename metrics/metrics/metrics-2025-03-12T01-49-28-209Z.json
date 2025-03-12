@@ -1,0 +1,8 @@
+{
+  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
+  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for multiple choice question without options",
+  "executionTime": 0.36329099999966274,
+  "memoryUsage": 281152,
+  "timestamp": "2025-03-12T01:49:28.209Z",
+  "type": "test"
+}
