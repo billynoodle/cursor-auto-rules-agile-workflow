@@ -12,16 +12,12 @@ export enum QuestionType {
  * Enum for assessment categories
  */
 export enum AssessmentCategory {
-  FINANCIAL = 'FINANCIAL',
-  OPERATIONS = 'OPERATIONS',
-  MARKETING = 'MARKETING',
-  STAFFING = 'STAFFING',
-  COMPLIANCE = 'COMPLIANCE',
-  PATIENTS = 'PATIENTS',
-  FACILITIES = 'FACILITIES',
-  GEOGRAPHY = 'GEOGRAPHY',
-  TECHNOLOGY = 'TECHNOLOGY',
-  AUTOMATION = 'AUTOMATION'
+  FINANCIAL = 'Financial',
+  OPERATIONS = 'Operations',
+  COMPLIANCE = 'Compliance',
+  MARKETING = 'Marketing',
+  STAFFING = 'Staffing',
+  TECHNOLOGY = 'Technology'
 }
 
 /**
@@ -33,6 +29,16 @@ export enum PracticeSize {
   MEDIUM = 'MEDIUM',
   LARGE = 'LARGE',
   ENTERPRISE = 'ENTERPRISE'
+}
+
+/**
+ * Enum for module status
+ */
+export enum ModuleStatus {
+  LOCKED = 'LOCKED',
+  AVAILABLE = 'AVAILABLE',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED'
 }
 
 /**
@@ -49,14 +55,14 @@ export interface QuestionOption {
  */
 export interface Question {
   id: string;
-  moduleId: string;
-  category: AssessmentCategory;
-  type: QuestionType;
   text: string;
-  tooltip?: string;
-  options?: string[];
-  minValue?: number;
-  maxValue?: number;
+  type: 'MULTIPLE_CHOICE' | 'NUMERIC' | 'TEXT' | 'LIKERT_SCALE';
+  helpText?: string;
+  options?: Array<{
+    value: string;
+    score: number;
+    text: string;
+  }>;
 }
 
 /**
@@ -68,6 +74,11 @@ export interface Module {
   description: string;
   estimatedTimeMinutes: number;
   categories: AssessmentCategory[];
+  status: ModuleStatus;
+  progress: number;
+  prerequisites: string[];
+  completedQuestions: number;
+  totalQuestions: number;
 }
 
 /**

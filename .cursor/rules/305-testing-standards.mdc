@@ -1,0 +1,179 @@
+---
+description: 
+globs: **/*.{test,spec}.{ts,js,tsx,jsx}
+alwaysApply: false
+---
+ ---
+description: IMPLEMENT standardized testing practices to ENSURE comprehensive coverage, maintainability, and reliability across all test types
+globs: **/*.{test,spec}.{ts,js,tsx,jsx}
+---
+
+# Testing Standards
+
+## Context
+- Applied when writing or modifying any type of test
+- Used during test planning, implementation, and review
+- Essential for maintaining consistent test quality
+- Critical for ensuring proper test isolation and coverage
+- Applies to unit, integration, and E2E testing
+
+## Requirements
+
+### 1. Directory Structure
+- MUST follow standardized test directory layout:
+  ```
+  tests/
+  ├── e2e/                    # End-to-end tests
+  ├── integration/            # Integration tests
+  ├── unit/                   # Unit tests
+  │   ├── client/            # Frontend component tests
+  │   └── services/          # Service layer tests
+  ├── __contracts__/         # Contract tests/API specs
+  ├── __fixtures__/          # Test fixtures and mock data
+  ├── __mocks__/             # Mock implementations
+  ├── utils/                 # Testing utilities
+  └── setup.ts              # Test environment setup
+  ```
+
+### 2. Coverage Requirements
+- Critical Path: MUST achieve 95%+ coverage
+  - Authentication flows
+  - Data persistence
+  - API endpoints
+  - Core business logic
+  - Error handling
+- Standard Coverage: MUST achieve 80%+ coverage
+  - UI components
+  - Utility functions
+  - Helper modules
+  - Non-critical paths
+
+### 3. Test Implementation Standards
+
+#### 3.1 Test Organization
+- MUST use descriptive `describe` and `it` blocks
+- MUST follow AAA pattern (Arrange, Act, Assert)
+- MUST keep tests focused and atomic
+- MUST use appropriate test doubles (mocks, stubs, spies)
+
+#### 3.2 Async Testing
+```typescript
+// Example: Async operation testing
+describe('Async Operations', () => {
+  it('should handle async data fetching', async () => {
+    // Arrange
+    const mockData = { id: 1, name: 'Test' };
+    jest.spyOn(api, 'fetchData').mockResolvedValue(mockData);
+
+    // Act
+    const result = await fetchData();
+
+    // Assert
+    expect(result).toEqual(mockData);
+  });
+});
+```
+
+#### 3.3 Component Testing
+```typescript
+// Example: React component testing
+describe('Component Tests', () => {
+  it('should render and handle interactions', async () => {
+    // Arrange
+    const handleClick = jest.fn();
+    
+    // Act
+    render(<Button onClick={handleClick}>Click Me</Button>);
+    await userEvent.click(screen.getByRole('button'));
+
+    // Assert
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+### 4. Test Data Management
+- MUST use typed fixtures for consistent test data
+- MUST store fixtures in `__fixtures__` directory
+- MUST ensure test data isolation
+- MUST clean up test data after execution
+- MUST use unique identifiers for test data
+
+### 5. Mocking Strategy
+- MUST mock external dependencies in unit tests
+- MUST use MSW for API mocking in integration tests
+- MUST mock browser APIs consistently
+- MUST document mock implementations
+
+### 6. Test Execution
+```bash
+# Standard test commands
+npm test              # Run all tests
+npm run test:unit     # Run unit tests
+npm run test:int      # Run integration tests
+npm run test:e2e      # Run E2E tests
+npm test -- --coverage # Run with coverage
+```
+
+## Examples
+
+<example>
+// GOOD: Well-organized test with proper setup and cleanup
+describe('UserService', () => {
+  let service: UserService;
+  let mockDb: jest.Mocked<Database>;
+
+  beforeEach(() => {
+    mockDb = {
+      query: jest.fn(),
+      close: jest.fn()
+    };
+    service = new UserService(mockDb);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should create user successfully', async () => {
+    // Arrange
+    const userData = { name: 'Test User', email: 'test@example.com' };
+    mockDb.query.mockResolvedValueOnce({ id: 1, ...userData });
+
+    // Act
+    const result = await service.createUser(userData);
+
+    // Assert
+    expect(result).toEqual({ id: 1, ...userData });
+    expect(mockDb.query).toHaveBeenCalledWith(
+      expect.stringContaining('INSERT'),
+      expect.arrayContaining([userData.name, userData.email])
+    );
+  });
+});
+</example>
+
+<example type="invalid">
+// BAD: Poor test organization and multiple assertions
+test('user operations', async () => {
+  const service = new UserService();
+  
+  // Multiple unrelated assertions
+  const user = await service.createUser({ name: 'Test' });
+  expect(user).toBeDefined();
+  
+  const users = await service.getAllUsers();
+  expect(users.length).toBeGreaterThan(0);
+  
+  await service.deleteUser(user.id);
+  expect(await service.getUser(user.id)).toBeNull();
+});
+</example>
+
+## Critical Notes
+- NEVER skip error case testing
+- NEVER use non-deterministic values in tests
+- NEVER share state between tests
+- ALWAYS reset mocks between tests
+- ALWAYS use type-safe assertions
+- ALWAYS include both positive and negative test cases

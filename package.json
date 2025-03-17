@@ -4,7 +4,8 @@
   "description": "Agile workflow project with consolidated testing",
   "main": "index.js",
   "workspaces": [
-    "client"
+    "client",
+    "server"
   ],
   "scripts": {
     "test": "jest",

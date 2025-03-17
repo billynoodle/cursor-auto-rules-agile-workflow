@@ -1,6 +1,7 @@
 ---
-description: PROMPT for user input on Best Practices when implementing stories in the agile workflow
-globs: .ai/**/*.story.md
+description: 
+globs: 
+alwaysApply: false
 ---
 
 # Agile Best Practice Prompting Rule

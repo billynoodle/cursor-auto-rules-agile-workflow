@@ -1,0 +1,10 @@
+{
+  "testId": "tooltip-review-001",
+  "totalTooltips": 10,
+  "reviewedTooltips": 8,
+  "passedTooltips": 6,
+  "failedTooltips": 2,
+  "status": "passed",
+  "duration": 120,
+  "timestamp": "2025-03-12T01:50:18.618Z"
+}
