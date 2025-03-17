@@ -1,9 +1,4 @@
 ---
-description: 
-globs: **/*.{test,spec}.{ts,js,tsx,jsx}
-alwaysApply: false
----
- ---
 description: IMPLEMENT standardized testing practices to ENSURE comprehensive coverage, maintainability, and reliability across all test types
 globs: **/*.{test,spec}.{ts,js,tsx,jsx}
 ---
@@ -176,4 +171,4 @@ test('user operations', async () => {
 - NEVER share state between tests
 - ALWAYS reset mocks between tests
 - ALWAYS use type-safe assertions
-- ALWAYS include both positive and negative test cases
+- ALWAYS include both positive and negative test cases 

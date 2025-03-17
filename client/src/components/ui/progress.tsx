@@ -1,34 +1,29 @@
-import React from 'react';
-import * as ProgressPrimitive from '@radix-ui/react-progress';
-import { cn } from '../../utils/cn';
+import * as React from "react"
+import * as ProgressPrimitive from "@radix-ui/react-progress"
 
-interface ProgressProps {
-  value: number;
-  max?: number;
-  className?: string;
-  indicatorClassName?: string;
-}
+import { cn } from "@/lib/utils"
 
-export function Progress({
-  value,
-  max = 100,
+function Progress({
   className,
-  indicatorClassName,
-}: ProgressProps) {
-  const percentage = Math.min(100, Math.max(0, (value / max) * 100));
-
+  value,
+  ...props
+}: React.ComponentProps<typeof ProgressPrimitive.Root>) {
   return (
     <ProgressPrimitive.Root
-      className={cn('radix-progress-root', className)}
-      value={value}
-      max={max}
+      data-slot="progress"
+      className={cn(
+        "bg-primary/20 relative h-2 w-full overflow-hidden rounded-full",
+        className
+      )}
+      {...props}
     >
       <ProgressPrimitive.Indicator
-        className={cn('radix-progress-indicator', indicatorClassName)}
-        style={{ transform: `translateX(-${100 - percentage}%)` }}
+        data-slot="progress-indicator"
+        className="bg-primary h-full w-full flex-1 transition-all"
+        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
       />
     </ProgressPrimitive.Root>
-  );
+  )
 }
 
-export default Progress;
+export { Progress }

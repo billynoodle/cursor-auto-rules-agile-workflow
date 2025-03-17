@@ -61,6 +61,30 @@ interface Module {
     }
   };
 }
+
+### Module Navigation State Management
+```typescript
+interface ModuleNavigationState {
+  currentModuleId: string;
+  modules: {
+    [moduleId: string]: {
+      status: 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETE';
+      progress: number; // 0-100
+      timeRemaining: number; // minutes
+      isLocked: boolean;
+      prerequisites: string[]; // moduleIds that must be completed
+    }
+  };
+  overallProgress: number; // 0-100
+  timeRemaining: number; // total minutes remaining
+}
+
+interface ModuleSelectionEvent {
+  moduleId: string;
+  isLocked: boolean;
+  status: 'LOCKED' | 'AVAILABLE' | 'IN_PROGRESS' | 'COMPLETE';
+  currentProgress: number;
+}
 ```
 
 ### Custom Variable Schema

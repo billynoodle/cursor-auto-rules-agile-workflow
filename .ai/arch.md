@@ -9,6 +9,7 @@ A key architectural component is the Business Area Interconnectedness Analysis s
 |------------|-------------|
 | TypeScript | Primary language for both frontend and backend development, providing type safety and improved maintainability |
 | React | Frontend library for building the user interface with reusable components |
+| Radix UI | Unstyled, accessible component library for building high-quality web applications |
 | Redux | State management for the React application |
 | Node.js | Server-side JavaScript runtime for custom business logic and API endpoints |
 | Express | Web application framework for Node.js |
@@ -57,6 +58,10 @@ graph TD
 graph TD
     A[Assessment Module] -->|Uses| B[Question Engine]
     A -->|Uses| C[Response Collector]
+    A -->|Uses| N[Module Navigation]
+    N -->|Manages| O[Module State]
+    N -->|Controls| P[Progress Tracking]
+    N -->|Updates| Q[Module Status]
     C -->|Stores| D[Assessment Repository]
     E[Analysis Module] -->|Retrieves| D
     E -->|Uses| F[Benchmarking Service]
@@ -147,6 +152,35 @@ sequenceDiagram
     N->>A: Return Formatted Reports
     A->>U: Display Reports, Action Plans & Impact Visualizations
     A->>S: Store Reports & Action Plans
+```
+
+### Module Navigation Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant N as Navigation Component
+    participant M as Module State
+    participant A as Assessment System
+    participant S as Supabase
+    
+    U->>N: Select Module
+    N->>M: Check Module Status
+    M->>M: Validate Prerequisites
+    alt Module Locked
+        M->>N: Return Locked Status
+        N->>U: Display Lock Indicator
+    else Module Available
+        M->>N: Return Available Status
+        N->>A: Load Module Content
+        A->>S: Fetch Module Data
+        S->>A: Return Module Data
+        A->>U: Display Module
+        U->>A: Complete Module
+        A->>M: Update Progress
+        M->>N: Update Navigation State
+        N->>U: Update Progress Indicators
+    end
 ```
 
 ## Data Models
@@ -296,52 +330,52 @@ sequenceDiagram
 │   │   │   ├── /assessment  # Assessment-related components
 │   │   │   ├── /insights    # Insight and reporting components
 │   │   │   ├── /interconnect # Interconnectedness visualization components
-│   │   ├── /pages           # Page components
-│   │   ├── /hooks           # Custom React hooks
-│   │   ├── /services        # API service clients
-│   │   │   ├── /supabase    # Supabase client and services
-│   │   │   ├── /api         # Custom API service clients
-│   │   │   ├── /analysis    # Analysis service clients
-│   │   ├── /store           # Redux store configuration
-│   │   ├── /types           # TypeScript type definitions
-│   │   └── /utils           # Utility functions
-│   │       ├── /formatters  # Data formatting utilities
-│   │       ├── /analysis    # Analysis helper functions
-│   │       ├── /visualization # Visualization utilities
-│   │   ├── package.json         # Frontend dependencies
-│   │   └── tsconfig.json        # TypeScript configuration
-│   │
-│   ├── /server                  # Backend Node.js/Express application
-│   │   ├── /src                 # Source code
-│   │   │   ├── /api             # API routes and controllers
-│   │   │   ├── /config          # Configuration files
-│   │   │   ├── /middleware      # Express middleware
-│   │   │   ├── /services        # Business logic services
-│   │   │   │   ├── /assessment  # Assessment scoring and analysis
-│   │   │   │   ├── /reporting   # Report generation
-│   │   │   │   ├── /sop         # SOP generation services
-│   │   │   │   ├── /interconnect # Interconnectedness analysis services
-│   │   │   │   ├── /utils           # Utility functions
-│   │   │   │   └── /validation      # Input validation schemas
-│   │   │   ├── package.json         # Backend dependencies
+│   │   │   ├── /pages           # Page components
+│   │   │   ├── /hooks           # Custom React hooks
+│   │   │   ├── /services        # API service clients
+│   │   │   │   ├── /supabase    # Supabase client and services
+│   │   │   │   ├── /api         # Custom API service clients
+│   │   │   │   ├── /analysis    # Analysis service clients
+│   │   │   ├── /store           # Redux store configuration
+│   │   │   ├── /types           # TypeScript type definitions
+│   │   │   └── /utils           # Utility functions
+│   │   │       ├── /formatters  # Data formatting utilities
+│   │   │       ├── /analysis    # Analysis helper functions
+│   │   │       ├── /visualization # Visualization utilities
+│   │   │   ├── package.json         # Frontend dependencies
 │   │   │   └── tsconfig.json        # TypeScript configuration
 │   │   │
+│   │   ├── /server                  # Backend Node.js/Express application
+│   │   │   ├── /src                 # Source code
+│   │   │   │   ├── /api             # API routes and controllers
+│   │   │   │   ├── /config          # Configuration files
+│   │   │   │   ├── /middleware      # Express middleware
+│   │   │   │   ├── /services        # Business logic services
+│   │   │   │   │   ├── /assessment  # Assessment scoring and analysis
+│   │   │   │   │   ├── /reporting   # Report generation
+│   │   │   │   │   ├── /sop         # SOP generation services
+│   │   │   │   │   ├── /interconnect # Interconnectedness analysis services
+│   │   │   │   │   ├── /utils           # Utility functions
+│   │   │   │   │   └── /validation      # Input validation schemas
+│   │   │   │   ├── package.json         # Backend dependencies
+│   │   │   │   └── tsconfig.json        # TypeScript configuration
+│   │   │   │
 │   │   ├── /supabase                # Supabase configuration
-│   │   │   ├── /functions           # Edge Functions for simple operations
-│   │   │   ├── /migrations          # Database migrations
-│   │   │   └── /seed                # Seed data scripts
-│   │   │
+│   │   │   │   ├── /functions           # Edge Functions for simple operations
+│   │   │   │   ├── /migrations          # Database migrations
+│   │   │   │   └── /seed                # Seed data scripts
+│   │   │   │
 │   │   ├── /tests                   # Test files
-│   │   │   ├── /unit                # Unit tests
-│   │   │   │   ├── /services        # Service tests
-│   │   │   │   ├── /interconnect    # Interconnectedness analysis tests
-│   │   │   │   └── /integration         # Integration tests
-│   │   │   └── /e2e                 # End-to-end tests
-│   │   │
+│   │   │   │   ├── /unit                # Unit tests
+│   │   │   │   │   ├── /services        # Service tests
+│   │   │   │   │   ├── /interconnect    # Interconnectedness analysis tests
+│   │   │   │   │   └── /integration         # Integration tests
+│   │   │   │   └── /e2e                 # End-to-end tests
+│   │   │   │
 │   │   ├── /docs                    # Documentation
-│   │   │   ├── /api                 # API documentation
-│   │   │   └── /user                # User guides
-│   │   │
+│   │   │   │   ├── /api                 # API documentation
+│   │   │   │   └── /user                # User guides
+│   │   │   │
 │   │   ├── /scripts                 # Build and deployment scripts
 │   │   │
 │   │   └── docker-compose.yml       # Docker configuration

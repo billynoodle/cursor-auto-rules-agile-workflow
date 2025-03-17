@@ -1,163 +1,100 @@
 # Epic-1: Core Assessment Framework Development for Allied Health Practices
-# Story-2: Migrate Assessment Components to Radix UI for Enhanced Accessibility and Consistency
+# Story-2: Enhance UI Components with Radix UI for Improved Accessibility and User Experience
 
-## Story Description
+## This story has been split into multiple files for better organization and readability:
 
-**As a** developer
-**I want** to migrate our custom UI components to Radix UI
-**so that** we can provide a more accessible, consistent, and maintainable user interface
+- **[Story-2a.story.md](./story-2a.story.md)**: Core information, story definition, status, context, and estimation
+- **[Story-2b.story.md](./story-2b.story.md)**: Tasks 1-2 (Component Audit and Test Framework Updates)
+- **[Story-2c.story.md](./story-2c.story.md)**: Tasks 3-4 (Core Question Types and Input Components)
+   - Multiple choice with Radix Radio Group
+   - Likert scale with custom styling
+   - Matrix questions with Radix Table
+   - Ranking interface with drag-and-drop
+   - Numeric inputs with validation
+   - Text inputs with character count
+   - Question dependency handling
+   - Practice size scaling UI
+   
+- **[Story-2d.story.md](./story-2d.story.md)**: Tasks 5-6 (Module and Navigation Components)
+   - Module expansion/collapse
+   - Progress tracking
+   - Time estimation display
+   - Completion status indicators
+   - Navigation between modules
+   - Discipline-specific UI adjustments
+   
+- **[Story-2e.story.md](./story-2e.story.md)**: Tasks 7-8 (Score Visualization and Results)
+   - Score position indicators
+   - Benchmark comparisons
+   - Percentile displays
+   - RAG status indicators
+   - Action prompt cards
+   - Strength/weakness highlights
+   
+- **[Story-2f.story.md](./story-2f.story.md)**: Tasks 9-10 (Practice Configuration and Profiles)
+   - Practice size selection
+   - Discipline selection with multi-select
+   - Country/region selection
+   - Custom variable creation interface
+   - Profile management UI
+   
+- **[Story-2g.story.md](./story-2g.story.md)**: Tasks 11-12 (Resource Integration UI)
+   - SOP type selection
+   - Material finder interface
+   - Resource type filtering
+   - Relevance indicators
+   - Document preview components
+   
+- **[Story-2h.story.md](./story-2h.story.md)**: Tasks 13-14 (Enhanced Help System)
+   - Context-sensitive tooltips
+   - Help text with rich formatting
+   - Mobile-friendly help overlays
+   - Benchmark reference displays
+   - Impact area indicators
+   
+- **[Story-2i.story.md](./story-2i.story.md)**: Data Models/Schema Integration
+   - Type-safe component props
+   - Enum integration with UI
+   - Schema validation in forms
+   - Error boundary implementation
+   
+- **[Story-2j.story.md](./story-2j.story.md)**: Architecture and Patterns
+   - Component composition patterns
+   - State management integration
+   - Accessibility patterns
+   - Mobile responsiveness
+   - Performance optimization
+   
+- **[Story-2k.story.md](./story-2k.story.md)**: Dev Notes and Progress Log
 
-## Status
+## Alignment with Story-1
 
-Draft
+This story enhances UI components as they are developed in Story-1, following the research, design, and data model considerations from Story-1b, Story-1h, and Story-1i. Key integration points include:
 
-## Context
+1. Research-Driven Components (Story-1b)
+   - Practice size scaling
+   - Country-specific variants
+   - RAG model integration
+   - Score interpretation
+   - Discipline-specific plugins
 
-Currently, our assessment questionnaire uses custom HTML elements with basic CSS styling. While functional, this approach:
-- Requires manual implementation of accessibility features
-- May have inconsistencies across different components
-- Lacks some advanced interactive features
-- Requires more maintenance effort
+2. Data Model Integration (Story-1h)
+   - Complex enum handling
+   - Rich question schema support
+   - Conditional display logic
+   - Help system integration
+   - Material finder UI
 
-Radix UI is already installed in our project with the following components:
-- @radix-ui/react-accordion
-- @radix-ui/react-icons
-- @radix-ui/react-progress
-- @radix-ui/react-radio-group
-- @radix-ui/react-slot
-- @radix-ui/react-tooltip
+3. Module and Scoring (Story-1i)
+   - Progress visualization
+   - Time estimation
+   - Benchmark displays
+   - Score interpretation
+   - Practice profile integration
 
-This migration will enhance our UI while maintaining existing functionality.
-
-## Estimation
-
-Story Points: 3 (3 days human development = 30 minutes AI development)
-
-## Tasks
-
-1. - [ ] Setup and Configuration
-   1. - [ ] Write tests for Radix UI component integration
-   2. - [ ] Create shared theme configuration for Radix UI components
-   3. - [ ] Set up CSS variables for consistent styling
-   4. - [ ] Create utility functions for common Radix UI patterns
-
-2. - [ ] Question Component Migration
-   1. - [ ] Write tests for new Radix UI Question component
-   2. - [ ] Migrate radio buttons to @radix-ui/react-radio-group
-   3. - [ ] Implement tooltip using @radix-ui/react-tooltip
-   4. - [ ] Update numeric input styling
-   5. - [ ] Update text area styling
-   6. - [ ] Validate accessibility compliance
-   7. - [ ] Update Question component tests
-
-3. - [ ] QuestionModule Component Migration
-   1. - [ ] Write tests for new Radix UI QuestionModule component
-   2. - [ ] Migrate module expansion to @radix-ui/react-accordion
-   3. - [ ] Update progress bar to @radix-ui/react-progress
-   4. - [ ] Implement new animations
-   5. - [ ] Validate accessibility compliance
-   6. - [ ] Update QuestionModule component tests
-
-4. - [ ] QuestionnaireNavigation Component Migration
-   1. - [ ] Write tests for new Radix UI navigation component
-   2. - [ ] Update module selection interface
-   3. - [ ] Implement tooltips for locked modules
-   4. - [ ] Update progress indicators
-   5. - [ ] Enhance mobile menu interaction
-   6. - [ ] Validate accessibility compliance
-   7. - [ ] Update QuestionnaireNavigation component tests
-
-5. - [ ] AssessmentPage Integration
-   1. - [ ] Update AssessmentPage component to work with new components
-   2. - [ ] Implement page-level animations
-   3. - [ ] Add loading states
-   4. - [ ] Write integration tests
-   5. - [ ] Validate overall accessibility
-
-6. - [ ] Documentation and Cleanup
-   1. - [ ] Update component documentation
-   2. - [ ] Create usage examples
-   3. - [ ] Remove unused CSS
-   4. - [ ] Update README with new component information
-
-## Constraints
-
-- Must maintain existing functionality
-- Must pass all existing tests
-- Must maintain or improve accessibility
-- Must support mobile devices
-- Must work with existing state management
-
-## Data Models / Schema
-
-No changes to data models required. This is a UI-only update.
-
-## Structure
-
-Components to be updated:
-```
-client/src/components/assessment/
-├── Question.tsx
-├── Question.css
-├── QuestionModule.tsx
-├── QuestionModule.css
-├── QuestionnaireNavigation.tsx
-└── QuestionnaireNavigation.css
-```
-
-New files to be created:
-```
-client/src/styles/
-├── radix-theme.css
-└── variables.css
-
-client/src/components/ui/
-├── RadioGroup.tsx
-├── Tooltip.tsx
-├── Progress.tsx
-└── Accordion.tsx
-```
-
-## Diagrams
-
-```mermaid
-graph TD
-    A[Question Component] --> B[Radix RadioGroup]
-    A --> C[Radix Tooltip]
-    D[QuestionModule] --> E[Radix Accordion]
-    D --> F[Radix Progress]
-    G[QuestionnaireNavigation] --> C
-    G --> F
-```
-
-## Dev Notes
-
-### Component Migration Strategy
-
-1. Question Component:
-   - Replace native radio inputs with Radix RadioGroup
-   - Enhance help text with Radix Tooltip
-   - Maintain existing onChange handlers
-   - Add focus and hover animations
-
-2. QuestionModule:
-   - Replace custom expansion with Radix Accordion
-   - Update progress bar with Radix Progress
-   - Add smooth transitions
-
-3. QuestionnaireNavigation:
-   - Add tooltips for locked modules
-   - Enhance mobile menu interaction
-   - Improve progress visualization
-
-### Testing Strategy
-
-- Write new tests before migrating each component
-- Maintain existing test coverage
-- Add specific tests for Radix UI interactions
-- Test accessibility using @testing-library/jest-dom
-
-## Chat Command Log
-
-- User: Update all required documents and plan Radix UI migration
-- Agent: Creating new story for Radix UI migration 
+Each component will be migrated to Radix UI as it is developed in Story-1, ensuring:
+- Consistent design language
+- Built-in accessibility
+- Mobile responsiveness
+- Performance optimization
+- Type safety 

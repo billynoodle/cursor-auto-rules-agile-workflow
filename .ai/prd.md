@@ -65,12 +65,24 @@ The initial MVP will focus exclusively on physiotherapists, with a phased approa
 - Business Area Interconnectedness Analysis to identify how changes in one area impact other areas of the practice
 - Cross-domain impact visualizations showing the ripple effects of improvements across business areas
 - Prioritization algorithm that considers both direct impact and cross-domain influence
+- Module Navigation and Progress System:
+  - Clear visual indicators for module status (locked, available, in progress, complete)
+  - Prerequisites system preventing access to locked modules
+  - Real-time progress tracking at both module and overall assessment levels
+  - Time remaining indicators for each module and total assessment
+  - Smooth transitions between modules with state preservation
+  - Automatic unlocking of modules upon completion of prerequisites
+  - Visual feedback for module selection and interaction
+  - Accessibility features for keyboard navigation and screen readers
+  - Mobile-responsive navigation interface
+  - Progress persistence across sessions
 
 ### Non-functional Requirements
 - Intuitive user interface requiring no training to navigate, with progressive disclosure of complexity
 - Completion of full assessment in under 60 minutes with ability to save and resume
 - Clear, jargon-free language with tooltips for technical terms
 - Visual progress indicators and estimated completion time
+- Built with Radix UI components for maximum accessibility and customization
 - Secure data handling compliant with healthcare privacy regulations (including Australian Privacy Principles)
 - Responsive design for use on desktop, tablet, and mobile devices
 - Offline capability for data collection with later synchronization
