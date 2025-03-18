@@ -1,0 +1,127 @@
+---
+description: IMPLEMENT comprehensive agile workflow management to ENSURE effective project tracking and delivery
+globs: .ai/{epics,sprints,stories}/**/*
+---
+
+# Agile Management Standards
+
+<version>1.0.0</version>
+
+## Context
+- Applied when managing epics, sprints, and stories
+- Essential for tracking project progress
+- Critical for maintaining agile workflow
+- Important for team coordination
+
+## Requirements
+
+### 1. Epic Management
+- Store epics in .ai/epics/
+- Track epic status and progress
+- Link related stories
+- Monitor business value
+- Update completion metrics
+
+### 2. Sprint Management
+
+#### Sprint Documentation
+- Maintain current sprint in .ai/sprints/current.md
+- Archive completed sprints
+- Track sprint goals
+- Monitor velocity
+- Document blockers
+
+#### Sprint Retrospectives
+- Store in .ai/sprints/retrospectives/
+- Capture learnings
+- Track action items
+- Monitor improvements
+- Document outcomes
+
+### 3. Story Management
+
+#### Story Structure
+```markdown
+# Story Title
+
+## Metadata
+- Points: [1,2,3,5,8,13]
+- Sprint: SPRINT_ID
+- Epic: EPIC_ID
+- Status: [Todo, In Progress, Review, Done]
+- Dependencies: [STORY_IDs]
+
+## Description
+Clear, concise description of the requirement
+
+## Acceptance Criteria
+- [ ] Criterion 1
+- [ ] Criterion 2
+
+## Technical Notes
+- Implementation details
+- Architecture considerations
+
+## Progress
+- Updates with timestamps
+- Blockers and resolutions
+```
+
+### 4. Progress Tracking
+
+#### Metrics to Monitor
+- Sprint velocity
+- Epic completion
+- Story points delivered
+- Blockers resolved
+- Team capacity
+
+#### Documentation Updates
+- Update daily progress
+- Track story status
+- Monitor dependencies
+- Update burndown charts
+- Record velocity metrics
+
+## Examples
+
+### Effective Epic Documentation
+```markdown
+# User Authentication Epic
+
+## Overview
+Implement secure user authentication system
+
+## Stories
+- [x] AUTH-1: Basic login/logout
+- [ ] AUTH-2: Password reset
+- [ ] AUTH-3: 2FA implementation
+
+## Progress
+- Sprint 1: 30% complete
+- Sprint 2: 60% complete
+- Current: 75% complete
+
+## Metrics
+- Story Points: 34/45 completed
+- Stories: 8/12 completed
+- Sprints: 2/3 completed
+```
+
+### Ineffective Epic Documentation
+<example type="invalid">
+# Auth Epic
+- Do login stuff
+- Maybe add security
+- Status: working on it
+</example>
+
+## Critical Notes
+- NEVER skip metadata in stories
+- ALWAYS update progress metrics
+- NEVER leave dependencies untracked
+- ALWAYS document sprint outcomes
+- NEVER skip retrospectives
+- ALWAYS maintain burndown charts
+- NEVER ignore velocity metrics
+- ALWAYS link related stories 

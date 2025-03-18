@@ -2,9 +2,9 @@
  * Enum for assessment question types
  */
 export enum QuestionType {
-  SCALE = 'SCALE',
   MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
-  YES_NO = 'YES_NO',
+  LIKERT = 'LIKERT',
+  NUMERIC = 'NUMERIC',
   TEXT = 'TEXT'
 }
 
@@ -12,12 +12,15 @@ export enum QuestionType {
  * Enum for assessment categories
  */
 export enum AssessmentCategory {
-  FINANCIAL = 'Financial',
-  OPERATIONS = 'Operations',
-  COMPLIANCE = 'Compliance',
-  MARKETING = 'Marketing',
-  STAFFING = 'Staffing',
-  TECHNOLOGY = 'Technology'
+  FINANCIAL = 'FINANCIAL',
+  OPERATIONS = 'OPERATIONS',
+  MARKETING = 'MARKETING',
+  STAFFING = 'STAFFING',
+  COMPLIANCE = 'COMPLIANCE',
+  PATIENT_MANAGEMENT = 'PATIENT_MANAGEMENT',
+  FACILITIES = 'FACILITIES',
+  TECHNOLOGY = 'TECHNOLOGY',
+  AUTOMATION = 'AUTOMATION'
 }
 
 /**
@@ -35,19 +38,21 @@ export enum PracticeSize {
  * Enum for module status
  */
 export enum ModuleStatus {
-  LOCKED = 'LOCKED',
-  AVAILABLE = 'AVAILABLE',
+  NOT_STARTED = 'NOT_STARTED',
   IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED'
+  COMPLETED = 'COMPLETED',
+  LOCKED = 'LOCKED',
+  AVAILABLE = 'AVAILABLE'
 }
 
 /**
  * Interface for question option
  */
 export interface QuestionOption {
+  id: string;
+  text: string;
   value: string;
   score: number;
-  text: string;
 }
 
 /**
@@ -55,14 +60,14 @@ export interface QuestionOption {
  */
 export interface Question {
   id: string;
+  type: QuestionType;
   text: string;
-  type: 'MULTIPLE_CHOICE' | 'NUMERIC' | 'TEXT' | 'LIKERT_SCALE';
-  helpText?: string;
-  options?: Array<{
-    value: string;
-    score: number;
-    text: string;
-  }>;
+  description?: string;
+  options?: QuestionOption[];
+  required: boolean;
+  weight: number;
+  dependencies: string[];
+  tooltip?: string;
 }
 
 /**

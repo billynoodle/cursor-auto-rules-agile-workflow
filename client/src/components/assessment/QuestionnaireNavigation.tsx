@@ -115,7 +115,7 @@ export const QuestionnaireNavigation: React.FC<QuestionnaireNavigationProps> = (
       <button
         data-testid="mobile-menu-button"
         className="mobile-menu-button"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        onClick={() => setIsMenuOpen(prevState => !prevState)}
         aria-expanded={isMenuOpen}
         aria-controls="mobile-menu"
       >

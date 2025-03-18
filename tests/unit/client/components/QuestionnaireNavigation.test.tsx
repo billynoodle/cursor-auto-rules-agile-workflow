@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { QuestionnaireNavigation } from '../../../../client/src/components/assessment/QuestionnaireNavigation';
@@ -169,11 +169,11 @@ describe('QuestionnaireNavigation', () => {
       render(<QuestionnaireNavigation {...defaultProps} />);
       const menuButton = screen.getByTestId('mobile-menu-button');
       
-      // Use act to handle state updates
-      await userEvent.click(menuButton);
+      await act(async () => {
+        await userEvent.click(menuButton);
+      });
       
-      // Wait for the menu to appear
-      const mobileMenu = await screen.findByTestId('mobile-menu');
+      const mobileMenu = screen.getByTestId('mobile-menu');
       expect(mobileMenu).toHaveAttribute('aria-expanded', 'true');
     });
   });

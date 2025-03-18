@@ -1,0 +1,132 @@
+---
+description: IMPLEMENT consistent memory management to ENSURE reliable agent state and learning persistence
+globs: .ai/memory/**/*
+---
+
+# Agent Memory Management Standards
+
+<version>1.0.0</version>
+
+## Context
+- Applied when managing agent state and memory
+- Critical for maintaining context across sessions
+- Essential for learning from past interactions
+- Important for decision consistency
+
+## Requirements
+
+### 1. Memory Structure
+```
+.ai/memory/
+├── context/
+│   ├── current.json       # Current session state
+│   └── history/          # Historical context states
+├── decisions/
+│   ├── autonomous/       # Autonomous decision logs
+│   └── approved/        # User-approved decision logs
+└── preferences/
+    ├── user.json        # User preferences
+    └── project.json     # Project-specific settings
+```
+
+### 2. Context Management
+- Store current session state
+- Track active story/task
+- Record recent decisions
+- Maintain interaction history
+- Preserve critical paths
+
+### 3. Decision Storage
+- Log all decisions with metadata
+- Track decision outcomes
+- Store rationale and context
+- Link to affected resources
+- Maintain approval status
+
+### 4. Preference Management
+- Store user preferences
+- Track project settings
+- Record interaction patterns
+- Maintain format preferences
+- Remember common choices
+
+### 5. Memory Lifecycle
+- Regular state updates
+- Periodic cleanup of old data
+- Backup critical information
+- Version control integration
+- Recovery procedures
+
+## Examples
+
+### Effective Context State
+```json
+{
+  "sessionId": "s456",
+  "timestamp": "2024-03-18T10:30:00Z",
+  "activeStory": {
+    "epic": "epic-1",
+    "story": "story-1i",
+    "task": "data_models",
+    "progress": 0.75
+  },
+  "recentDecisions": [
+    "d123",
+    "d124",
+    "d125"
+  ],
+  "userPreferences": {
+    "codeStyle": "functional",
+    "documentationDetail": "high",
+    "approvalMode": "selective"
+  },
+  "projectContext": {
+    "phase": "implementation",
+    "priority": "data_models",
+    "constraints": [
+      "maintain_type_safety",
+      "ensure_extensibility"
+    ]
+  }
+}
+```
+
+### Effective User Preferences
+```json
+{
+  "userId": "u789",
+  "technical": {
+    "codeStyle": "functional",
+    "testingApproach": "tdd",
+    "documentationLevel": "detailed"
+  },
+  "workflow": {
+    "autonomyLevel": "high",
+    "approvalNeeded": [
+      "architecture_changes",
+      "security_updates"
+    ]
+  },
+  "communication": {
+    "detailLevel": "technical",
+    "feedbackFrequency": "high",
+    "preferredFormat": "markdown"
+  }
+}
+```
+
+### Ineffective Memory State
+<example type="invalid">
+{
+  "state": "working",
+  "preferences": "unknown"
+}
+</example>
+
+## Critical Notes
+- NEVER delete memory without backup
+- ALWAYS version control memory states
+- NEVER lose context between sessions
+- ALWAYS maintain preference history
+- NEVER overwrite critical decisions
+- ALWAYS validate memory integrity 

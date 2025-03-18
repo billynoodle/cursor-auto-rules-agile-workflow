@@ -1,0 +1,259 @@
+.results-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.responsive-section {
+  margin-bottom: 3rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+/* Summary Section */
+.summary-section {
+  text-align: center;
+}
+
+.practice-info {
+  margin: 2rem 0;
+}
+
+.practice-info h2 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.overall-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.score-meter {
+  width: 80%;
+  max-width: 400px;
+  height: 24px;
+  background: #f0f2f5;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  transition: width 0.5s ease-in-out;
+}
+
+.score-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+/* Category Results */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.category-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.category-score {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.category-details h4 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.category-details ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.category-details li {
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.category-details li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #4CAF50;
+}
+
+/* Recommendations */
+.recommendations-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.recommendation-card {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.recommendation-card button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.recommendation-header {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.priority-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.priority-high .priority-badge {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.priority-medium .priority-badge {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.priority-low .priority-badge {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.recommendation-details {
+  padding: 1.5rem;
+  background: white;
+  border-top: 1px solid #eee;
+}
+
+.impact {
+  margin: 1rem 1.5rem;
+  color: #666;
+}
+
+/* Custom Variables */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.metric-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.current-value, .benchmark {
+  text-align: center;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.value {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .results-container {
+    padding: 1rem;
+  }
+
+  .responsive-section {
+    padding: 1.5rem;
+  }
+
+  .categories-grid,
+  .recommendations-list,
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .score-meter {
+    width: 100%;
+  }
+
+  .category-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .category-score {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Accessibility Enhancements */
+:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+[role="meter"] {
+  border: 1px solid #ddd;
+}
+
+.recommendation-card button:focus {
+  box-shadow: 0 0 0 2px #2196F3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meter-fill {
+    transition: none;
+  }
+} 

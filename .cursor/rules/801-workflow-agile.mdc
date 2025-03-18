@@ -1,6 +1,7 @@
 ---
-description: @801 Must ALWAYS follow the steps outlined in this workflow to complete the project or goals fo the user
+description: 
 globs: 
+alwaysApply: false
 ---
 # Agile Workflow to be followed
 

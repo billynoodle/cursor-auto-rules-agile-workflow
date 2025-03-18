@@ -1,0 +1,166 @@
+.practice-size-selector {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.practice-size-selector h2 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.75rem;
+}
+
+.size-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.size-option {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.size-option:hover,
+.size-option.hovered {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.size-option.selected {
+  border-color: #4299e1;
+  background: #ebf8ff;
+}
+
+.size-content {
+  flex: 1;
+}
+
+.size-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.size-header h3 {
+  color: #2c3e50;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.size-range {
+  background: #e2e8f0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.size-description {
+  color: #718096;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.size-indicator {
+  margin-left: 2rem;
+}
+
+.radio-circle {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #cbd5e0;
+  border-radius: 50%;
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+
+.selected .radio-circle {
+  border-color: #4299e1;
+}
+
+.selected .radio-circle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: #4299e1;
+  border-radius: 50%;
+}
+
+.size-help {
+  margin-top: 2rem;
+  text-align: center;
+  color: #718096;
+  font-size: 0.95rem;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+/* Keyboard Focus Styles */
+.size-option:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .practice-size-selector {
+    padding: 1rem;
+  }
+
+  .size-option {
+    padding: 1rem;
+  }
+
+  .size-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .size-indicator {
+    margin-left: 1rem;
+  }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+  .size-option {
+    border: 1px solid ButtonText;
+  }
+
+  .selected .radio-circle {
+    border: 2px solid Highlight;
+  }
+
+  .selected .radio-circle::after {
+    background: Highlight;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .size-option {
+    transition: none;
+  }
+
+  .size-option:hover,
+  .size-option.hovered {
+    transform: none;
+  }
+} 

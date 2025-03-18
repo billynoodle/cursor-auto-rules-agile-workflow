@@ -1,0 +1,145 @@
+---
+description: IMPLEMENT sprint workflow to ENSURE consistent sprint planning and execution
+globs: .ai/sprints/**/*
+---
+
+# Sprint Workflow Standards
+
+<version>1.0.0</version>
+
+## Context
+- Used when starting a new sprint
+- Applied during sprint planning
+- Referenced for daily progress
+- Guides sprint completion
+
+## Requirements
+
+### Sprint Initialization
+```markdown
+1. Create sprint file:
+   .ai/sprints/SPRINT-{N}.md
+
+2. Set sprint metadata:
+   - Sprint Number: N
+   - Start Date: YYYY-MM-DD
+   - End Date: YYYY-MM-DD
+   - Story Points Target: X
+   - Team Capacity: Y story points
+   - Focus Areas: [list key objectives]
+
+3. Link active stories:
+   - Copy from backlog
+   - Update story status
+   - Set sprint assignments
+   - Check dependencies
+
+4. Create burndown chart:
+   ```mermaid
+   gantt
+       title Sprint Burndown
+       dateFormat YYYY-MM-DD
+       axisFormat %d
+       section Points
+       Ideal    : milestone, 0, 0d
+       Current  : milestone, 0, 0d
+   ```
+
+5. Set up daily tracking:
+   - Progress updates section
+   - Blocker tracking
+   - Velocity metrics
+   - Team notes
+```
+
+### Daily Operations
+```markdown
+1. Update sprint status:
+   - Mark completed stories
+   - Update story points
+   - Record blockers
+   - Update burndown
+
+2. Check sprint health:
+   - Velocity vs target
+   - Blocker resolution
+   - Dependencies status
+   - Risk assessment
+
+3. Plan next actions:
+   - Priority stories
+   - Blocker resolution
+   - Team coordination
+   - Resource needs
+```
+
+### Sprint Completion
+```markdown
+1. Finalize metrics:
+   - Stories completed
+   - Points delivered
+   - Velocity achieved
+   - Quality metrics
+
+2. Create retrospective:
+   .ai/sprints/retrospectives/SPRINT-{N}-retro.md
+   - What went well
+   - What needs improvement
+   - Action items
+   - Team feedback
+
+3. Archive sprint:
+   - Move to completed
+   - Update epic progress
+   - Link retrospective
+   - Record learnings
+```
+
+## Examples
+
+### Effective Sprint Initialization
+```markdown
+# Sprint-2: Authentication System Implementation
+
+## Metadata
+- Sprint: 2
+- Start: 2024-03-18
+- End: 2024-04-01
+- Points Target: 34
+- Team Capacity: 40 points
+- Focus: User Authentication
+
+## Stories
+- [ ] AUTH-1: Login System (13 points)
+- [ ] AUTH-2: Password Reset (8 points)
+- [ ] AUTH-3: 2FA Setup (13 points)
+
+## Sprint Goals
+1. Complete core authentication
+2. Implement security features
+3. Set up monitoring
+
+## Progress Tracking
+### Day 1 (2024-03-18)
+- Started AUTH-1
+- Environment setup complete
+- No blockers
+```
+
+### Ineffective Sprint Start
+<example type="invalid">
+# Sprint 2
+- Do auth stuff
+- Maybe add security
+- Will track progress later
+</example>
+
+## Critical Notes
+- NEVER start without clear goals
+- ALWAYS set measurable targets
+- NEVER skip daily updates
+- ALWAYS track blockers
+- NEVER leave metrics blank
+- ALWAYS plan next actions
+- NEVER ignore dependencies
+- ALWAYS document decisions 

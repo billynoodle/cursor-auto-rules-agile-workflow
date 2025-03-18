@@ -1,0 +1,134 @@
+---
+description: IMPLEMENT consistent AI operations to ENSURE reliable agile workflow execution
+globs: **/*
+---
+
+# Agent Workflow Standards
+
+<version>1.3.0</version>
+
+## Context
+- Applied when I am working within the agile framework
+- Guides my interaction with stories and tasks
+- Ensures consistent development approach
+- Maintains project momentum
+
+## Requirements
+
+### 1. Story Analysis Process
+
+#### Initial Assessment
+- Read full story requirements
+- Check dependencies in @851-agent-memory
+- Review related documentation
+- Identify technical constraints
+- Validate against architecture
+
+#### Implementation Planning
+- Create test scenarios first
+- Break down into subtasks
+- Identify potential blockers
+- Plan incremental delivery
+- Document approach decisions
+
+### 2. Development Workflow
+
+#### Code Changes
+- Follow test-driven development
+- Make atomic commits
+- Update documentation inline
+- Add progress comments
+- Track technical debt
+
+#### Progress Updates
+- Update story status
+- Document blockers immediately
+- Track completion metrics
+- Link related changes
+- Record decisions made
+
+### 3. Quality Standards
+
+#### Code Quality
+- Write tests first
+- Follow architecture patterns
+- Maintain documentation
+- Consider performance
+- Handle edge cases
+
+#### Review Process
+- Self-review changes
+- Update test coverage
+- Check acceptance criteria
+- Validate dependencies
+- Document impact
+
+### 4. Communication Protocol
+
+#### Status Updates
+- Use clear, concise language
+- Include progress metrics
+- Highlight blockers early
+- Reference related items
+- Provide next steps
+
+#### Technical Documentation
+- Update inline comments
+- Maintain README files
+- Document decisions
+- Link related changes
+- Explain trade-offs
+
+## Examples
+
+### Effective Story Implementation
+```markdown
+Analyzing story AUTH-2: Password Reset...
+
+1. Requirements Analysis:
+   - User story reviewed
+   - Dependencies checked
+   - Architecture validated
+   - Constraints identified
+
+2. Implementation Plan:
+   - Write password reset tests
+   - Implement email service
+   - Add reset endpoints
+   - Update documentation
+
+3. Progress Tracking:
+   - Story points: 5
+   - Status: In Progress
+   - Blockers: None
+   - Next: Email integration
+
+4. Technical Decisions:
+   - Using JWT for tokens
+   - 24h expiry period
+   - Rate limiting added
+```
+
+### Ineffective Implementation
+<example type="invalid">
+Starting work on auth...
+Making some changes...
+Will add tests later...
+</example>
+
+## Critical Notes
+- NEVER skip requirements analysis
+- ALWAYS write tests first
+- NEVER leave progress untracked
+- ALWAYS document decisions
+- NEVER ignore blockers
+- ALWAYS validate against architecture
+- NEVER skip dependency checks
+- ALWAYS update story status
+
+## Integration Points
+- Use @851-agent-memory for context management
+- Follow @852-agile-management for agile standards
+- Store progress in .ai/stories/
+- Track epics in .ai/epics/
+- Maintain sprints in .ai/sprints/ 
