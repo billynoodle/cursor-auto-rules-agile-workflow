@@ -88,9 +88,9 @@ export class AssessmentFlowController {
         user_id: this.userId,
         current_module_id: this.state.currentModuleId,
         current_question_id: this.state.currentQuestionId,
-        progress: this.state.progress,
-        completed_modules: this.state.completedModules,
-        is_complete: this.state.isComplete,
+        progress: 0,
+        completed_modules: [],
+        is_complete: false,
         status: 'draft'
       });
 
@@ -140,8 +140,16 @@ export class AssessmentFlowController {
     this.subscribers.forEach(subscriber => subscriber(this.getCurrentState()));
   }
 
-  public async saveAnswer(answer: Answer): Promise<void> {
-    if (!this.assessmentId) return;
+  public async saveAnswer(answer: Record<string, any>): Promise<void> {
+    if (!this.assessmentId) {
+      throw new Error('Assessment not initialized');
+    }
+
+    // Validate current question ID
+    const currentQuestion = this.questionMap.get(this.state.currentQuestionId);
+    if (!currentQuestion) {
+      throw new Error(`Invalid question ID: ${this.state.currentQuestionId}`);
+    }
 
     try {
       // Save answer to database
@@ -171,6 +179,12 @@ export class AssessmentFlowController {
     if (currentQuestionIndex < currentModule.questions.length - 1) {
       // Next question in current module
       this.state.currentQuestionId = currentModule.questions[currentQuestionIndex + 1].id;
+      
+      // Check if this was the last unanswered question in the module
+      const allQuestionsAnswered = currentModule.questions.every(q => this.state.answers[q.id]);
+      if (allQuestionsAnswered && !this.state.completedModules.includes(currentModule.id)) {
+        this.state.completedModules.push(currentModule.id);
+      }
     } else {
       // Move to next module
       const currentModuleIndex = this.modules.findIndex(m => m.id === currentModule.id);

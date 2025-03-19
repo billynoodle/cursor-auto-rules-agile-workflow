@@ -11,7 +11,10 @@ export interface QuestionOption {
 export interface Question {
   id: string;
   text: string;
-  type: 'text' | 'number' | 'boolean';
+  type: QuestionType;
+  moduleId: string;
+  weight: number;
+  options?: QuestionOption[];
 }
 
 export interface QuestionModule {
@@ -19,9 +22,10 @@ export interface QuestionModule {
   title: string;
   description: string;
   questions: Question[];
+  category: ModuleCategory;
 }
 
-export type Answer = string | number | boolean;
+export type Answer = Record<string, any>;
 
 export interface AssessmentState {
   currentModuleId: string;

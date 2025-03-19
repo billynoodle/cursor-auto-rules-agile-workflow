@@ -2,25 +2,6 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { Assessment, AssessmentAnswer, AssessmentStatus, DatabaseSchema } from '../types/database';
 import { z } from 'zod';
 
-// Validation schemas
-const assessmentSchema = z.object({
-  user_id: z.string().uuid(),
-  current_module_id: z.string(),
-  current_question_id: z.string(),
-  progress: z.number().min(0).max(100),
-  completed_modules: z.array(z.string()),
-  is_complete: z.boolean(),
-  status: z.enum(['draft', 'in_progress', 'completed', 'archived']),
-  metadata: z.record(z.unknown()).optional(),
-});
-
-const answerSchema = z.object({
-  assessment_id: z.string().uuid(),
-  question_id: z.string(),
-  answer: z.record(z.unknown()),
-  metadata: z.record(z.unknown()).optional(),
-});
-
 export class AssessmentError extends Error {
   constructor(
     message: string,
@@ -31,6 +12,31 @@ export class AssessmentError extends Error {
     this.name = 'AssessmentError';
   }
 }
+
+// Validation schemas
+const assessmentSchema = z.object({
+  id: z.string().uuid().optional(),
+  user_id: z.string().uuid(),
+  current_module_id: z.string(),
+  current_question_id: z.string(),
+  progress: z.number().min(0).max(100),
+  completed_modules: z.array(z.string()),
+  is_complete: z.boolean(),
+  status: z.enum(['draft', 'in_progress', 'completed', 'archived']),
+  metadata: z.record(z.unknown()).optional(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime()
+});
+
+const answerSchema = z.object({
+  id: z.string().uuid().optional(),
+  assessment_id: z.string().uuid(),
+  question_id: z.string(),
+  answer: z.record(z.unknown()),
+  metadata: z.record(z.unknown()).optional(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime()
+});
 
 export class AssessmentService {
   private supabase: SupabaseClient<DatabaseSchema>;
@@ -57,77 +63,143 @@ export class AssessmentService {
     });
   }
 
-  private async syncOfflineData() {
-    if (this.isSyncing || !navigator.onLine) return;
-    
-    this.isSyncing = true;
-    try {
-      while (this.syncQueue.length > 0) {
-        const syncOperation = this.syncQueue.shift();
-        if (syncOperation) {
-          await syncOperation();
-        }
+  private async syncOfflineData(): Promise<void> {
+    const offlineDataStr = localStorage.getItem('assessment_offline_data');
+    if (!offlineDataStr) return;
+
+    const offlineDataArray = JSON.parse(offlineDataStr);
+    const syncPromises: Promise<void>[] = [];
+
+    for (const [key, data] of offlineDataArray) {
+      if (key.startsWith('assessment_')) {
+        const { id, ...assessmentData } = data as Assessment;
+        syncPromises.push(
+          (async () => {
+            const { error } = await this.supabase
+              .from('assessments')
+              .insert(assessmentData)
+              .select()
+              .single();
+
+            if (error) {
+              throw new AssessmentError(
+                error.message,
+                error.code,
+                error
+              );
+            }
+          })()
+        );
+      } else if (key.startsWith('answer_')) {
+        const { id, ...answerData } = data as AssessmentAnswer;
+        syncPromises.push(
+          (async () => {
+            const { error } = await this.supabase
+              .from('assessment_answers')
+              .insert(answerData)
+              .select()
+              .single();
+
+            if (error) {
+              throw new AssessmentError(
+                error.message,
+                error.code,
+                error
+              );
+            }
+          })()
+        );
       }
-      
-      // Clear offline store after successful sync
-      this.offlineStore.clear();
+    }
+
+    try {
+      await Promise.all(syncPromises);
+      // Clear offline data after successful sync
       localStorage.removeItem('assessment_offline_data');
     } catch (error) {
-      console.error('Error syncing offline data:', error);
-    } finally {
-      this.isSyncing = false;
+      throw new AssessmentError(
+        'Failed to sync offline data',
+        'SYNC_ERROR',
+        error
+      );
     }
   }
 
-  private saveToOfflineStore(key: string, data: unknown) {
-    this.offlineStore.set(key, data);
-    localStorage.setItem('assessment_offline_data', JSON.stringify(Array.from(this.offlineStore.entries())));
+  // Add a method to check online status and trigger sync
+  public async checkOnlineStatus(): Promise<void> {
+    if (navigator.onLine) {
+      await this.syncOfflineData();
+    }
   }
 
-  async createAssessment(assessment: Omit<Assessment, 'id' | 'created_at' | 'updated_at'>): Promise<Assessment> {
-    try {
-      // Validate input
-      assessmentSchema.parse(assessment);
+  // Add event listeners for online/offline status
+  public setupOfflineSync(): void {
+    window.addEventListener('online', async () => {
+      await this.syncOfflineData();
+    });
+  }
 
-      if (!navigator.onLine) {
-        const tempId = `temp_${Date.now()}`;
-        const offlineAssessment = {
-          id: tempId,
-          ...assessment,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
-        
-        this.saveToOfflineStore(`assessment_${tempId}`, offlineAssessment);
-        this.syncQueue.push(async () => {
-          const { data, error } = await this.supabase
+  private saveToOfflineStore(key: string, data: unknown) {
+    const offlineDataStr = localStorage.getItem('assessment_offline_data');
+    const offlineData = offlineDataStr ? JSON.parse(offlineDataStr) : [];
+    offlineData.push([key, data]);
+    localStorage.setItem('assessment_offline_data', JSON.stringify(offlineData));
+  }
+
+  public async createAssessment(data: Omit<Assessment, 'id' | 'created_at' | 'updated_at'>): Promise<Assessment> {
+    try {
+      // Add timestamps
+      const now = new Date().toISOString();
+      const assessmentData = {
+        ...data,
+        created_at: now,
+        updated_at: now
+      };
+
+      // Validate input data
+      const validatedData = assessmentSchema.parse(assessmentData);
+
+      if (navigator.onLine) {
+        try {
+          const { data: result, error } = await this.supabase
             .from('assessments')
-            .insert(assessment)
+            .insert(validatedData)
             .select()
             .single();
-          
-          if (error) throw error;
-          return data;
-        });
-        
-        return offlineAssessment as Assessment;
+
+          if (error) {
+            throw new AssessmentError(
+              'Failed to create assessment in database',
+              'DB_ERROR',
+              error
+            );
+          }
+
+          if (!result) {
+            throw new AssessmentError(
+              'No assessment data returned after creation',
+              'CREATE_ERROR'
+            );
+          }
+
+          return result;
+        } catch (dbError) {
+          throw new AssessmentError(
+            'Failed to create assessment',
+            'CREATE_ERROR',
+            dbError
+          );
+        }
+      } else {
+        // Generate a temporary ID for offline storage
+        const offlineId = `assessment_${Date.now()}`;
+        const offlineAssessment = {
+          ...validatedData,
+          id: offlineId
+        };
+        this.saveToOfflineStore(offlineId, offlineAssessment);
+        return offlineAssessment;
       }
-
-      const { data, error } = await this.supabase
-        .from('assessments')
-        .insert(assessment)
-        .select()
-        .single();
-
-      if (error) {
-        throw new AssessmentError(
-          'Failed to create assessment',
-          'CREATE_FAILED',
-          error
-        );
-      }
-
-      return data;
     } catch (error) {
       if (error instanceof z.ZodError) {
         throw new AssessmentError(
@@ -136,25 +208,19 @@ export class AssessmentService {
           error
         );
       }
-      throw error;
+      if (error instanceof AssessmentError) {
+        throw error;
+      }
+      throw new AssessmentError(
+        'Failed to create assessment',
+        'CREATE_ERROR',
+        error
+      );
     }
   }
 
-  async getAssessment(id: string): Promise<Assessment | null> {
-    try {
-      // Check offline store first
-      const offlineData = this.offlineStore.get(`assessment_${id}`);
-      if (offlineData) {
-        return offlineData as Assessment;
-      }
-
-      if (!navigator.onLine) {
-        throw new AssessmentError(
-          'Cannot fetch assessment while offline',
-          'OFFLINE_ERROR'
-        );
-      }
-
+  public async getAssessment(id: string): Promise<Assessment> {
+    if (navigator.onLine) {
       const { data, error } = await this.supabase
         .from('assessments')
         .select()
@@ -164,20 +230,41 @@ export class AssessmentService {
 
       if (error) {
         throw new AssessmentError(
-          'Failed to fetch assessment',
-          'FETCH_FAILED',
+          error.message,
+          error.code,
           error
         );
       }
 
+      if (!data) {
+        throw new AssessmentError(
+          'Assessment not found',
+          'NOT_FOUND'
+        );
+      }
+
       return data;
-    } catch (error) {
-      if (error instanceof AssessmentError) throw error;
-      throw new AssessmentError(
-        'Unexpected error fetching assessment',
-        'UNKNOWN_ERROR',
-        error
-      );
+    } else {
+      // Check offline store
+      const offlineDataStr = localStorage.getItem('assessment_offline_data');
+      if (!offlineDataStr) {
+        throw new AssessmentError(
+          'No offline data available',
+          'OFFLINE_DATA_NOT_FOUND'
+        );
+      }
+
+      const offlineData = JSON.parse(offlineDataStr);
+      const assessment = offlineData.find(([key, _]: [string, unknown]) => key === `assessment_${id}`)?.[1] as Assessment | undefined;
+
+      if (!assessment) {
+        throw new AssessmentError(
+          'Assessment not found in offline store',
+          'NOT_FOUND'
+        );
+      }
+
+      return assessment;
     }
   }
 
@@ -189,40 +276,36 @@ export class AssessmentService {
       }
 
       if (!navigator.onLine) {
-        const existingData = await this.getAssessment(id);
-        if (!existingData) {
+        const offlineDataStr = localStorage.getItem('assessment_offline_data');
+        const offlineData = offlineDataStr ? JSON.parse(offlineDataStr) : [];
+        const assessmentIndex = offlineData.findIndex(([key, _]: [string, any]) => key === `assessment_${id}`);
+        
+        if (assessmentIndex === -1) {
           throw new AssessmentError(
             'Assessment not found in offline store',
             'NOT_FOUND'
           );
         }
 
+        const existingData = offlineData[assessmentIndex][1] as Assessment;
         const updatedAssessment = {
           ...existingData,
           ...update,
-          updated_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         };
 
-        this.saveToOfflineStore(`assessment_${id}`, updatedAssessment);
-        this.syncQueue.push(async () => {
-          const { data, error } = await this.supabase
-            .from('assessments')
-            .update(update)
-            .eq('id', id)
-            .is('deleted_at', null)
-            .select()
-            .single();
+        offlineData[assessmentIndex] = [`assessment_${id}`, updatedAssessment];
+        localStorage.setItem('assessment_offline_data', JSON.stringify(offlineData));
 
-          if (error) throw error;
-          return data;
-        });
-
-        return updatedAssessment as Assessment;
+        return updatedAssessment;
       }
 
       const { data, error } = await this.supabase
         .from('assessments')
-        .update(update)
+        .update({
+          ...update,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', id)
         .is('deleted_at', null)
         .select()
@@ -245,7 +328,8 @@ export class AssessmentService {
           error
         );
       }
-      throw error;
+      if (error instanceof AssessmentError) throw error;
+      throw new AssessmentError('Failed to update assessment', 'UPDATE_ERROR', error);
     }
   }
 
@@ -263,50 +347,60 @@ export class AssessmentService {
     if (error) throw error;
   }
 
-  async saveAnswer(answer: Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'>): Promise<AssessmentAnswer> {
+  public async saveAnswer(data: Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'>): Promise<AssessmentAnswer> {
     try {
-      // Validate input
-      answerSchema.parse(answer);
+      // Add timestamps
+      const now = new Date().toISOString();
+      const answerData = {
+        ...data,
+        created_at: now,
+        updated_at: now
+      };
 
-      if (!navigator.onLine) {
-        const tempId = `temp_${Date.now()}`;
-        const offlineAnswer = {
-          id: tempId,
-          ...answer,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
+      // Validate input data
+      const validatedData = answerSchema.parse(answerData);
 
-        this.saveToOfflineStore(`answer_${tempId}`, offlineAnswer);
-        this.syncQueue.push(async () => {
-          const { data, error } = await this.supabase
+      if (navigator.onLine) {
+        try {
+          const { data: result, error } = await this.supabase
             .from('assessment_answers')
-            .insert(answer)
+            .insert(validatedData)
             .select()
             .single();
 
-          if (error) throw error;
-          return data;
-        });
+          if (error) {
+            throw new AssessmentError(
+              'Failed to save answer in database',
+              'DB_ERROR',
+              error
+            );
+          }
 
-        return offlineAnswer as AssessmentAnswer;
+          if (!result) {
+            throw new AssessmentError(
+              'No answer data returned after save',
+              'SAVE_ERROR'
+            );
+          }
+
+          return result;
+        } catch (dbError) {
+          throw new AssessmentError(
+            'Failed to save answer',
+            'SAVE_ERROR',
+            dbError
+          );
+        }
+      } else {
+        // Generate a temporary ID for offline storage
+        const offlineId = `answer_${Date.now()}`;
+        const offlineAnswer = {
+          ...validatedData,
+          id: offlineId
+        };
+        this.saveToOfflineStore(offlineId, offlineAnswer);
+        return offlineAnswer;
       }
-
-      const { data, error } = await this.supabase
-        .from('assessment_answers')
-        .insert(answer)
-        .select()
-        .single();
-
-      if (error) {
-        throw new AssessmentError(
-          'Failed to save answer',
-          'SAVE_FAILED',
-          error
-        );
-      }
-
-      return data;
     } catch (error) {
       if (error instanceof z.ZodError) {
         throw new AssessmentError(
@@ -315,54 +409,173 @@ export class AssessmentService {
           error
         );
       }
-      throw error;
+      if (error instanceof AssessmentError) {
+        throw error;
+      }
+      throw new AssessmentError(
+        'Failed to save answer',
+        'SAVE_ERROR',
+        error
+      );
     }
   }
 
-  async getAnswers(assessmentId: string): Promise<AssessmentAnswer[]> {
-    const { data, error } = await this.supabase
-      .from('assessment_answers')
-      .select()
-      .eq('assessment_id', assessmentId)
-      .is('deleted_at', null);
+  public async getAnswers(assessmentId: string): Promise<AssessmentAnswer[]> {
+    if (navigator.onLine) {
+      const { data, error } = await this.supabase
+        .from('assessment_answers')
+        .select()
+        .eq('assessment_id', assessmentId);
 
-    if (error) throw error;
-    return data;
-  }
+      if (error) {
+        throw new AssessmentError(
+          error.message,
+          error.code,
+          error
+        );
+      }
 
-  async updateAnswer(
-    assessmentId: string,
-    questionId: string,
-    update: Partial<Omit<AssessmentAnswer, 'id' | 'assessment_id' | 'question_id' | 'created_at' | 'updated_at'>>
-  ): Promise<AssessmentAnswer> {
-    const { data, error } = await this.supabase
-      .from('assessment_answers')
-      .update(update)
-      .eq('assessment_id', assessmentId)
-      .eq('question_id', questionId)
-      .is('deleted_at', null)
-      .select()
-      .single();
+      return data || [];
+    } else {
+      // Check offline store
+      const offlineDataStr = localStorage.getItem('assessment_offline_data');
+      if (!offlineDataStr) {
+        return [];
+      }
 
-    if (error) throw error;
-    return data;
-  }
+      const offlineData = JSON.parse(offlineDataStr);
+      const answers = offlineData
+        .filter(([key, _]: [string, unknown]) => key.startsWith(`answer_${assessmentId}`))
+        .map(([_, data]: [string, AssessmentAnswer]) => data);
 
-  async getUserAssessments(userId: string, status?: AssessmentStatus): Promise<Assessment[]> {
-    let query = this.supabase
-      .from('assessments')
-      .select()
-      .eq('user_id', userId)
-      .is('deleted_at', null);
-
-    if (status) {
-      query = query.eq('status', status);
+      return answers;
     }
+  }
 
-    const { data, error } = await query;
+  public async updateAnswer(id: string, update: Partial<Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'>>): Promise<AssessmentAnswer> {
+    try {
+      // Validate update data
+      if (Object.keys(update).length > 0) {
+        answerSchema.partial().parse(update);
+      }
 
-    if (error) throw error;
-    return data;
+      const now = new Date().toISOString();
+      const updateData = {
+        ...update,
+        updated_at: now
+      };
+
+      if (navigator.onLine) {
+        try {
+          const { data: result, error } = await this.supabase
+            .from('assessment_answers')
+            .update(updateData)
+            .eq('id', id)
+            .select()
+            .single();
+
+          if (error) {
+            throw new AssessmentError(
+              'Failed to update answer in database',
+              'DB_ERROR',
+              error
+            );
+          }
+
+          if (!result) {
+            throw new AssessmentError(
+              'No answer data returned after update',
+              'UPDATE_ERROR'
+            );
+          }
+
+          return result;
+        } catch (dbError) {
+          throw new AssessmentError(
+            'Failed to update answer',
+            'UPDATE_ERROR',
+            dbError
+          );
+        }
+      } else {
+        // Update in offline store
+        const offlineDataStr = localStorage.getItem('assessment_offline_data');
+        if (!offlineDataStr) {
+          throw new AssessmentError(
+            'No offline data available',
+            'OFFLINE_DATA_NOT_FOUND'
+          );
+        }
+
+        const offlineDataArray = JSON.parse(offlineDataStr);
+        const offlineData = new Map(offlineDataArray);
+        const answer = offlineData.get(`answer_${id}`);
+
+        if (!answer) {
+          throw new AssessmentError(
+            'Answer not found in offline store',
+            'NOT_FOUND'
+          );
+        }
+
+        const updatedAnswer = {
+          ...answer,
+          ...updateData
+        };
+
+        this.saveToOfflineStore(`answer_${id}`, updatedAnswer);
+        return updatedAnswer as AssessmentAnswer;
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw new AssessmentError(
+          'Invalid answer data',
+          'VALIDATION_ERROR',
+          error
+        );
+      }
+      if (error instanceof AssessmentError) {
+        throw error;
+      }
+      throw new AssessmentError(
+        'Failed to update answer',
+        'UPDATE_ERROR',
+        error
+      );
+    }
+  }
+
+  public async getUserAssessments(userId: string, status?: AssessmentStatus): Promise<Assessment[]> {
+    try {
+      let query = this.supabase
+        .from('assessments')
+        .select()
+        .eq('user_id', userId)
+        .is('deleted_at', null);
+
+      if (status) {
+        query = query.eq('status', status);
+      }
+
+      const { data: result, error } = await query;
+
+      if (error) {
+        throw new AssessmentError(
+          error.message,
+          error.code,
+          error
+        );
+      }
+
+      return result || [];
+    } catch (error) {
+      if (error instanceof AssessmentError) throw error;
+      throw new AssessmentError(
+        'Failed to fetch user assessments',
+        'FETCH_ERROR',
+        error
+      );
+    }
   }
 
   // New method for real-time updates

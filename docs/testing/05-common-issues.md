@@ -1,468 +1,367 @@
 # Common Testing Issues and Solutions
 
-## React Hook Errors
+## Overview
 
-### The Problem
+This document outlines common testing issues encountered in our application and their solutions. It serves as a reference for troubleshooting test failures and maintaining test quality.
+
+## Mock Implementation Issues
+
+### 1. Supabase Mock Chain Issues
+
+#### Problem
 ```typescript
-TypeError: Cannot read properties of null (reading 'useState')
-```
-
-This error occurs when:
-1. React hooks are called outside a React component
-2. The test environment isn't properly set up
-3. Component isn't wrapped in necessary providers
-
-### The Solutions
-
-1. **Proper Test Setup**
-```typescript
-// setupTests.ts
-import '@testing-library/jest-dom';
-const React = jest.requireActual('react');
-
-// Don't mock React
-jest.mock('react', () => ({
-  ...React,
-  // Only mock specific functions if needed
-}));
-```
-
-2. **Correct Component Wrapping**
-```typescript
-// Wrong
-render(<MyComponent />);
-
-// Right
-render(
-  <React.StrictMode>
-    <MyComponent />
-  </React.StrictMode>
-);
-```
-
-3. **Provider Wrapping**
-```typescript
-const wrapper = ({ children }) => (
-  <Provider>
-    {children}
-  </Provider>
-);
-
-render(<MyComponent />, { wrapper });
-```
-
-## React 18 and Hooks Issues
-
-### Invalid Hook Call Error
-```
-Error: Invalid hook call. Hooks can only be called inside of the body of a function component.
-```
-
-#### Common Causes
-1. Multiple React versions in the project
-2. Hooks called outside React components
-3. Test environment not properly initialized
-
-#### Solutions
-1. Ensure proper React initialization in `setupTests.ts`:
-```typescript
-import * as ReactDOM from 'react-dom/client';
-import { createElement } from 'react';
-import { act } from '@testing-library/react';
-
-const rootElement = document.createElement('div');
-rootElement.id = 'root';
-document.body.appendChild(rootElement);
-
-beforeAll(async () => {
-  const root = ReactDOM.createRoot(rootElement);
-  await act(async () => {
-    root.render(createElement('div'));
-  });
-});
-```
-
-2. Check for duplicate React installations:
-```bash
-npm ls react
-npm ls react-dom
-```
-
-3. Ensure components are wrapped in proper test providers:
-```typescript
-import { render } from '@testing-library/react';
-
-const AllTheProviders = ({ children }) => {
-  return (
-    <React.StrictMode>
-      {/* Add other providers as needed */}
-      {children}
-    </React.StrictMode>
-  );
+// Error: Property 'setMockData' does not exist on type 'PostgrestQueryBuilder'
+const mockChain = {
+  select: jest.fn().mockReturnValue({
+    setMockData: jest.fn()  // Invalid mock implementation
+  })
 };
-
-const customRender = (ui, options) =>
-  render(ui, { wrapper: AllTheProviders, ...options });
 ```
 
-### Act Warning
-```
-Warning: An update to Component inside a test was not wrapped in act(...).
-```
-
-#### Solutions
-1. Wrap state updates in `act()`:
+#### Solution
 ```typescript
-import { act } from '@testing-library/react';
+// Correct implementation
+const mockChain = {
+  insert: jest.fn().mockReturnValue({
+    select: jest.fn().mockReturnValue({
+      single: jest.fn().mockResolvedValue({
+        data: mockData,
+        error: null
+      })
+    })
+  })
+};
+(mockSupabase.from as jest.Mock).mockReturnValue(mockChain);
+```
 
-test('component updates state', async () => {
-  await act(async () => {
-    // Perform state updates here
+### 2. Local Storage Mocking
+
+#### Problem
+```typescript
+// Error: localStorage is not defined
+localStorage.setItem('key', 'value');
+```
+
+#### Solution
+```typescript
+// Import and setup mock
+import { localStorageMock } from '../../../mocks/localStorage';
+
+// Setup in beforeEach
+beforeEach(() => {
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock
   });
 });
-```
 
-2. Use `findBy` queries for async updates:
-```typescript
-const element = await screen.findByText('Updated Text');
+// Use in tests
+it('should store data locally', () => {
+  localStorage.setItem('key', 'value');
+  expect(localStorage.setItem).toHaveBeenCalledWith('key', 'value');
+});
 ```
 
 ## Async Testing Issues
 
-```mermaid
-graph TD
-    A[Async Test] --> B{Common Issues}
-    B --> C[Test Finishes Too Early]
-    B --> D[Unhandled Promises]
-    B --> E[Race Conditions]
-    
-    C --> F[Use await]
-    D --> G[Use try/catch]
-    E --> H[Use findBy queries]
-```
+### 1. Unhandled Promise Rejections
 
-### 1. Test Finishes Too Early
-
+#### Problem
 ```typescript
-// Wrong
-it('loads data', () => {
-  render(<DataComponent />);
-  expect(screen.getByText('Loaded')).toBeInTheDocument();
-});
-
-// Right
-it('loads data', async () => {
-  render(<DataComponent />);
-  await screen.findByText('Loaded');
-});
-```
-
-### 2. Unhandled Promise Rejections
-
-```typescript
-// Wrong
-it('handles errors', async () => {
-  render(<DataComponent />);
-  fireEvent.click(screen.getByText('Load'));
-});
-
-// Right
-it('handles errors', async () => {
-  render(<DataComponent />);
-  await act(async () => {
-    fireEvent.click(screen.getByText('Load'));
+// Warning: Unhandled Promise Rejection
+it('should handle errors', () => {
+  service.method().catch(error => {
+    expect(error).toBeDefined();
   });
 });
 ```
 
-### 3. Race Conditions
-
+#### Solution
 ```typescript
-// Wrong
-it('updates list', async () => {
-  render(<List />);
-  fireEvent.click(screen.getByText('Add'));
-  expect(screen.getByText('New Item')).toBeInTheDocument();
-});
-
-// Right
-it('updates list', async () => {
-  render(<List />);
-  fireEvent.click(screen.getByText('Add'));
-  await screen.findByText('New Item');
+it('should handle errors', async () => {
+  await expect(service.method()).rejects.toThrow('Expected error');
 });
 ```
 
-## Mock Issues
+### 2. Race Conditions
 
-### 1. Mock Not Working
-
+#### Problem
 ```typescript
-// Wrong
-jest.mock('./api');
-import { api } from './api';
-
-// Right
-jest.mock('./api', () => ({
-  api: {
-    getData: jest.fn().mockResolvedValue({ data: 'test' })
-  }
-}));
-```
-
-### 2. Mock Not Resetting
-
-```typescript
-// Wrong
-const mockFn = jest.fn();
-
-// Right
-beforeEach(() => {
-  jest.clearAllMocks();
+// Flaky test due to timing
+it('should update after delay', () => {
+  component.update();
+  expect(screen.getByText('Updated')).toBeInTheDocument();
 });
-const mockFn = jest.fn();
 ```
 
-### 3. Complex Mock Implementation
-
+#### Solution
 ```typescript
-// Wrong
-jest.mock('./complex-module');
+it('should update after delay', async () => {
+  component.update();
+  await screen.findByText('Updated');
+  expect(screen.getByText('Updated')).toBeInTheDocument();
+});
+```
 
-// Right
-jest.mock('./complex-module', () => {
-  const originalModule = jest.requireActual('./complex-module');
-  return {
-    ...originalModule,
-    complexFunction: jest.fn().mockImplementation((arg) => {
-      if (arg === 'test') return 'mocked';
-      return originalModule.complexFunction(arg);
+## Component Testing Issues
+
+### 1. Event Handler Testing
+
+#### Problem
+```typescript
+// Error: Unable to fire event
+fireEvent.click(button);
+expect(onClickMock).toHaveBeenCalled();
+```
+
+#### Solution
+```typescript
+it('should handle click events', () => {
+  const onClickMock = jest.fn();
+  render(<Button onClick={onClickMock} />);
+  
+  const button = screen.getByRole('button');
+  fireEvent.click(button);
+  
+  expect(onClickMock).toHaveBeenCalledTimes(1);
+});
+```
+
+### 2. Async Component Updates
+
+#### Problem
+```typescript
+// Error: Element not found
+render(<AsyncComponent />);
+expect(screen.getByText('Loaded')).toBeInTheDocument();
+```
+
+#### Solution
+```typescript
+it('should show loaded state', async () => {
+  render(<AsyncComponent />);
+  
+  // Wait for loading state
+  expect(screen.getByText('Loading')).toBeInTheDocument();
+  
+  // Wait for loaded state
+  await screen.findByText('Loaded');
+  expect(screen.queryByText('Loading')).not.toBeInTheDocument();
+});
+```
+
+## Service Testing Issues
+
+### 1. Database Connection Mocking
+
+#### Problem
+```typescript
+// Error: Database connection failed
+it('should save data', async () => {
+  await service.saveData(data);
+});
+```
+
+#### Solution
+```typescript
+it('should save data', async () => {
+  // Mock database connection
+  const mockChain = {
+    insert: jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        single: jest.fn().mockResolvedValue({
+          data: mockData,
+          error: null
+        })
+      })
     })
   };
+  (mockSupabase.from as jest.Mock).mockReturnValue(mockChain);
+
+  // Test service method
+  const result = await service.saveData(data);
+  expect(result).toEqual(mockData);
 });
 ```
 
-## DOM Issues
+### 2. Error Handling
 
-### 1. Element Not Found
-
+#### Problem
 ```typescript
-// Wrong
-expect(screen.getByText('Loading...')).toBeInTheDocument();
-
-// Right
-// For elements that might not exist yet
-await screen.findByText('Loading...');
-
-// For elements that might not exist at all
-expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
-```
-
-### 2. Event Handling
-
-```typescript
-// Wrong
-fireEvent.click(button);
-expect(result).toBe('clicked');
-
-// Right
-await act(async () => {
-  fireEvent.click(button);
+// Inconsistent error handling
+it('should handle errors', async () => {
+  try {
+    await service.method();
+  } catch (error) {
+    expect(error).toBeDefined();
+  }
 });
-expect(result).toBe('clicked');
 ```
 
-### 3. Form Interactions
-
+#### Solution
 ```typescript
-// Wrong
-fireEvent.change(input, 'new value');
+it('should handle errors', async () => {
+  // Mock error response
+  const mockError = new Error('Database error');
+  (mockSupabase.from as jest.Mock).mockImplementation(() => {
+    throw mockError;
+  });
 
-// Right
-fireEvent.change(input, { target: { value: 'new value' } });
+  // Test error handling
+  await expect(service.method()).rejects.toThrow('Database error');
+});
 ```
 
-## Context and Provider Issues
+## Test Setup Issues
 
-### 1. Missing Provider
+### 1. Mock Reset
 
+#### Problem
 ```typescript
-// Wrong
-render(<ComponentThatUsesContext />);
-
-// Right
-const wrapper = ({ children }) => (
-  <ContextProvider value={mockValue}>
-    {children}
-  </ContextProvider>
-);
-render(<ComponentThatUsesContext />, { wrapper });
+// Test interference due to shared mocks
+describe('Service', () => {
+  it('test 1', () => {
+    mockFn.mockReturnValue(true);
+  });
+  
+  it('test 2', () => {
+    // mockFn still returns true
+  });
+});
 ```
 
-### 2. Multiple Providers
-
+#### Solution
 ```typescript
-// Wrong
-render(
-  <Provider1>
-    <Provider2>
-      <Component />
-    </Provider2>
-  </Provider1>
-);
+describe('Service', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-// Right
-const AllTheProviders = ({ children }) => {
-  return (
-    <Provider1>
-      <Provider2>
-        {children}
-      </Provider2>
-    </Provider1>
-  );
-};
+  it('test 1', () => {
+    mockFn.mockReturnValue(true);
+  });
+  
+  it('test 2', () => {
+    mockFn.mockReturnValue(false);
+  });
+});
+```
 
-const customRender = (ui, options) =>
-  render(ui, { wrapper: AllTheProviders, ...options });
+### 2. Environment Setup
+
+#### Problem
+```typescript
+// Environment not properly configured
+it('should use environment variables', () => {
+  expect(process.env.API_URL).toBeDefined();
+});
+```
+
+#### Solution
+```typescript
+describe('Environment Tests', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    process.env = {
+      ...originalEnv,
+      API_URL: 'http://test-api'
+    };
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+  });
+
+  it('should use environment variables', () => {
+    expect(process.env.API_URL).toBe('http://test-api');
+  });
+});
 ```
 
 ## Performance Issues
 
 ### 1. Slow Tests
 
+#### Problem
 ```typescript
-// Wrong
-describe('slow tests', () => {
-  beforeEach(() => {
-    // Heavy setup
-  });
-  
-  it('test 1', () => {/* ... */});
-  it('test 2', () => {/* ... */});
+// Slow test execution
+it('should process data', async () => {
+  for (let i = 0; i < 1000; i++) {
+    await service.process(data);
+  }
 });
+```
 
-// Right
-describe('optimized tests', () => {
-  let heavySetup;
+#### Solution
+```typescript
+it('should process data', async () => {
+  // Mock heavy operations
+  service.process = jest.fn().mockResolvedValue(result);
   
-  beforeAll(() => {
-    heavySetup = // Do once for all tests
-  });
+  // Test with minimal data
+  const testData = createTestData(5); // Instead of 1000
+  await service.process(testData);
   
-  it('test 1', () => {
-    const instance = heavySetup.clone();
-    // Use instance
-  });
+  expect(service.process).toHaveBeenCalled();
 });
 ```
 
 ### 2. Memory Leaks
 
+#### Problem
 ```typescript
-// Wrong
-const component = render(<Component />);
-// Test ends without cleanup
-
-// Right
-afterEach(() => {
-  cleanup();
-});
-```
-
-## Coverage Issues
-
-### 1. Missing Coverage
-
-```typescript
-// Wrong
-if (condition) {
-  doSomething();
-}
-
-// Right
-it('handles condition true', () => {
-  condition = true;
-  expect(doSomething).toBeCalled();
-});
-
-it('handles condition false', () => {
-  condition = false;
-  expect(doSomething).not.toBeCalled();
-});
-```
-
-### 2. Branch Coverage
-
-```typescript
-// Function with multiple branches
-function processValue(value) {
-  if (value < 0) return 'negative';
-  if (value > 0) return 'positive';
-  return 'zero';
-}
-
-// Tests
-describe('processValue', () => {
-  it.each([
-    [-1, 'negative'],
-    [1, 'positive'],
-    [0, 'zero']
-  ])('processes %i to %s', (input, expected) => {
-    expect(processValue(input)).toBe(expected);
+// Memory leak in tests
+describe('Component', () => {
+  const listeners = [];
+  
+  it('should add listeners', () => {
+    listeners.push(handler);
   });
 });
 ```
 
-## Environment Issues
-
-### 1. Browser APIs
-
+#### Solution
 ```typescript
-// Wrong
-// Test fails because window.localStorage is not available
+describe('Component', () => {
+  let listeners = [];
+  
+  beforeEach(() => {
+    listeners = [];
+  });
 
-// Right
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  clear: jest.fn()
-};
-global.localStorage = localStorageMock;
-```
+  afterEach(() => {
+    listeners.forEach(listener => listener.cleanup());
+    listeners = [];
+  });
 
-### 2. Timers
-
-```typescript
-// Wrong
-it('handles timeout', () => {
-  setTimeout(() => {
-    expect(something).toBe(true);
-  }, 1000);
-});
-
-// Right
-it('handles timeout', () => {
-  jest.useFakeTimers();
-  setTimeout(() => {
-    expect(something).toBe(true);
-  }, 1000);
-  jest.runAllTimers();
+  it('should add listeners', () => {
+    listeners.push(handler);
+  });
 });
 ```
 
-### 3. Random Values
+## Best Practices
 
-```typescript
-// Wrong
-it('generates random ID', () => {
-  expect(generateId()).toMatch(/[0-9a-f]{8}/);
-});
+### 1. Test Isolation
+- Reset mocks between tests
+- Clean up side effects
+- Use unique test data
+- Avoid shared state
 
-// Right
-it('generates random ID', () => {
-  const mockMath = Object.create(global.Math);
-  mockMath.random = () => 0.5;
-  global.Math = mockMath;
-  expect(generateId()).toBe('7b8d9f2e');
-});
-``` 
+### 2. Error Handling
+- Test error scenarios
+- Use proper assertions
+- Handle async errors
+- Validate error messages
+
+### 3. Performance
+- Mock heavy operations
+- Minimize test data
+- Clean up resources
+- Use efficient queries
+
+### 4. Maintenance
+- Keep tests focused
+- Document complex setup
+- Update test data
+- Remove obsolete tests

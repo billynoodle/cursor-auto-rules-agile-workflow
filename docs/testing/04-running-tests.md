@@ -1,277 +1,323 @@
 # Running Tests
 
+## Overview
+
+This document provides instructions for running tests in our application. It covers different test types, configurations, and common scenarios.
+
 ## Test Commands
 
-### Basic Commands
+### Running All Tests
 
 ```bash
 # Run all tests
 npm test
 
-# Run tests in watch mode (development)
-npm test -- --watch
-
-# Run tests once (CI/CD)
-npm test -- --no-watch
-
-# Run specific test file
-npm test -- path/to/file.test.tsx
-
-# Run tests matching a pattern
-npm test -- -t "button"
-```
-
-## Understanding Test Output
-
-```bash
- PASS  src/components/Button.test.tsx
- FAIL  src/components/Form.test.tsx
-  ● Form › submits data correctly
-    expect(received).toBe(expected)
-    
-    Expected: "success"
-    Received: "error"
-```
-
-```mermaid
-graph TD
-    A[Test Run] --> B{All Tests Pass?}
-    B -->|Yes| C[Green Check ✓]
-    B -->|No| D[Red X ✗]
-    D --> E[Error Details]
-    E --> F[Expected vs Received]
-    E --> G[Stack Trace]
-    E --> H[Test Location]
-```
-
-### Coverage Report
-
-```bash
-# Run tests with coverage
+# Run with coverage
 npm test -- --coverage
 
-# Output:
-----------------------|---------|----------|---------|---------|-------------------
-File                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
-----------------------|---------|----------|---------|---------|-------------------
-All files            |   85.71 |    83.33 |   88.89 |   85.71 |                   
- Button.tsx          |     100 |      100 |     100 |     100 |                   
- Form.tsx            |   71.43 |    66.67 |   77.78 |   71.43 | 24-35            
-----------------------|---------|----------|---------|---------|-------------------
+# Run in watch mode
+npm test -- --watch
+```
+
+### Running Specific Tests
+
+```bash
+# Run specific test file
+npm test tests/unit/services/AssessmentService.test.ts
+
+# Run specific test suite
+npm test -t "AssessmentService"
+
+# Run tests matching pattern
+npm test -- --testNamePattern="should create assessment"
+```
+
+### Running Test Types
+
+```bash
+# Unit tests
+npm run test:unit
+
+# Integration tests
+npm run test:integration
+
+# E2E tests
+npm run test:e2e
 ```
 
 ## Test Configuration
 
-### Jest Configuration (jest.config.js)
+### Jest Configuration
+
 ```javascript
+// jest.config.js
 module.exports = {
-  // Test environment
+  preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  
-  // File patterns
-  testMatch: [
-    '**/__tests__/**/*.ts?(x)',
-    '**/?(*.)+(spec|test).ts?(x)'
+  setupFilesAfterEnv: [
+    '<rootDir>/tests/setup.ts'
   ],
-  
-  // Coverage settings
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.d.ts'
+  ],
   coverageThreshold: {
     global: {
       branches: 80,
       functions: 80,
       lines: 80,
       statements: 80
+    },
+    './src/services/': {
+      branches: 90,
+      functions: 90,
+      lines: 90
     }
-  },
-  
-  // Setup files
-  setupFilesAfterEnv: [
-    '<rootDir>/src/setupTests.ts'
-  ]
+  }
 };
 ```
 
-### Setup File (setupTests.ts)
-```typescript
-// Add custom matchers
-import '@testing-library/jest-dom';
+### Environment Setup
 
-// Mock browser APIs
-Object.defineProperty(window, 'matchMedia', {
-  value: jest.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn()
-  }))
+```typescript
+// tests/setup.ts
+import '@testing-library/jest-dom';
+import { mockSupabase } from './mocks/supabase';
+import { localStorageMock } from './mocks/localStorage';
+
+// Setup global mocks
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: () => mockSupabase
+}));
+
+// Setup localStorage mock
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock
 });
 
-// Clean up after each test
-afterEach(() => {
+// Clear mocks between tests
+beforeEach(() => {
   jest.clearAllMocks();
 });
 ```
 
+## Test Environments
+
+### Development
+
+```bash
+# Run tests in development
+npm test -- --env=development
+
+# Watch mode with development config
+npm test -- --env=development --watch
+```
+
+### CI/CD
+
+```bash
+# Run tests in CI
+npm test -- --env=ci --ci
+
+# Generate coverage report
+npm test -- --env=ci --coverage --coverageReporters=text-lcov
+```
+
+## Coverage Reports
+
+### Generating Reports
+
+```bash
+# Generate coverage report
+npm test -- --coverage
+
+# Generate specific format
+npm test -- --coverage --coverageReporters=html
+
+# Generate and open report
+npm test -- --coverage && open coverage/lcov-report/index.html
+```
+
+### Coverage Requirements
+
+```javascript
+// Coverage thresholds
+{
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    },
+    './src/services/': {
+      branches: 90,
+      functions: 90,
+      lines: 90
+    }
+  }
+}
+```
+
+## Debugging Tests
+
+### Using Debug Mode
+
+```bash
+# Run tests in debug mode
+npm test -- --debug
+
+# Debug specific test
+npm test tests/unit/services/AssessmentService.test.ts --debug
+```
+
+### Using Console Output
+
+```typescript
+// Add console output in tests
+it('should debug test', () => {
+  console.log('Debug info:', result);
+  expect(result).toBeDefined();
+});
+
+// Run with verbose output
+npm test -- --verbose
+```
+
+## Common Scenarios
+
+### 1. Running Failed Tests
+
+```bash
+# Rerun only failed tests
+npm test -- --onlyFailures
+
+# Run failed tests with watch
+npm test -- --onlyFailures --watch
+```
+
+### 2. Updating Snapshots
+
+```bash
+# Update all snapshots
+npm test -- -u
+
+# Update specific snapshot
+npm test ComponentName -u
+```
+
+### 3. Performance Testing
+
+```bash
+# Run with timer
+npm test -- --verbose
+
+# Profile test performance
+npm test -- --detectOpenHandles
+```
+
+## Best Practices
+
+### 1. Test Organization
+
+```bash
+# Run tests by directory
+npm test tests/unit/services
+
+# Run related tests
+npm test -- --findRelatedTests path/to/changed/file.ts
+```
+
+### 2. Test Filtering
+
+```bash
+# Run tests matching description
+npm test -- -t "should handle errors"
+
+# Skip specific tests
+npm test -- --testPathIgnorePatterns="integration"
+```
+
+### 3. Performance
+
+```bash
+# Run tests in parallel
+npm test -- --maxWorkers=4
+
+# Run without cache
+npm test -- --no-cache
+```
+
 ## Continuous Integration
 
-### GitHub Actions Example
-```yaml
-name: Tests
+### GitHub Actions
 
+```yaml
+# .github/workflows/test.yml
+name: Tests
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run tests
-      run: npm test -- --no-watch
-      
-    - name: Upload coverage
-      uses: codecov/codecov-action@v2
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm test -- --coverage
+      - uses: coverallsapp/github-action@v2
 ```
 
-## Debugging Failed Tests
+### Test Reports
 
-### 1. Interactive Mode
 ```bash
-# Run tests in watch mode
-npm test -- --watch
+# Generate JUnit report
+npm test -- --reporters=jest-junit
 
-# Press keys to:
-# a - run all tests
-# f - run only failed tests
-# p - filter by filename
-# t - filter by test name
-# q - quit watch mode
+# Generate HTML report
+npm test -- --coverage --coverageReporters=html
 ```
 
-### 2. Verbose Output
+## Troubleshooting
+
+### 1. Test Failures
+
 ```bash
+# Run with detailed logs
 npm test -- --verbose
 
-# Shows detailed output:
-# - Test suite hierarchy
-# - Individual test results
-# - Test execution time
+# Run single test
+npm test -- --testNamePattern="test name" --verbose
 ```
 
-### 3. Debug Mode
-```bash
-# Add debugger statement in your test
-it('debug this test', () => {
-  debugger;
-  expect(true).toBe(true);
-});
+### 2. Performance Issues
 
-# Run with Node debugger
-node --inspect-brk node_modules/.bin/jest --runInBand
+```bash
+# Identify slow tests
+npm test -- --verbose
+
+# Run without coverage
+npm test -- --no-coverage
 ```
 
-## Test Performance
+### 3. Memory Issues
 
-### 1. Running Tests in Parallel
 ```bash
-# Run tests in parallel (default)
-npm test
+# Run with increased memory
+NODE_OPTIONS=--max_old_space_size=4096 npm test
 
-# Force sequential running
+# Run tests serially
 npm test -- --runInBand
 ```
 
-### 2. Filtering Tests
-```bash
-# Run only changed files
-npm test -- --onlyChanged
+## Additional Resources
 
-# Run specific test suite
-npm test -- -t "Button component"
+### Documentation
+- Jest Documentation: https://jestjs.io/docs/getting-started
+- React Testing Library: https://testing-library.com/docs/react-testing-library/intro
+- Test Coverage: https://jestjs.io/docs/configuration#collectcoveragefrom-array
 
-# Run tests matching file pattern
-npm test -- Button
-```
-
-### 3. Timing Information
-```bash
-# Show slow tests
-npm test -- --verbose --slowTestThreshold=5
-
-# Output includes:
-# - Test execution time
-# - Slow test warnings
-```
-
-## Common Issues and Solutions
-
-### 1. Test Environment Issues
-```typescript
-// Error: window is not defined
-beforeAll(() => {
-  Object.defineProperty(window, 'myAPI', {
-    value: jest.fn()
-  });
-});
-```
-
-### 2. Async Test Failures
-```typescript
-// Error: Test completed while there were still pending operations
-it('handles async operations', async () => {
-  await act(async () => {
-    render(<AsyncComponent />);
-    await screen.findByText('Loaded');
-  });
-});
-```
-
-### 3. Memory Leaks
-```typescript
-// Warning: Memory leak detected
-afterEach(() => {
-  cleanup();  // Clean up rendered components
-  jest.clearAllTimers();  // Clear any timers
-});
-```
-
-## Best Practices for Test Runs
-
-1. **Regular Test Runs**
-```bash
-# Add to package.json
-{
-  "scripts": {
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage"
-  }
-}
-```
-
-2. **Pre-commit Hooks**
-```json
-// package.json
-{
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test -- --onlyChanged"
-    }
-  }
-}
-```
-
-3. **Performance Monitoring**
-```bash
-# Track test execution time
-npm test -- --verbose --detectOpenHandles
-``` 
+### Tools
+- Jest CLI: https://jestjs.io/docs/cli
+- Coverage Tools: https://istanbul.js.org/
+- Test Reporters: https://github.com/jest-community/jest-junit 

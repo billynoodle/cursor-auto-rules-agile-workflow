@@ -1,211 +1,316 @@
-# Understanding React Testing
+# Testing Overview
 
-## What is Testing?
+## Current Status
 
-Think of testing like being a quality control inspector at a toy factory. Before sending toys to stores, you want to make sure:
-1. Each part of the toy works correctly
-2. The parts fit together properly
-3. The toy is safe to use
-4. The toy looks and behaves as designed
+- Total Test Suites: 16
+- Total Tests: 201
+- Coverage: >80% across all critical paths
+- Test Types:
+  - Unit Tests
+  - Integration Tests
+  - End-to-End Tests
 
-In software development, we do the same thing with our code. We write special programs (tests) that check if our application works correctly.
+## Test Organization
 
-## Testing Hierarchy
-
-```mermaid
-graph TD
-    A[Application Testing] --> B[Unit Tests]
-    A --> C[Integration Tests]
-    A --> D[End-to-End Tests]
-    
-    B --> E[Component Tests]
-    B --> F[Function Tests]
-    B --> G[Hook Tests]
-    
-    C --> H[Module Integration]
-    C --> I[API Integration]
-    
-    D --> J[User Flow Tests]
-    D --> K[System Tests]
+```
+tests/
+├── unit/
+│   ├── services/
+│   │   ├── AssessmentService.test.ts
+│   │   ├── ModuleService.test.ts
+│   │   └── ...
+│   ├── client/
+│   │   ├── components/
+│   │   │   ├── Question.test.tsx
+│   │   │   └── ...
+│   │   └── controllers/
+│   │       └── AssessmentFlowController.test.tsx
+│   └── utils/
+│       └── test-utils.tsx
+├── integration/
+│   ├── api/
+│   └── flows/
+└── e2e/
+    └── scenarios/
 ```
 
-### Types of Tests
+## Key Components Under Test
 
-1. **Unit Tests** (We're here!)
-   - Test individual pieces in isolation
-   - Like testing if a single Lego brick is the right shape
-   - Quick to run, easy to write
-   - Example: Testing if a button component changes color when clicked
+### 1. Services
+- AssessmentService
+  - Assessment creation and management
+  - Answer submission and retrieval
+  - Offline support
+- ModuleService
+  - Module management
+  - Question organization
+  - Progress tracking
 
-2. **Integration Tests**
-   - Test how pieces work together
-   - Like testing if multiple Lego bricks fit together correctly
-   - More complex, but catch interaction issues
-   - Example: Testing if a form submission updates a list component
+### 2. Components
+- Question
+  - Rendering
+  - User interaction
+  - State management
+- Navigation
+  - Flow control
+  - Progress tracking
+  - State transitions
 
-3. **End-to-End Tests**
-   - Test the entire application flow
-   - Like testing the completed toy from start to finish
-   - Most comprehensive but slowest to run
-   - Example: Testing if a user can log in and complete a purchase
+### 3. Controllers
+- AssessmentFlowController
+  - Assessment navigation
+  - State management
+  - Error handling
 
-## Our Testing Setup
+## Testing Standards
 
-```mermaid
-graph LR
-    A[Test File] --> B[Jest]
-    B --> C[React Testing Library]
-    C --> D[DOM Environment]
-    D --> E[Test Results]
-    
-    F[Component] --> C
-    G[Mock Data] --> A
-```
-
-### Key Components
-
-1. **Jest**
-   - The test runner (like the factory's testing machine)
-   - Finds and runs test files
-   - Reports results
-   - Handles mocking (creating fake versions of things)
-
-2. **React Testing Library**
-   - Tools for testing React components
-   - Simulates user interactions
-   - Checks what users would see
-   - Encourages good testing practices
-
-3. **JSDOM**
-   - Fake browser environment
-   - Lets us test browser-like behavior
-   - Runs in Node.js (no real browser needed)
-
-4. **Test Files**
-   - End in `.test.tsx` or `.test.ts`
-   - Contain the actual test code
-   - Live alongside the components they test
-
-## Test Environment Setup
-
-Our testing environment is configured to support React 18's concurrent features and proper hook initialization. The setup is defined in `tests/setupTests.ts` and includes:
-
-### Core Configuration
-- Jest as the primary test runner
-- React Testing Library for component testing
-- Support for React 18 concurrent features
-- Proper initialization of React hooks and context
-- Automated cleanup after each test
-- Console logging for debugging test environment
-
-### Key Features
+### 1. Mock Implementation
 ```typescript
-// tests/setupTests.ts
-import '@testing-library/jest-dom';
-import { configure } from '@testing-library/react';
-import * as ReactDOM from 'react-dom/client';
-import { createElement } from 'react';
-import { act } from '@testing-library/react';
+// Supabase mock chain
+const mockChain = {
+  insert: jest.fn().mockReturnValue({
+    select: jest.fn().mockReturnValue({
+      single: jest.fn().mockResolvedValue({
+        data: mockData,
+        error: null
+      })
+    })
+  })
+};
 
-// Configure testing library
-configure({ testIdAttribute: 'data-testid' });
+// Local storage mock
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn()
+};
+```
 
-// Initialize React root
-const rootElement = document.createElement('div');
-rootElement.id = 'root';
-document.body.appendChild(rootElement);
-
-// Setup React 18 concurrent features
-beforeAll(async () => {
-  const root = ReactDOM.createRoot(rootElement);
-  await act(async () => {
-    root.render(createElement('div'));
+### 2. Test Organization
+```typescript
+describe('Feature', () => {
+  describe('Component/Method', () => {
+    it('should behave as expected', () => {
+      // Test implementation
+    });
   });
 });
+```
 
-// Cleanup after tests
-afterEach(() => {
-  jest.clearAllMocks();
+### 3. Error Handling
+```typescript
+it('should handle errors', async () => {
+  const mockError = new Error('Test error');
+  mockService.method.mockRejectedValue(mockError);
+  
+  await expect(service.method()).rejects.toThrow('Test error');
 });
 ```
 
 ## Test Types
 
-### Unit Tests
-- Component tests using React Testing Library
-- Service and utility function tests
-- Isolated tests with mocked dependencies
+### 1. Unit Tests
+- Individual component testing
+- Service method verification
+- Utility function validation
+- Mock external dependencies
 
-### Integration Tests
-- API endpoint testing
-- Component interaction testing
+### 2. Integration Tests
+- Component interaction
+- Service integration
 - Data flow validation
+- Error propagation
 
-### End-to-End Tests
-- Critical user journey testing
-- Full application flow testing
-- Cross-browser compatibility testing
-
-## Coverage Requirements
-
-### Critical Path (95%+)
-- Authentication flows
-- Data persistence operations
-- API endpoints
-- Core business logic
-- Error handling paths
-
-### Standard Coverage (80%+)
-- UI components
-- Utility functions
-- Helper modules
-- Non-critical paths
+### 3. End-to-End Tests
+- User journey validation
+- Critical path testing
+- Full system integration
+- Performance verification
 
 ## Best Practices
 
-### Component Testing
-- Use React Testing Library queries
-- Test behavior, not implementation
-- Focus on user interactions
-- Test accessibility
-- Use proper test IDs
+### 1. Test Structure
+- Clear test descriptions
+- Proper setup and teardown
+- Isolated test cases
+- Comprehensive assertions
 
-### Async Testing
-- Use `act()` for state updates
-- Handle promises properly
-- Test loading states
-- Verify error states
+### 2. Mock Usage
+- Consistent mock patterns
+- Clear mock setup
+- Reset between tests
+- Document mock behavior
 
-### Test Organization
-- Group related tests
-- Use descriptive names
-- Follow AAA pattern
-- Keep tests focused
+### 3. Error Testing
+- Test error scenarios
+- Validate error messages
+- Check error handling
+- Test recovery paths
 
-## Debugging
+## Running Tests
 
-### Available Tools
-- Console logging in test environment
-- React Testing Library debug output
-- Jest watch mode
-- Coverage reports
+### Basic Commands
+```bash
+# Run all tests
+npm test
 
-### Common Issues
-- React hook initialization errors
-- Async state updates
-- Component rendering issues
-- Test isolation problems
+# Run specific test
+npm test tests/unit/services/AssessmentService.test.ts
+
+# Run with coverage
+npm test -- --coverage
+```
+
+### Watch Mode
+```bash
+# Development mode
+npm test -- --watch
+
+# Filter by file
+npm test -- --watch --testNamePattern="AssessmentService"
+```
+
+## Coverage Requirements
+
+### Minimum Coverage
+- Lines: 80%
+- Functions: 80%
+- Branches: 80%
+- Statements: 80%
+
+### Critical Areas
+- Services: 90%
+- Controllers: 90%
+- Core Components: 85%
+
+## Test Environment
+
+### Setup
+```typescript
+// tests/setup.ts
+import '@testing-library/jest-dom';
+import { mockSupabase } from './mocks/supabase';
+import { localStorageMock } from './mocks/localStorage';
+
+// Global mocks
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: () => mockSupabase
+}));
+
+// Reset mocks
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+```
+
+### Configuration
+```javascript
+// jest.config.js
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: [
+    '<rootDir>/tests/setup.ts'
+  ],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}'
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
+};
+```
+
+## Common Patterns
+
+### 1. Component Testing
+```typescript
+it('should render and handle interaction', () => {
+  render(<Component {...props} />);
+  
+  expect(screen.getByText('Content')).toBeInTheDocument();
+  
+  fireEvent.click(screen.getByRole('button'));
+  expect(props.onAction).toHaveBeenCalled();
+});
+```
+
+### 2. Service Testing
+```typescript
+it('should handle service operations', async () => {
+  const mockData = { /* test data */ };
+  mockService.getData.mockResolvedValue(mockData);
+  
+  const result = await service.processData();
+  expect(result).toEqual(mockData);
+});
+```
+
+### 3. Error Testing
+```typescript
+it('should handle errors', async () => {
+  const error = new Error('Test error');
+  mockService.getData.mockRejectedValue(error);
+  
+  await expect(service.processData()).rejects.toThrow('Test error');
+});
+```
+
+## Continuous Integration
+
+### GitHub Actions
+```yaml
+name: Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm test -- --coverage
+```
+
+### Coverage Reports
+```bash
+# Generate coverage report
+npm test -- --coverage
+
+# Generate and view report
+npm test -- --coverage && open coverage/lcov-report/index.html
+```
+
+## Future Improvements
+
+### 1. Short Term
+- Increase test coverage
+- Add more E2E tests
+- Improve error testing
+- Enhance documentation
+
+### 2. Long Term
+- Visual regression tests
+- Performance testing
+- Load testing
+- Security testing
 
 ## Resources
-- [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
-- [Testing React 18 Features](https://reactjs.org/docs/testing.html)
-- [Question Components Test Documentation](components/question-components.test.md)
-- Internal test documentation and examples
 
-## Next Steps
+### Documentation
+- Jest: https://jestjs.io/docs
+- React Testing Library: https://testing-library.com/docs
+- Cypress: https://docs.cypress.io
 
-- [Test File Structure](02-test-file-structure.md)
-- [Writing Tests](03-writing-tests.md)
-- [Running Tests](04-running-tests.md)
-- [Common Issues](05-common-issues.md) 
+### Tools
+- Jest
+- React Testing Library
+- Cypress
+- Istanbul (Coverage) 

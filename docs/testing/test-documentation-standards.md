@@ -11,7 +11,7 @@
 
 ## Overview
 
-This document defines the standards for documenting tests in our codebase. Consistent documentation helps maintain test clarity, improves maintainability, and ensures knowledge transfer across the team.
+This document outlines our standards for documenting tests across the application. Clear and consistent test documentation is essential for maintaining test quality, enabling collaboration, and ensuring long-term maintainability.
 
 ## JSDoc Standards
 
