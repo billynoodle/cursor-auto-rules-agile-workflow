@@ -19,10 +19,10 @@ globs: **/*
 
 #### Initial Assessment
 - Read full story requirements
-- Check dependencies in @851-agent-memory
 - Review related documentation
 - Identify technical constraints
 - Validate against architecture
+- Check existing test coverage
 
 #### Implementation Planning
 - Create test scenarios first
@@ -46,6 +46,7 @@ globs: **/*
 - Track completion metrics
 - Link related changes
 - Record decisions made
+- Create daily retrospectives
 
 ### 3. Quality Standards
 
@@ -79,6 +80,30 @@ globs: **/*
 - Link related changes
 - Explain trade-offs
 
+### 5. Retrospective Management
+
+#### Daily Retrospectives
+- Create using template
+- Document all sections:
+  - What Went Well
+  - What Could Be Improved
+  - Action Items
+  - Learnings
+  - Next Steps
+  - Metrics Summary
+  - Dependencies Update
+  - Notes for Tomorrow
+- Store in .ai/sprints/retrospectives/
+- Track action items
+- Monitor improvements
+
+#### Sprint Retrospectives
+- Create at sprint end
+- Analyze sprint metrics
+- Document key learnings
+- Plan improvements
+- Update templates if needed
+
 ## Examples
 
 ### Effective Story Implementation
@@ -107,6 +132,12 @@ Analyzing story AUTH-2: Password Reset...
    - Using JWT for tokens
    - 24h expiry period
    - Rate limiting added
+
+5. Daily Retrospective:
+   - Progress documented
+   - Learnings captured
+   - Next steps planned
+   - Metrics updated
 ```
 
 ### Ineffective Implementation
@@ -114,6 +145,7 @@ Analyzing story AUTH-2: Password Reset...
 Starting work on auth...
 Making some changes...
 Will add tests later...
+No retrospective needed...
 </example>
 
 ## Critical Notes
@@ -123,12 +155,14 @@ Will add tests later...
 - ALWAYS document decisions
 - NEVER ignore blockers
 - ALWAYS validate against architecture
-- NEVER skip dependency checks
+- NEVER skip daily retrospectives
 - ALWAYS update story status
 
 ## Integration Points
-- Use @851-agent-memory for context management
 - Follow @852-agile-management for agile standards
-- Store progress in .ai/stories/
+- Follow @853-sprint-workflow for sprint management
+- Store progress in .ai/epics/*/stories/*/
 - Track epics in .ai/epics/
-- Maintain sprints in .ai/sprints/ 
+- Maintain sprints in .ai/sprints/
+- Keep retrospectives in .ai/sprints/retrospectives/
+- Access rules in .cursor/rules/

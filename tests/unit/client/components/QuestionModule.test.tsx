@@ -2,6 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen } from '../../../utils/test-utils';
 import '@testing-library/jest-dom';
 import { QuestionModule } from '../../../../client/src/components/assessment/QuestionModule';
+import { Question, QuestionType } from '../../../../client/src/types/assessment.types';
 
 console.log('[QuestionModule.test.tsx] Test file loaded');
 console.log('[QuestionModule.test.tsx] React version:', React.version);
@@ -22,16 +23,26 @@ interface QuestionData {
 describe('QuestionModule', () => {
   console.log('[QuestionModule.test.tsx] Starting QuestionModule test suite');
   
-  const mockQuestions: QuestionData[] = [
+  const mockQuestions: Question[] = [
     {
       id: 'q1',
-      text: 'Question 1',
-      type: 'TEXT'
+      text: 'Test Question 1',
+      type: QuestionType.MULTIPLE_CHOICE,
+      required: true,
+      weight: 1,
+      dependencies: [],
+      options: [
+        { id: 'opt1', value: 'a', score: 1, text: 'Option A' },
+        { id: 'opt2', value: 'b', score: 2, text: 'Option B' }
+      ]
     },
     {
       id: 'q2',
-      text: 'Question 2',
-      type: 'NUMERIC'
+      text: 'Test Question 2',
+      type: QuestionType.TEXT,
+      required: true,
+      weight: 1,
+      dependencies: []
     }
   ];
 
@@ -93,7 +104,7 @@ describe('QuestionModule', () => {
     render(<QuestionModule {...defaultProps} onAnswerChange={onAnswerChange} />);
     const input = screen.getAllByRole('textbox')[0];
     fireEvent.change(input, { target: { value: 'test answer' } });
-    expect(onAnswerChange).toHaveBeenCalledWith('q1', 'test answer');
+    expect(onAnswerChange).toHaveBeenCalledWith('q2', 'test answer');
   });
 
   describe('module expansion/collapse', () => {

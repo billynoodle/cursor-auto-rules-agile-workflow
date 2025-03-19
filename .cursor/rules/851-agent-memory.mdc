@@ -1,6 +1,7 @@
 ---
-description: IMPLEMENT consistent memory management to ENSURE reliable agent state and learning persistence
-globs: .ai/memory/**/*
+description: 
+globs: 
+alwaysApply: false
 ---
 
 # Agent Memory Management Standards

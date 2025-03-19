@@ -1,6 +1,7 @@
 ---
 description: IMPLEMENT comprehensive agile workflow management to ENSURE effective project tracking and delivery
 globs: .ai/{epics,sprints,stories}/**/*
+alwaysApply: false
 ---
 
 # Agile Management Standards
@@ -16,13 +17,21 @@ globs: .ai/{epics,sprints,stories}/**/*
 ## Requirements
 
 ### 1. Epic Management
-- Store epics in .ai/epics/
+- Store epics in .ai/epics/{epic-name}/
+- Organize stories under epics in .ai/epics/{epic-name}/stories/{story-name}/
 - Track epic status and progress
 - Link related stories
 - Monitor business value
 - Update completion metrics
 
-### 2. Sprint Management
+### 2. Story Organization
+- Each story should be in its own directory under the epic
+- Break down large stories into multiple files for better organization
+- Use consistent naming: story-{number}{letter}.story.md
+- Main story file should provide index and navigation
+- Link all related story files in the main story file
+
+### 3. Sprint Management
 
 #### Sprint Documentation
 - Maintain current sprint in .ai/sprints/current.md
@@ -38,7 +47,7 @@ globs: .ai/{epics,sprints,stories}/**/*
 - Monitor improvements
 - Document outcomes
 
-### 3. Story Management
+### 4. Story Management
 
 #### Story Structure
 ```markdown
@@ -67,7 +76,7 @@ Clear, concise description of the requirement
 - Blockers and resolutions
 ```
 
-### 4. Progress Tracking
+### 5. Progress Tracking
 
 #### Metrics to Monitor
 - Sprint velocity
@@ -117,6 +126,7 @@ Implement secure user authentication system
 </example>
 
 ## Critical Notes
+- ALWAYS update story tasks
 - NEVER skip metadata in stories
 - ALWAYS update progress metrics
 - NEVER leave dependencies untracked

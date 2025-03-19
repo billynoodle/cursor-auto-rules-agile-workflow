@@ -1,18 +1,13 @@
 import React from 'react';
+import { QuestionType, QuestionOption as QuestionOptionType } from '../../types/assessment.types';
 import './Question.css';
-
-interface QuestionOption {
-  value: string;
-  score: number;
-  text: string;
-}
 
 interface QuestionProps {
   id: string;
   text: string;
-  helpText?: string;
-  type: 'MULTIPLE_CHOICE' | 'NUMERIC' | 'TEXT' | 'LIKERT_SCALE';
-  options?: QuestionOption[];
+  description?: string;
+  type: QuestionType;
+  options?: QuestionOptionType[];
   value?: string | number;
   onChange: (value: string | number) => void;
 }
@@ -29,7 +24,7 @@ interface QuestionProps {
 export function Question({
   id,
   text,
-  helpText,
+  description,
   type,
   options = [],
   value,
@@ -38,11 +33,11 @@ export function Question({
   // Render different input types based on question type
   const renderQuestionInput = () => {
     switch (type) {
-      case 'MULTIPLE_CHOICE':
+      case QuestionType.MULTIPLE_CHOICE:
         return (
           <div className="question-options">
             {options.map((option) => (
-              <label key={option.value} className="question-option">
+              <label key={option.id} className="question-option">
                 <input
                   type="radio"
                   name={id}
@@ -56,7 +51,7 @@ export function Question({
           </div>
         );
         
-      case 'NUMERIC':
+      case QuestionType.NUMERIC:
         return (
           <input
             type="number"
@@ -67,7 +62,7 @@ export function Question({
           />
         );
         
-      case 'TEXT':
+      case QuestionType.TEXT:
         return (
           <textarea
             className="question-input text"
@@ -78,11 +73,11 @@ export function Question({
           />
         );
         
-      case 'LIKERT_SCALE':
+      case QuestionType.LIKERT_SCALE:
         return (
           <div className="likert-scale">
             {options.map((option) => (
-              <label key={option.value} className="likert-option">
+              <label key={option.id} className="likert-option">
                 <input
                   type="radio"
                   name={id}
@@ -107,10 +102,10 @@ export function Question({
       <div className="question-header">
         <h3 id={`question-${id}`} className="question-text">
           {text}
-          {helpText && (
+          {description && (
             <div className="help-text" aria-label="Help text">
               <span className="visually-hidden">More information about this question</span>
-              <p>{helpText}</p>
+              <p>{description}</p>
             </div>
           )}
         </h3>

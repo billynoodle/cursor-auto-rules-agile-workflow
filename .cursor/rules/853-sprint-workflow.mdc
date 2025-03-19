@@ -1,11 +1,14 @@
 ---
 description: IMPLEMENT sprint workflow to ENSURE consistent sprint planning and execution
 globs: .ai/sprints/**/*
+alwaysApply: false
 ---
-
 # Sprint Workflow Standards
 
 <version>1.0.0</version>
+<rule_type>workflow</rule_type>
+<applies_to>**.md</applies_to>
+<priority>high</priority>
 
 ## Context
 - Used when starting a new sprint
@@ -71,6 +74,19 @@ globs: .ai/sprints/**/*
    - Blocker resolution
    - Team coordination
    - Resource needs
+
+4. Create daily retrospective:
+   - Use template from .ai/sprints/retrospectives/template.md
+   - Document in .ai/sprints/retrospectives/YYYY-MM-DD-retro.md
+   - Required sections:
+     - What Went Well (progress, quality, process)
+     - What Could Be Improved (technical, process, dependencies)
+     - Action Items (immediate, short-term, long-term)
+     - Learnings (technical, process, risk management)
+     - Next Steps (priorities and improvements)
+     - Metrics Summary (sprint, quality, components, docs)
+     - Dependencies Update (external and internal)
+     - Notes for Tomorrow (focus areas and preparation)
 ```
 
 ### Sprint Completion
@@ -83,10 +99,10 @@ globs: .ai/sprints/**/*
 
 2. Create retrospective:
    .ai/sprints/retrospectives/SPRINT-{N}-retro.md
-   - What went well
-   - What needs improvement
-   - Action items
-   - Team feedback
+   - Follow template structure
+   - Include sprint-level metrics
+   - Document key learnings
+   - List action items for next sprint
 
 3. Archive sprint:
    - Move to completed
@@ -95,44 +111,20 @@ globs: .ai/sprints/**/*
    - Record learnings
 ```
 
-## Examples
-
-### Effective Sprint Initialization
-```markdown
-# Sprint-2: Authentication System Implementation
-
-## Metadata
-- Sprint: 2
-- Start: 2024-03-18
-- End: 2024-04-01
-- Points Target: 34
-- Team Capacity: 40 points
-- Focus: User Authentication
-
-## Stories
-- [ ] AUTH-1: Login System (13 points)
-- [ ] AUTH-2: Password Reset (8 points)
-- [ ] AUTH-3: 2FA Setup (13 points)
-
-## Sprint Goals
-1. Complete core authentication
-2. Implement security features
-3. Set up monitoring
-
-## Progress Tracking
-### Day 1 (2024-03-18)
-- Started AUTH-1
-- Environment setup complete
-- No blockers
+## File Structure
 ```
-
-### Ineffective Sprint Start
-<example type="invalid">
-# Sprint 2
-- Do auth stuff
-- Maybe add security
-- Will track progress later
-</example>
+.ai/
+├── sprints/
+│   ├── current.md
+│   ├── SPRINT-{N}.md
+│   └── retrospectives/
+│       ├── template.md
+│       ├── YYYY-MM-DD-retro.md
+│       └── SPRINT-{N}-retro.md
+.cursor/
+└── rules/
+    └── 853-sprint-workflow.mdc
+```
 
 ## Critical Notes
 - NEVER start without clear goals
@@ -142,4 +134,6 @@ globs: .ai/sprints/**/*
 - NEVER leave metrics blank
 - ALWAYS plan next actions
 - NEVER ignore dependencies
-- ALWAYS document decisions 
+- ALWAYS document decisions
+- NEVER skip retrospectives
+- ALWAYS use templates

@@ -1,20 +1,6 @@
 import React, { useState } from 'react';
+import { Question, QuestionOption } from '../../types/assessment.types';
 import './QuestionPresentation.css';
-
-interface QuestionOption {
-  id: string;
-  text: string;
-  score: number;
-}
-
-interface Question {
-  id: string;
-  text: string;
-  description?: string;
-  tooltip?: string;
-  required?: boolean;
-  options?: QuestionOption[];
-}
 
 interface QuestionPresentationProps {
   question: Question;
@@ -63,33 +49,27 @@ export const QuestionPresentation: React.FC<QuestionPresentationProps> = ({
         <h2 className="question-text">
           {question.text}
           {question.required && (
-            <span className="required-indicator" aria-label="required" data-testid="required-indicator">
+            <span 
+              className="required-indicator" 
+              aria-label="required"
+              data-testid="required-indicator"
+            >
               *
             </span>
           )}
-          {question.tooltip && (
-            <button
-              className="tooltip-trigger"
+          {question.description && (
+            <div 
+              className="help-text" 
+              aria-label="Help text"
               data-testid="tooltip-trigger"
-              aria-describedby={`tooltip-${question.id}`}
               onMouseEnter={() => setShowTooltip(true)}
               onMouseLeave={() => setShowTooltip(false)}
-              onFocus={() => setShowTooltip(true)}
-              onBlur={() => setShowTooltip(false)}
             >
-              ℹ️
-            </button>
+              <span className="visually-hidden">More information about this question</span>
+              <p>{question.description}</p>
+            </div>
           )}
         </h2>
-        {question.tooltip && (
-          <div
-            id={`tooltip-${question.id}`}
-            role="tooltip"
-            className={`tooltip ${showTooltip ? 'visible' : ''}`}
-          >
-            {question.tooltip}
-          </div>
-        )}
       </div>
 
       {showProgressiveDisclosure && !isExpanded ? (

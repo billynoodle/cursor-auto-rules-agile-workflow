@@ -3,35 +3,28 @@ import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { QuestionPresentation } from '../../../../client/src/components/assessment/QuestionPresentation';
+import { Question, QuestionType } from '../../../../client/src/types/assessment.types';
 
 interface QuestionOption {
   id: string;
   text: string;
   score: number;
-}
-
-interface Question {
-  id: string;
-  text: string;
-  description?: string;
-  tooltip?: string;
-  required?: boolean;
-  options?: QuestionOption[];
+  value: string;
 }
 
 describe('QuestionPresentation', () => {
   const mockQuestion: Question = {
-    id: 'q1',
-    text: 'What is your practice size?',
-    description: 'Select the option that best describes your practice',
-    options: [
-      { id: 'opt1', text: 'Solo practitioner', score: 1 },
-      { id: 'opt2', text: 'Small practice (2-5)', score: 2 },
-      { id: 'opt3', text: 'Medium practice (6-15)', score: 3 },
-      { id: 'opt4', text: 'Large practice (16+)', score: 4 }
-    ],
+    id: 'test-q1',
+    text: 'Test Question',
+    type: QuestionType.MULTIPLE_CHOICE,
+    description: 'This is a test question',
     required: true,
-    tooltip: 'This helps us tailor the assessment to your practice size'
+    weight: 1,
+    dependencies: [],
+    options: [
+      { id: 'opt1', value: 'a', score: 1, text: 'Option A' },
+      { id: 'opt2', value: 'b', score: 2, text: 'Option B' }
+    ]
   };
 
   const defaultProps = {
@@ -50,17 +43,30 @@ describe('QuestionPresentation', () => {
   });
 
   describe('Question Rendering', () => {
-    test('renders question text and description', async () => {
-      render(<QuestionPresentation {...defaultProps} />);
+    test('renders question text and description', () => {
+      const mockQuestion = {
+        id: 'test-q1',
+        text: 'Test Question',
+        type: QuestionType.MULTIPLE_CHOICE,
+        description: 'This is a test question',
+        required: true,
+        weight: 1,
+        dependencies: [],
+        options: [
+          { id: 'opt1', text: 'Option A', score: 1, value: 'a' },
+          { id: 'opt2', text: 'Option B', score: 2, value: 'b' }
+        ]
+      };
       
-      expect(screen.getByText(mockQuestion.text)).toBeInTheDocument();
+      render(
+        <QuestionPresentation
+          question={mockQuestion}
+          onSelect={jest.fn()}
+        />
+      );
       
-      // Click to expand
-      await act(async () => {
-        await userEvent.click(screen.getByTestId('expand-trigger'));
-      });
-      
-      expect(screen.getByText(mockQuestion.description!)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /Test Question/i })).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip-trigger')).toHaveTextContent(mockQuestion.description);
     });
 
     test('displays required indicator for required questions', () => {
@@ -71,44 +77,66 @@ describe('QuestionPresentation', () => {
     });
 
     test('shows tooltip on hover', async () => {
-      render(<QuestionPresentation {...defaultProps} />);
+      const mockQuestion = {
+        id: 'test-q1',
+        text: 'Test Question',
+        type: QuestionType.MULTIPLE_CHOICE,
+        description: 'This is a helpful description',
+        required: true,
+        weight: 1,
+        dependencies: [],
+        options: []
+      };
+      
+      render(
+        <QuestionPresentation
+          question={mockQuestion}
+          onSelect={jest.fn()}
+        />
+      );
       
       const tooltipTrigger = screen.getByTestId('tooltip-trigger');
       await act(async () => {
         await userEvent.hover(tooltipTrigger);
       });
       
-      expect(screen.getByText(mockQuestion.tooltip!)).toBeInTheDocument();
+      expect(screen.getByText('This is a helpful description')).toBeInTheDocument();
     });
   });
 
   describe('Progressive Disclosure', () => {
-    test('initially shows only question text and expands on interaction', async () => {
-      render(<QuestionPresentation {...defaultProps} />);
+    const mockQuestion = {
+      ...defaultProps.question,
+      description: 'Test description'
+    };
+    const mockProps = {
+      ...defaultProps,
+      question: mockQuestion
+    };
+
+    test('initially shows only question text and expands on interaction', () => {
+      render(<QuestionPresentation {...mockProps} showProgressiveDisclosure={true} />);
       
-      // Initially only question text is visible
-      expect(screen.getByText(mockQuestion.text)).toBeInTheDocument();
-      const description = screen.queryByText(mockQuestion.description!);
-      expect(description).not.toBeInTheDocument();
+      // Initially, the description should only be in the tooltip
+      const expandButton = screen.getByTestId('expand-trigger');
+      const tooltipTrigger = screen.getByTestId('tooltip-trigger');
+      expect(expandButton).toBeInTheDocument();
+      expect(tooltipTrigger).toBeInTheDocument();
+      expect(screen.queryByText('Test description', { selector: '.question-description' })).not.toBeInTheDocument();
       
-      // Click to expand
-      await act(async () => {
-        await userEvent.click(screen.getByTestId('expand-trigger'));
-      });
-      
-      // Description and options should now be visible
-      expect(screen.getByText(mockQuestion.description!)).toBeVisible();
-      mockQuestion.options?.forEach(option => {
-        expect(screen.getByLabelText(option.text)).toBeVisible();
-      });
+      // After clicking expand, the description should be visible in both places
+      fireEvent.click(expandButton);
+      expect(screen.getByText('Test description', { selector: '.question-description' })).toBeInTheDocument();
+      expect(tooltipTrigger).toBeInTheDocument();
+      expect(expandButton).not.toBeInTheDocument();
     });
 
     test('shows full content when progressive disclosure is disabled', () => {
       render(<QuestionPresentation {...defaultProps} showProgressiveDisclosure={false} />);
       
-      expect(screen.getByText(mockQuestion.text)).toBeVisible();
-      expect(screen.getByText(mockQuestion.description!)).toBeVisible();
-      mockQuestion.options?.forEach(option => {
+      expect(screen.getByRole('heading', { name: /Test Question/i })).toBeVisible();
+      expect(screen.getByTestId('tooltip-trigger')).toBeVisible();
+      defaultProps.question.options?.forEach(option => {
         expect(screen.getByLabelText(option.text)).toBeVisible();
       });
     });

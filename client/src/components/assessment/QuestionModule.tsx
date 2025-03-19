@@ -1,24 +1,13 @@
 import React, { useState } from 'react';
 import Question from './Question';
+import { Question as QuestionType } from '../../types/assessment.types';
 import './QuestionModule.css';
-
-interface QuestionData {
-  id: string;
-  text: string;
-  helpText?: string;
-  type: 'MULTIPLE_CHOICE' | 'NUMERIC' | 'TEXT' | 'LIKERT_SCALE';
-  options?: Array<{
-    value: string;
-    score: number;
-    text: string;
-  }>;
-}
 
 interface QuestionModuleProps {
   id: string;
   title: string;
   description?: string;
-  questions: QuestionData[];
+  questions: QuestionType[];
   onAnswerChange: (questionId: string, value: string | number) => void;
   answers: Record<string, string | number>;
 }
@@ -82,7 +71,7 @@ export function QuestionModule({
               key={question.id}
               id={question.id}
               text={question.text}
-              helpText={question.helpText}
+              description={question.description}
               type={question.type}
               options={question.options}
               value={answers[question.id]}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QuestionModule } from '../components/assessment/QuestionModule';
 import { QuestionnaireNavigation } from '../components/assessment/QuestionnaireNavigation';
-import { AssessmentCategory, Module, ModuleStatus, Question } from '../types/assessment.types';
+import { AssessmentCategory, Module, ModuleStatus, Question, QuestionType } from '../types/assessment.types';
 import './AssessmentPage.css';
 
 interface ModuleContent {
@@ -21,6 +21,9 @@ interface ModuleContent {
  * - Mobile-friendly design
  */
 const AssessmentPage: React.FC = () => {
+  // Add debug logging
+  console.log('AssessmentPage rendering');
+
   // Navigation module data
   const [navigationModules, setNavigationModules] = useState<Module[]>([
     {
@@ -59,27 +62,33 @@ const AssessmentPage: React.FC = () => {
         {
           id: 'fin-cash-001',
           text: 'What is your practice\'s current accounts receivable aging profile?',
-          type: 'MULTIPLE_CHOICE',
-          helpText: 'This question looks at how quickly you\'re getting paid after providing services...',
+          type: QuestionType.MULTIPLE_CHOICE,
+          description: 'This question looks at how quickly you\'re getting paid after providing services...',
+          required: true,
+          weight: 1,
+          dependencies: [],
           options: [
-            { value: 'excellent', score: 5, text: '>90% of AR under 30 days, <2% over 90 days' },
-            { value: 'good', score: 4, text: '>80% of AR under 30 days, <5% over 90 days' },
-            { value: 'average', score: 3, text: '>70% of AR under 30 days, <10% over 90 days' },
-            { value: 'concerning', score: 1, text: '<70% of AR under 30 days, 10-20% over 90 days' },
-            { value: 'critical', score: 0, text: '<60% of AR under 30 days, >20% over 90 days or don\'t track' }
+            { id: 'fin-cash-001-opt1', value: 'excellent', score: 5, text: '>90% of AR under 30 days, <2% over 90 days' },
+            { id: 'fin-cash-001-opt2', value: 'good', score: 4, text: '>80% of AR under 30 days, <5% over 90 days' },
+            { id: 'fin-cash-001-opt3', value: 'average', score: 3, text: '>70% of AR under 30 days, <10% over 90 days' },
+            { id: 'fin-cash-001-opt4', value: 'concerning', score: 1, text: '<70% of AR under 30 days, 10-20% over 90 days' },
+            { id: 'fin-cash-001-opt5', value: 'critical', score: 0, text: '<60% of AR under 30 days, >20% over 90 days or don\'t track' }
           ]
         },
         {
           id: 'fin-cash-002',
           text: 'What is your practice\'s minimum cash reserve policy (expressed as months of operating expenses)?',
-          type: 'MULTIPLE_CHOICE',
-          helpText: 'Cash reserves protect against revenue disruptions and enable strategic investments...',
+          type: QuestionType.MULTIPLE_CHOICE,
+          description: 'Cash reserves protect against revenue disruptions and enable strategic investments...',
+          required: true,
+          weight: 1,
+          dependencies: [],
           options: [
-            { value: 'robust', score: 5, text: '≥6 months of operating expenses' },
-            { value: 'strong', score: 4, text: '4-5 months of operating expenses' },
-            { value: 'adequate', score: 3, text: '3 months of operating expenses' },
-            { value: 'minimal', score: 1, text: '1-2 months of operating expenses' },
-            { value: 'none', score: 0, text: '<1 month or no formal cash reserve policy' }
+            { id: 'fin-cash-002-opt1', value: 'robust', score: 5, text: '≥6 months of operating expenses' },
+            { id: 'fin-cash-002-opt2', value: 'strong', score: 4, text: '4-5 months of operating expenses' },
+            { id: 'fin-cash-002-opt3', value: 'adequate', score: 3, text: '3 months of operating expenses' },
+            { id: 'fin-cash-002-opt4', value: 'minimal', score: 1, text: '1-2 months of operating expenses' },
+            { id: 'fin-cash-002-opt5', value: 'none', score: 0, text: '<1 month or no formal cash reserve policy' }
           ]
         }
       ]
@@ -92,26 +101,32 @@ const AssessmentPage: React.FC = () => {
         {
           id: 'comp-risk-001',
           text: 'When was your last comprehensive compliance risk assessment conducted, and by whom?',
-          type: 'MULTIPLE_CHOICE',
-          helpText: 'A compliance risk assessment is simply a check-up of your practice\'s ability...',
+          type: QuestionType.MULTIPLE_CHOICE,
+          description: 'A compliance risk assessment is simply a check-up of your practice\'s ability...',
+          required: true,
+          weight: 1,
+          dependencies: [],
           options: [
-            { value: 'recent_external', score: 5, text: 'Within past year by qualified external party' },
-            { value: 'recent_internal', score: 3, text: 'Within past year internally' },
-            { value: 'outdated_external', score: 2, text: '1-3 years ago by external party' },
-            { value: 'outdated_internal', score: 1, text: '1-3 years ago internally' },
-            { value: 'never', score: 0, text: 'Never conducted or >3 years ago' }
+            { id: 'comp-risk-001-opt1', value: 'recent_external', score: 5, text: 'Within past year by qualified external party' },
+            { id: 'comp-risk-001-opt2', value: 'recent_internal', score: 3, text: 'Within past year internally' },
+            { id: 'comp-risk-001-opt3', value: 'outdated_external', score: 2, text: '1-3 years ago by external party' },
+            { id: 'comp-risk-001-opt4', value: 'outdated_internal', score: 1, text: '1-3 years ago internally' },
+            { id: 'comp-risk-001-opt5', value: 'never', score: 0, text: 'Never conducted or >3 years ago' }
           ]
         },
         {
           id: 'comp-risk-002',
           text: 'Do you have a formal breach response plan with specific procedures, roles, and regulatory notification processes?',
-          type: 'MULTIPLE_CHOICE',
-          helpText: 'Breaches without proper response typically increase cost by 25-40%...',
+          type: QuestionType.MULTIPLE_CHOICE,
+          description: 'Breaches without proper response typically increase cost by 25-40%...',
+          required: true,
+          weight: 1,
+          dependencies: [],
           options: [
-            { value: 'comprehensive', score: 5, text: 'Yes, comprehensive plan with regular testing and updates' },
-            { value: 'documented', score: 3, text: 'Yes, documented plan but not regularly tested' },
-            { value: 'informal', score: 1, text: 'Informal or incomplete plan' },
-            { value: 'none', score: 0, text: 'No formal breach response plan' }
+            { id: 'comp-risk-002-opt1', value: 'comprehensive', score: 5, text: 'Yes, comprehensive plan with regular testing and updates' },
+            { id: 'comp-risk-002-opt2', value: 'documented', score: 3, text: 'Yes, documented plan but not regularly tested' },
+            { id: 'comp-risk-002-opt3', value: 'informal', score: 1, text: 'Informal or incomplete plan' },
+            { id: 'comp-risk-002-opt4', value: 'none', score: 0, text: 'No formal breach response plan' }
           ]
         }
       ]
@@ -177,7 +192,9 @@ const AssessmentPage: React.FC = () => {
 
   // Get the questions for the current module
   const getCurrentModuleContent = () => {
-    return moduleContents.find(m => m.id === currentModule);
+    const content = moduleContents.find(m => m.id === currentModule);
+    console.log('Current module content:', content);
+    return content;
   };
   
   // Calculate overall progress

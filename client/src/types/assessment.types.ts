@@ -3,9 +3,9 @@
  */
 export enum QuestionType {
   MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
-  LIKERT = 'LIKERT',
   NUMERIC = 'NUMERIC',
-  TEXT = 'TEXT'
+  TEXT = 'TEXT',
+  LIKERT_SCALE = 'LIKERT_SCALE'
 }
 
 /**
