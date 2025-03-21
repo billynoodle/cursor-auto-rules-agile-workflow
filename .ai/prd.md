@@ -98,10 +98,10 @@ The initial MVP will focus exclusively on physiotherapists, with a phased approa
 - Real-time data synchronization using Supabase Realtime capabilities
 
 ### Testing Requirements
-- Comprehensive test coverage for all components and business logic
+- Comprehensive test coverage with minimum 80% branch coverage requirement
 - Proper test environment setup with React 18 concurrent features
 - Automated test execution in CI/CD pipeline
-- Component testing using React Testing Library
+- Component testing using React Testing Library with standardized patterns
 - Integration testing for API endpoints and data flow
 - End-to-end testing for critical user journeys
 - Performance testing for response times and load handling
@@ -109,9 +109,37 @@ The initial MVP will focus exclusively on physiotherapists, with a phased approa
 - Cross-browser compatibility testing
 - Accessibility testing (WCAG compliance)
 - Test logging and debugging capabilities
-- Mock implementations for external dependencies
+- Mock implementations for external dependencies:
+  - Supabase client mocking with proper chain implementation
+  - LocalStorage mocking for offline functionality
+  - Network state simulation
 - Regular test maintenance and updates
 - Test documentation and coverage reporting
+- Test organization:
+  - Unit tests in `tests/unit/` directory
+  - Integration tests in `tests/integration/` directory
+  - End-to-end tests in `tests/e2e/` directory
+  - Test results stored in `tests/results/`
+  - Coverage reports in `tests/results/coverage/`
+  - Metrics reports in `tests/results/metrics/`
+- Test execution:
+  - `npm run test:unit` for unit tests
+  - `npm run test:integration` for integration tests
+  - `npm run test:e2e` for end-to-end tests
+  - `npm test` for all tests
+- Error handling test coverage:
+  - Network errors
+  - Database errors
+  - Validation errors
+  - Authentication errors
+  - Authorization errors
+  - Timeout scenarios
+  - Offline mode
+- Performance test requirements:
+  - Response time under 200ms for critical operations
+  - Load testing for concurrent users
+  - Memory usage monitoring
+  - CPU utilization tracking
 
 ## Assessment Methodology
 

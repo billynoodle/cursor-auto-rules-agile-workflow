@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/ModuleService.test.ts",
-  "testName": "ModuleService updateModule should throw error if module not found",
-  "executionTime": 0.7597920000002887,
-  "memoryUsage": 327944,
-  "timestamp": "2025-03-12T02:02:06.290Z",
-  "type": "test"
-}

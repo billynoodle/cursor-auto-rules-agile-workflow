@@ -11,13 +11,18 @@
     "test": "jest",
     "build": "npm run build --workspace=client",
     "dev": "npm run dev --workspace=client",
-    "test:unit": "jest --testPathPattern=tests/unit",
+    "test:unit": "node tests/scripts/run-unit-tests.js",
     "test:integration": "jest --testPathPattern=tests/integration",
     "test:e2e": "jest --testPathPattern=tests/e2e",
     "test:coverage": "jest --coverage",
     "test:tooltip": "node scripts/run-tooltip-tests.js",
+    "test:cleanup": "node tests/scripts/cleanup-test-artifacts.js",
+    "pretest": "npm run test:cleanup",
     "test:unit-review": "node tests/scripts/run-unit-tests.js",
     "tooltip-trends": "node scripts/view-tooltip-trends.js"
+  },
+  "config": {
+    "force": false
   },
   "keywords": [],
   "author": "",

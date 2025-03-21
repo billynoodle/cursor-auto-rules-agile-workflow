@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/TooltipReviewService.test.ts",
-  "testName": "TooltipReviewService enhanceTooltip should add metrics to tooltips without metrics",
-  "executionTime": 0.5124160000000302,
-  "memoryUsage": 108816,
-  "timestamp": "2025-03-12T01:41:18.712Z",
-  "type": "test"
-}

@@ -1,14 +1,11 @@
 ---
 description: IMPLEMENT sprint workflow to ENSURE consistent sprint planning and execution
 globs: .ai/sprints/**/*
-alwaysApply: false
 ---
+
 # Sprint Workflow Standards
 
 <version>1.0.0</version>
-<rule_type>workflow</rule_type>
-<applies_to>**.md</applies_to>
-<priority>high</priority>
 
 ## Context
 - Used when starting a new sprint
@@ -32,10 +29,11 @@ alwaysApply: false
    - Focus Areas: [list key objectives]
 
 3. Link active stories:
-   - Copy from backlog
-   - Update story status
+   - Reference stories from .ai/epics/epic-{N}/stories/
+   - Update story status in both sprint and epic files
    - Set sprint assignments
    - Check dependencies
+   - Update epic progress tracking
 
 4. Create burndown chart:
    ```mermaid
@@ -62,20 +60,32 @@ alwaysApply: false
    - Update story points
    - Record blockers
    - Update burndown
+   - Sync epic story status
 
 2. Check sprint health:
    - Velocity vs target
    - Blocker resolution
    - Dependencies status
    - Risk assessment
+   - Epic alignment check
 
 3. Plan next actions:
    - Priority stories
    - Blocker resolution
    - Team coordination
    - Resource needs
+   - Epic progress review
+```
 
-4. Create daily retrospective:
+### Sprint Completion
+```markdown
+1. Finalize metrics:
+   - Stories completed
+   - Points delivered
+   - Velocity achieved
+   - Quality metrics
+
+2. Create daily retrospective:
    - Use template from .ai/sprints/retrospectives/template.md
    - Document in .ai/sprints/retrospectives/YYYY-MM-DD-retro.md
    - Required sections:
@@ -87,22 +97,6 @@ alwaysApply: false
      - Metrics Summary (sprint, quality, components, docs)
      - Dependencies Update (external and internal)
      - Notes for Tomorrow (focus areas and preparation)
-```
-
-### Sprint Completion
-```markdown
-1. Finalize metrics:
-   - Stories completed
-   - Points delivered
-   - Velocity achieved
-   - Quality metrics
-
-2. Create retrospective:
-   .ai/sprints/retrospectives/SPRINT-{N}-retro.md
-   - Follow template structure
-   - Include sprint-level metrics
-   - Document key learnings
-   - List action items for next sprint
 
 3. Archive sprint:
    - Move to completed
@@ -111,9 +105,63 @@ alwaysApply: false
    - Record learnings
 ```
 
+## Examples
+
+### Effective Sprint Initialization
+```markdown
+# Sprint-2: Authentication System Implementation
+
+## Metadata
+- Sprint: 2
+- Start: 2024-03-18
+- End: 2024-04-01
+- Points Target: 34
+- Team Capacity: 40 points
+- Focus: User Authentication
+
+## Stories
+- [ ] EPIC-1/STORY-1: Login System (13 points)
+  - Location: .ai/epics/epic-1/stories/story-1/
+  - Implementation Status: In Progress
+- [ ] EPIC-1/STORY-2: Password Reset (8 points)
+  - Location: .ai/epics/epic-1/stories/story-2/
+  - Implementation Status: Not Started
+- [ ] EPIC-2/STORY-1: 2FA Setup (13 points)
+  - Location: .ai/epics/epic-2/stories/story-1/
+  - Implementation Status: Not Started
+
+## Sprint Goals
+1. Complete core authentication
+2. Implement security features
+3. Set up monitoring
+
+## Progress Tracking
+### Day 1 (2024-03-18)
+- Started EPIC-1/STORY-1
+- Environment setup complete
+- No blockers
+- Epic-1 progress: 25%
+```
+
+### Ineffective Sprint Start
+<example type="invalid">
+# Sprint 2
+- Do auth stuff
+- Maybe add security
+- Will track progress later
+</example>
+
 ## File Structure
 ```
 .ai/
+├── epics/
+│   ├── README.md
+│   ├── epic-{N}/
+│   │   ├── epic-{N}.md
+│   │   └── stories/
+│   │       └── story-{M}/
+│   │           ├── implementation/
+│   │           └── story-{M}.md
 ├── sprints/
 │   ├── current.md
 │   ├── SPRINT-{N}.md
@@ -136,4 +184,6 @@ alwaysApply: false
 - NEVER ignore dependencies
 - ALWAYS document decisions
 - NEVER skip retrospectives
-- ALWAYS use templates
+- ALWAYS use retrospective template
+- NEVER leave retrospective sections empty
+- ALWAYS track retrospective action items 

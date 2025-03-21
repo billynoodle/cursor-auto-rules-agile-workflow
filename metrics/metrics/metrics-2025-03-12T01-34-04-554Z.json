@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionInterconnectedness.test.ts",
-  "testName": "Business Area Interconnectedness Business Impact Analysis should calculate the most interconnected business areas",
-  "executionTime": 0.40437500000007276,
-  "memoryUsage": 116568,
-  "timestamp": "2025-03-12T01:34:04.554Z",
-  "type": "test"
-}

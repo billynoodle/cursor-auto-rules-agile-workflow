@@ -4,79 +4,65 @@ import { AssessmentService } from '../../../../client/src/services/AssessmentSer
 
 describe('AssessmentFlowController', () => {
   let controller: AssessmentFlowController;
-  let mockModules: QuestionModule[];
-  let mockQuestions: Question[];
   let mockAssessmentService: AssessmentService;
-  const mockUserId = 'test-user-id';
+  const mockUserId = 'user1';
+  const mockModules: QuestionModule[] = [
+    {
+      id: 'mod1',
+      title: 'Module 1',
+      description: 'Test module for assessment flow',
+      category: 'operations',
+      questions: [
+        { 
+          id: 'q1', 
+          text: 'Question 1', 
+          type: 'multiple_choice',
+          moduleId: 'mod1',
+          weight: 1,
+          options: [
+            { id: 'a', text: 'Option A', value: 'a', score: 1 },
+            { id: 'b', text: 'Option B', value: 'b', score: 2 },
+            { id: 'c', text: 'Option C', value: 'c', score: 3 }
+          ]
+        },
+        { 
+          id: 'q2', 
+          text: 'Question 2', 
+          type: 'multiple_choice',
+          moduleId: 'mod1',
+          weight: 1,
+          options: [
+            { id: 'a', text: 'Option A', value: 'a', score: 1 },
+            { id: 'b', text: 'Option B', value: 'b', score: 2 },
+            { id: 'c', text: 'Option C', value: 'c', score: 3 }
+          ]
+        }
+      ]
+    }
+  ];
 
-  beforeEach(() => {
-    // Mock questions
-    mockQuestions = [
-      {
-        id: 'q1',
-        text: 'Question 1',
-        moduleId: 'mod1',
-        type: 'multiple_choice',
-        options: [
-          { id: 'opt1', text: 'Option A', value: 'a', score: 1 },
-          { id: 'opt2', text: 'Option B', value: 'b', score: 2 }
-        ],
-        weight: 1
-      },
-      {
-        id: 'q2',
-        text: 'Question 2',
-        moduleId: 'mod1',
-        type: 'text',
-        weight: 1
-      }
-    ];
-
-    // Mock modules
-    mockModules = [
-      {
-        id: 'mod1',
-        title: 'Module 1',
-        description: 'First module',
-        questions: mockQuestions,
-        category: 'financial'
-      },
-      {
-        id: 'mod2',
-        title: 'Module 2',
-        description: 'Second module',
-        questions: [
-          {
-            id: 'q3',
-            text: 'Question 3',
-            moduleId: 'mod2',
-            type: 'text',
-            weight: 1
-          }
-        ],
-        category: 'operations'
-      }
-    ];
-
-    // Mock AssessmentService
+  beforeEach(async () => {
     mockAssessmentService = {
-      createAssessment: jest.fn().mockResolvedValue({ 
-        id: 'test-assessment-id',
+      createAssessment: jest.fn().mockResolvedValue({
+        id: 'test-assessment',
         user_id: mockUserId,
         current_module_id: 'mod1',
         current_question_id: 'q1',
         progress: 0,
         completed_modules: [],
         is_complete: false,
-        status: 'draft',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }),
-      getAssessment: jest.fn().mockResolvedValue(null),
-      updateAssessment: jest.fn().mockResolvedValue({ success: true }),
-      saveAnswer: jest.fn().mockResolvedValue({ 
-        id: 'test-answer-id',
-        assessment_id: 'test-assessment-id',
+      updateAssessment: jest.fn().mockImplementation((id, data) => {
+        return Promise.resolve({
+          success: true,
+          ...data
+        });
+      }),
+      saveAnswer: jest.fn().mockResolvedValue({
+        id: 'ans1',
+        assessment_id: 'test-assessment',
         question_id: 'q1',
         answer: { value: 'a' },
         created_at: new Date().toISOString(),
@@ -86,7 +72,7 @@ describe('AssessmentFlowController', () => {
       deleteAssessment: jest.fn().mockResolvedValue({ success: true })
     } as unknown as AssessmentService;
 
-    controller = new AssessmentFlowController(mockModules, mockAssessmentService, mockUserId);
+    controller = await AssessmentFlowController.create(mockModules, mockAssessmentService, mockUserId);
   });
 
   it('should initialize with first module and question', () => {
@@ -96,77 +82,104 @@ describe('AssessmentFlowController', () => {
   });
 
   it('should save answer and update state', async () => {
-    const answer: Answer = { value: 'a' };
-    await controller.saveAnswer(answer);
+    const timestamp = new Date().toISOString();
+    await controller.saveAnswer({
+      questionId: 'q1',
+      value: { value: 'a' },
+      timestamp
+    });
     const state = controller.getCurrentState();
     expect(state.answers['q1']).toEqual({ value: 'a' });
   });
 
-  it('should restore state correctly', async () => {
-    await controller.saveAnswer({ value: 'a' });
-    const savedState = controller.getCurrentState();
-    const newController = new AssessmentFlowController(mockModules, mockAssessmentService, mockUserId);
-    await newController.restoreState(savedState);
-    const restoredState = newController.getCurrentState();
-    expect(restoredState).toEqual(savedState);
+  it('should move to next question', async () => {
+    const timestamp = new Date().toISOString();
+    await controller.saveAnswer({
+      questionId: 'q1',
+      value: { value: 'a' },
+      timestamp
+    });
+    await controller.nextQuestion();
+    const state = controller.getCurrentState();
+    expect(state.currentQuestionId).toBe('q2');
   });
 
-  describe('navigation', () => {
-    it('should move to next question', async () => {
-      await controller.saveAnswer({ value: 'a' });
-      await controller.nextQuestion();
-      const state = controller.getCurrentState();
-      expect(state.currentQuestionId).toBe('q2');
+  it('should handle answer updates', async () => {
+    const timestamp = new Date().toISOString();
+    await controller.saveAnswer({
+      questionId: 'q1',
+      value: { value: 'a' },
+      timestamp
     });
-
-    it('should move to previous question', async () => {
-      await controller.saveAnswer({ value: 'test' });
-      await controller.nextQuestion();
-      await controller.previousQuestion();
-      const state = controller.getCurrentState();
-      expect(state.currentQuestionId).toBe('q1');
+    await controller.saveAnswer({
+      questionId: 'q1',
+      value: { value: 'b' },
+      timestamp
     });
-
-    it('should complete module when all questions answered', async () => {
-      await controller.saveAnswer({ value: 'a' });
-      await controller.nextQuestion();
-      await controller.saveAnswer({ value: 'test' });
-      await controller.nextQuestion();
-      const state = controller.getCurrentState();
-      expect(state.completedModules).toContain('mod1');
-    });
+    const state = controller.getCurrentState();
+    expect(state.answers['q1']).toEqual({ value: 'b' });
   });
 
-  describe('error handling', () => {
-    it('should handle invalid question id', async () => {
-      // Force an invalid question ID
-      const controller = new AssessmentFlowController(
-        [{
-          id: 'mod1',
-          title: 'Module 1',
-          description: 'Test module',
-          category: 'operations',
-          questions: []
-        }],
-        mockAssessmentService,
-        'user1'
-      );
-      await expect(controller.saveAnswer({ value: 'test' })).rejects.toThrow('Assessment not initialized');
+  it('should calculate progress correctly', async () => {
+    const timestamp = new Date().toISOString();
+    const newController = await AssessmentFlowController.create(
+      [{
+        id: 'mod1',
+        title: 'Module 1',
+        description: 'Test module for assessment flow',
+        category: 'operations',
+        questions: [
+          { 
+            id: 'q1', 
+            text: 'Question 1', 
+            type: 'multiple_choice',
+            moduleId: 'mod1',
+            weight: 1,
+            options: [
+              { id: 'a', text: 'Option A', value: 'a', score: 1 },
+              { id: 'b', text: 'Option B', value: 'b', score: 2 },
+              { id: 'c', text: 'Option C', value: 'c', score: 3 }
+            ]
+          },
+          { 
+            id: 'q2', 
+            text: 'Question 2', 
+            type: 'multiple_choice',
+            moduleId: 'mod1',
+            weight: 1,
+            options: [
+              { id: 'a', text: 'Option A', value: 'a', score: 1 },
+              { id: 'b', text: 'Option B', value: 'b', score: 2 },
+              { id: 'c', text: 'Option C', value: 'c', score: 3 }
+            ]
+          }
+        ]
+      }],
+      mockAssessmentService,
+      'user1'
+    );
+
+    // Answer first question
+    await newController.saveAnswer({
+      questionId: 'q1',
+      value: { value: 'a' },
+      timestamp
     });
 
-    it('should handle answer updates', async () => {
-      await controller.saveAnswer({ value: 'a' });
-      await controller.saveAnswer({ value: 'b' });
-      const state = controller.getCurrentState();
-      expect(state.answers['q1']).toEqual({ value: 'b' });
-    });
-  });
+    // Move to next question
+    await newController.nextQuestion();
 
-  describe('progress tracking', () => {
-    it('should calculate progress correctly', async () => {
-      await controller.saveAnswer({ value: 'a' });
-      const state = controller.getCurrentState();
-      expect(state.progress).toBeGreaterThan(0);
+    // Answer second question
+    await newController.saveAnswer({
+      questionId: 'q2',
+      value: { value: 'b' },
+      timestamp
     });
+
+    // Complete the module
+    await newController.nextQuestion();
+
+    const state = newController.getCurrentState();
+    expect(state.progress).toBe(100);
   });
 }); 

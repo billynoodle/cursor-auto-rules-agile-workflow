@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-03-21-16-27",
+  "testSuite": "unit-tests",
+  "status": "completed",
+  "results": {
+    "numTotalTests": 194,
+    "numPassedTests": 193,
+    "numFailedTests": 1,
+    "numPendingTests": 0,
+    "startTime": 1742534852963
+  },
+  "coverage": {
+    "statements": 84.66,
+    "branches": 76.22,
+    "functions": 84.71,
+    "lines": 85.52
+  }
+}

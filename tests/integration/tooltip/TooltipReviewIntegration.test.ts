@@ -37,10 +37,13 @@ describe('Tooltip Review Integration', () => {
   let reviewResults: any[] = [];
 
   beforeAll(async () => {
-    // Create test results directory if it doesn't exist
-    const testResultsDir = path.join(__dirname, '../../../test-results');
-    if (!fs.existsSync(testResultsDir)) {
-      fs.mkdirSync(testResultsDir, { recursive: true });
+    // Update test results directory path
+    const resultsDir = path.join(__dirname, '../../../tests/results');
+    const tooltipResultsDir = path.join(resultsDir, 'junit', 'tooltip');
+
+    // Ensure directory exists
+    if (!fs.existsSync(tooltipResultsDir)) {
+      fs.mkdirSync(tooltipResultsDir, { recursive: true });
     }
   });
 
@@ -129,6 +132,7 @@ describe('Tooltip Review Integration', () => {
     // Verify results were saved
     const savedResults = await testResultsStore.getResult('tooltip-review-results');
     expect(savedResults).toBeDefined();
+    expect(savedResults).not.toBeNull();
     expect(savedResults.totalTooltips).toBe(totalTooltips);
   });
 }); 

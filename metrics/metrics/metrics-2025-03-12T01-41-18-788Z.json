@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
-  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for question with invalid weight",
-  "executionTime": 1.475416999999652,
-  "memoryUsage": 281448,
-  "timestamp": "2025-03-12T01:41:18.788Z",
-  "type": "test"
-}

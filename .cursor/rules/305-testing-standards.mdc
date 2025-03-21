@@ -110,6 +110,26 @@ npm run test:e2e      # Run E2E tests
 npm test -- --coverage # Run with coverage
 ```
 
+### 7. Test Results Standards
+- MUST use TestResultsStore for result persistence
+- MUST follow standardized results directory structure:
+  ```
+  tests/results/
+  ├── junit/          # Test execution results
+  ├── metrics/        # Test metrics data
+  └── coverage/       # Coverage reports
+  ```
+- MUST include required metadata with results:
+  - Test ID
+  - Timestamp
+  - Test type
+  - Status
+  - Duration
+- MUST maintain result indices for efficient retrieval
+- MUST clean up old test results periodically
+- SHOULD extract metrics for trend analysis
+- SHOULD generate test execution reports
+
 ## Examples
 
 <example>

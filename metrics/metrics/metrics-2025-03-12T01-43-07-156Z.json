@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
-  "testName": "QuestionService - Compliance Questions Question Filtering should filter compliance questions by practice size",
-  "executionTime": 0.7167090000002645,
-  "memoryUsage": 346080,
-  "timestamp": "2025-03-12T01:43:07.156Z",
-  "type": "test"
-}

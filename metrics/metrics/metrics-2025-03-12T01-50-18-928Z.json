@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/ModuleService.test.ts",
-  "testName": "ModuleService searchModules should return empty array if no modules match country",
-  "executionTime": 0.05912499999976717,
-  "memoryUsage": 108072,
-  "timestamp": "2025-03-12T01:50:18.928Z",
-  "type": "test"
-}

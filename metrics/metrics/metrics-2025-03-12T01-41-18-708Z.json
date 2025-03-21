@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/TooltipReviewService.test.ts",
-  "testName": "TooltipReviewService reviewTooltip should calculate word count correctly",
-  "executionTime": 0.4173339999997552,
-  "memoryUsage": 112128,
-  "timestamp": "2025-03-12T01:41:18.708Z",
-  "type": "test"
-}

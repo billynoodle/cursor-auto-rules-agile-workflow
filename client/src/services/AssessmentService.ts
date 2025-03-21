@@ -364,11 +364,22 @@ export class AssessmentService {
         try {
           const { data: result, error } = await this.supabase
             .from('assessment_answers')
-            .insert(validatedData)
+            .upsert(validatedData, {
+              onConflict: 'assessment_id,question_id',
+              ignoreDuplicates: false
+            })
             .select()
             .single();
 
           if (error) {
+            // Check if it's a conflict error
+            if (error.message?.includes('Conflict')) {
+              throw new AssessmentError(
+                'Failed to save answer due to conflict',
+                'UPDATE_FAILED',
+                error
+              );
+            }
             throw new AssessmentError(
               'Failed to save answer in database',
               'DB_ERROR',

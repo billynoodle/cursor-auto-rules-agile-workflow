@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionInterconnectedness.test.ts",
-  "testName": "Business Area Interconnectedness Cross-Module Question Analysis should analyze keywords shared across different module questions",
-  "executionTime": 14.09375,
-  "memoryUsage": 5599376,
-  "timestamp": "2025-03-12T01:44:59.244Z",
-  "type": "test"
-}

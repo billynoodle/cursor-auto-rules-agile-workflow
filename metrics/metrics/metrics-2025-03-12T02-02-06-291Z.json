@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/ModuleService.test.ts",
-  "testName": "ModuleService deleteModule should delete module",
-  "executionTime": 0.11162500000000364,
-  "memoryUsage": 101784,
-  "timestamp": "2025-03-12T02:02:06.291Z",
-  "type": "test"
-}

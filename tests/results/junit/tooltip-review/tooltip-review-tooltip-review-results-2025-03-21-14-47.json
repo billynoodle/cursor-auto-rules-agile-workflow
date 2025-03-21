@@ -1,0 +1,94 @@
+{
+  "data": {
+    "timestamp": "2025-03-21T03:47:47.987Z",
+    "totalTooltips": 4,
+    "tooltipsWithMetrics": 1,
+    "tooltipsWithExamples": 0,
+    "tooltipsWithPlainLanguage": 0,
+    "tooltipsWithJargon": 1,
+    "tooltipsNeedingImprovement": 4,
+    "percentWithMetrics": 25,
+    "percentWithExamples": 0,
+    "percentNeedingImprovement": 100,
+    "detailedResults": [
+      {
+        "id": "fin-exp-001",
+        "category": "FINANCIAL",
+        "text": "What is your practice's overhead ratio?",
+        "helpText": "Overhead ratio shows what percentage of your income goes to running costs before paying practitioners. For example, if your practice makes $300,000 per year and spends $150,000 on expenses (not counting payments to practitioners), your overhead ratio is 50%. Most successful practices keep this under 45%.",
+        "wordCount": 46,
+        "readabilityScore": 77.94565217391305,
+        "hasMetrics": true,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Include practical examples to illustrate the concept",
+          "Expand explanation to provide more comprehensive context"
+        ],
+        "enhancedHelpText": "To put it simply, overhead ratio shows what percentage of your income goes to running costs before paying practitioners. For example, if your practice makes $300,000 per year and spends $150,000 on expenses (not counting payments to practitioners), your overhead ratio is 50%. Most successful practices keep this under 45%. For instance, practices that systematically review this area typically find 5-10% in recoverable revenue. Optimizing this area typically leads to improved financial performance."
+      },
+      {
+        "id": "comp-risk-001",
+        "category": "COMPLIANCE",
+        "text": "When was your last compliance risk assessment conducted?",
+        "helpText": "A compliance risk assessment is simply a check-up of your practice's ability to follow healthcare rules and regulations. Think of it like a safety inspection for your business.",
+        "wordCount": 28,
+        "readabilityScore": 81.04761904761904,
+        "hasMetrics": false,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [
+          "compliance"
+        ],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Explain or replace jargon terms: compliance",
+          "Add specific numbers, percentages, or metrics to provide context",
+          "Include practical examples to illustrate the concept",
+          "Expand explanation to provide more comprehensive context"
+        ],
+        "enhancedHelpText": "This essentially means a compliance risk assessment is simply a check-up of your practice's ability to follow healthcare rules and regulations. Think of it like a safety inspection for your business. Implementing best practices here can reduce audit risk by 40-50%. For instance, regular staff training on this topic is considered a best practice by regulatory bodies. Addressing this properly protects your practice from penalties and reputation damage."
+      },
+      {
+        "id": "tech-dig-001",
+        "category": "TECHNOLOGY",
+        "text": "Do you use digital tools to track patient outcomes?",
+        "helpText": "Digital outcome tracking improves treatment success rates.",
+        "wordCount": 7,
+        "readabilityScore": 69.67857142857143,
+        "hasMetrics": false,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Add specific numbers, percentages, or metrics to provide context",
+          "Include practical examples to illustrate the concept"
+        ],
+        "enhancedHelpText": "In basic terms, digital outcome tracking improves treatment success rates. The top 25% of practices excel in this measurement. For example, top-performing practices have clear protocols for this. Improvement in this area yields benefits across your practice."
+      },
+      {
+        "id": "staff-train-001",
+        "category": "STAFFING",
+        "text": "How frequently do staff receive training?",
+        "helpText": "Regular staff training ensures team skills stay current.",
+        "wordCount": 8,
+        "readabilityScore": 79.25,
+        "hasMetrics": false,
+        "hasExamples": false,
+        "plainLanguage": false,
+        "jargon": [],
+        "suggestedImprovements": [
+          "Use simpler language and shorter sentences",
+          "Add specific numbers, percentages, or metrics to provide context",
+          "Include practical examples to illustrate the concept",
+          "Expand explanation to provide more comprehensive context"
+        ],
+        "enhancedHelpText": "This refers to regular staff training ensures team skills stay current. The top 25% of practices excel in this measurement. For instance, addressing this systematically rather than reactively improves outcomes. This plays an important role in your overall practice success."
+      }
+    ]
+  },
+  "timestamp": "2025-03-21-14-47"
+}

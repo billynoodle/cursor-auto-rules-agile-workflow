@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
-  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for question without required fields",
-  "executionTime": 7.01404199999979,
-  "memoryUsage": 1390680,
-  "timestamp": "2025-03-12T02:02:05.950Z",
-  "type": "test"
-}

@@ -249,7 +249,7 @@ describe('AssessmentService', () => {
   describe('saveAnswer', () => {
     it('should save answer when online', async () => {
       const mockChain = {
-        insert: jest.fn().mockReturnValue({
+        upsert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
             single: jest.fn().mockResolvedValue({ data: mockAnswer, error: null })
           })

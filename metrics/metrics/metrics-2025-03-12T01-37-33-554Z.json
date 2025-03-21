@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
-  "testName": "QuestionService - Compliance Questions Regulatory Compliance Questions should retrieve CPD question by id",
-  "executionTime": 0.2209170000000995,
-  "memoryUsage": 336432,
-  "timestamp": "2025-03-12T01:37:33.554Z",
-  "type": "test"
-}

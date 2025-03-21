@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
-  "testName": "QuestionService - All Modules Staffing Module Questions should retrieve staffing questions by category",
-  "executionTime": 0.2716249999998581,
-  "memoryUsage": 325320,
-  "timestamp": "2025-03-12T01:34:04.772Z",
-  "type": "test"
-}

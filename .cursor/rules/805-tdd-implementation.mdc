@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description: ALWAYS use when structuring tasks and implementing features to ensure proper Test-Driven Development practices. This rule enforces consistent TDD principles across all tasks and stories.
+globs: **/*.{ts,tsx,js,jsx,py,rb,cs,java,php,go,swift,kt,vue,svelte,scala,rs}
 alwaysApply: false
 ---
 ALWAYS use when structuring tasks and implementing features to ensure proper Test-Driven Development practices. This rule enforces consistent TDD principles across all tasks and stories.
@@ -49,6 +49,11 @@ Example task structure:
 - **Types**: Include unit, integration, and functional tests as appropriate
 - **Scope**: Tests should verify both happy paths and edge cases
 - **Independence**: Tests should be independent and not rely on other tests
+- **Results Tracking**: Must use TestResultsStore to track test execution:
+  - Store results in standardized directory structure
+  - Include required metadata (ID, timestamp, type, status)
+  - Maintain historical results for trend analysis
+  - Extract metrics for reporting and analysis
 
 ### 4. Story Structure TDD Additions
 
@@ -136,4 +141,6 @@ This TDD approach should be applied immediately to all remaining tasks in the cu
 - ALWAYS validate tests after implementation 
 - ALWAYS document test results in Progress Notes
 - NEVER skip test-first approach even for "simple" changes
+- ALWAYS check each folder and file within tests folder for current tests before proposing new tests
+- NEVER create duplicate tests
 </critical> 

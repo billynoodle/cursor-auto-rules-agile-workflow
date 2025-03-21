@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/ModuleService.test.ts",
-  "testName": "ModuleService createModule should throw error if module with same id exists",
-  "executionTime": 4.982541999999739,
-  "memoryUsage": 588136,
-  "timestamp": "2025-03-12T02:02:06.285Z",
-  "type": "test"
-}

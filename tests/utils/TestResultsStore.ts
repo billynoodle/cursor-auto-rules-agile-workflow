@@ -8,6 +8,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { format } from 'date-fns';
 
 /**
  * Interface for test result metadata
@@ -26,21 +27,26 @@ export interface TestResultMetadata {
  */
 export class TestResultsStore {
   private baseDir: string;
+  private metricsDir: string;
   private testType: string;
   
   /**
    * Create a new test results store
    * 
-   * @param testType Type of test (tooltip-review, performance, etc.)
+   * @param testType Type of test (unit, integration, tooltip, etc.)
    */
   constructor(testType: string) {
     this.testType = testType;
-    this.baseDir = path.join(process.cwd(), 'tests', 'test-results', testType);
+    const resultsDir = path.join(process.cwd(), 'tests', 'results');
+    this.baseDir = path.join(resultsDir, 'junit', testType);
+    this.metricsDir = path.join(resultsDir, 'metrics', 'raw');
     
-    // Ensure directory exists
-    if (!fs.existsSync(this.baseDir)) {
-      fs.mkdirSync(this.baseDir, { recursive: true });
-    }
+    // Ensure directories exist
+    [this.baseDir, this.metricsDir].forEach(dir => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
   }
   
   /**
@@ -48,41 +54,28 @@ export class TestResultsStore {
    * 
    * @param id Unique identifier for the test result
    * @param data Test result data to store
-   * @returns Promise resolving to true if successful
    */
-  async saveResult(id: string, data: any): Promise<boolean> {
-    try {
-      const timestamp = new Date().toISOString().replace(/:/g, '-');
-      const filename = `${id}-${timestamp}.json`;
-      const filePath = path.join(this.baseDir, filename);
-      
-      // Add metadata to the result
-      const resultWithMetadata = {
-        metadata: {
-          testId: id,
-          timestamp: new Date().toISOString(),
-          testName: id,
-          testType: 'integration' as const,
-          status: 'passed' as const
-        },
-        data
-      };
-      
-      // Write to file
-      await fs.promises.writeFile(
-        filePath, 
-        JSON.stringify(resultWithMetadata, null, 2),
-        'utf8'
-      );
-      
-      // Update index file
-      await this.updateIndex(id, timestamp, filePath);
-      
-      return true;
-    } catch (error) {
-      console.error(`Failed to save test result: ${error}`);
-      return false;
-    }
+  saveResult(id: string, data: any): void {
+    const timestamp = format(new Date(), 'yyyy-MM-dd-HH-mm');
+    const filename = `${this.testType}-${id}-${timestamp}.json`;
+    const metricsFilename = `metrics-${timestamp}.json`;
+    const filePath = path.join(this.baseDir, filename);
+
+    // Save detailed test results
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify({ data, timestamp }, null, 2)
+    );
+
+    // Update index
+    this.updateIndex(id, timestamp, filePath);
+
+    // Save metrics
+    const metrics = this.extractMetrics(data);
+    fs.writeFileSync(
+      path.join(this.metricsDir, metricsFilename),
+      JSON.stringify(metrics, null, 2)
+    );
   }
   
   /**
@@ -221,5 +214,28 @@ export class TestResultsStore {
       console.error(`Failed to update index: ${error}`);
       return false;
     }
+  }
+
+  /**
+   * Extract metrics from test result data
+   * 
+   * @param data Test result data
+   * @returns Metrics object with test statistics
+   */
+  private extractMetrics(data: any): any {
+    return {
+      timestamp: new Date().toISOString(),
+      testSuite: this.testType,
+      status: 'completed',
+      results: {
+        numTotalTests: data.numTotalTests || 0,
+        numPassedTests: data.numPassedTests || 0,
+        numFailedTests: data.numFailedTests || 0,
+        numPendingTests: data.numPendingTests || 0,
+        startTime: data.startTime || new Date().toISOString(),
+        endTime: new Date().toISOString()
+      },
+      coverage: data.coverage || null
+    };
   }
 } 

@@ -18,14 +18,13 @@ export class AssessmentFlowController {
   private assessmentId?: string;
   private userId: string;
 
-  constructor(modules: QuestionModule[], assessmentService: AssessmentService, userId: string, existingAssessmentId?: string) {
+  private constructor(modules: QuestionModule[], assessmentService: AssessmentService, userId: string) {
     this.modules = modules;
     this.subscribers = new Set();
     this.questionMap = new Map();
     this.moduleMap = new Map();
     this.assessmentService = assessmentService;
     this.userId = userId;
-    this.assessmentId = existingAssessmentId;
 
     // Initialize maps for quick lookups
     this.modules.forEach(module => {
@@ -44,13 +43,18 @@ export class AssessmentFlowController {
       completedModules: [],
       isComplete: false
     };
+  }
 
-    // If we have an existing assessment ID, load its state
+  static async create(modules: QuestionModule[], assessmentService: AssessmentService, userId: string, existingAssessmentId?: string): Promise<AssessmentFlowController> {
+    const controller = new AssessmentFlowController(modules, assessmentService, userId);
+    
     if (existingAssessmentId) {
-      this.loadAssessment(existingAssessmentId);
+      await controller.loadAssessment(existingAssessmentId);
     } else {
-      this.createAssessment();
+      await controller.createAssessment();
     }
+
+    return controller;
   }
 
   private async loadAssessment(assessmentId: string): Promise<void> {
@@ -75,6 +79,7 @@ export class AssessmentFlowController {
         isComplete: assessment.is_complete
       };
 
+      this.assessmentId = assessmentId;
       this.notifySubscribers();
     } catch (error) {
       console.error('Failed to load assessment:', error);
@@ -140,32 +145,67 @@ export class AssessmentFlowController {
     this.subscribers.forEach(subscriber => subscriber(this.getCurrentState()));
   }
 
-  public async saveAnswer(answer: Record<string, any>): Promise<void> {
-    if (!this.assessmentId) {
-      throw new Error('Assessment not initialized');
+  private calculateProgress(): number {
+    const totalQuestions = this.modules.reduce((total, module) => total + module.questions.length, 0);
+    const answeredQuestions = Object.keys(this.state.answers).length;
+
+    // Check if all questions in a module are answered
+    this.modules.forEach(module => {
+      const allQuestionsAnswered = module.questions.every(q => this.state.answers[q.id]);
+      if (allQuestionsAnswered && !this.state.completedModules.includes(module.id)) {
+        this.state.completedModules.push(module.id);
+      }
+    });
+
+    // If all modules are completed, return 100%
+    if (this.state.completedModules.length === this.modules.length) {
+      this.state.isComplete = true;
+      return 100;
     }
 
-    // Validate current question ID
-    const currentQuestion = this.questionMap.get(this.state.currentQuestionId);
-    if (!currentQuestion) {
-      throw new Error(`Invalid question ID: ${this.state.currentQuestionId}`);
-    }
+    return Math.round((answeredQuestions / totalQuestions) * 100);
+  }
 
+  public async saveAnswer(answer: { questionId: string; value: Answer; timestamp: string }): Promise<void> {
+    // Store the current state before making changes
+    const previousState = { ...this.state };
+    
     try {
-      // Save answer to database
-      await this.assessmentService.saveAnswer({
-        assessment_id: this.assessmentId,
-        question_id: this.state.currentQuestionId,
-        answer: answer
-      });
+      // Validate the answer's question ID matches the current question
+      if (answer.questionId !== this.state.currentQuestionId) {
+        throw new Error('Answer question ID does not match current question');
+      }
+
+      if (!this.assessmentId) {
+        throw new Error('Assessment ID is required');
+      }
 
       // Update local state
-      this.state.answers[this.state.currentQuestionId] = answer;
-      this.updateProgress();
-      await this.persistState();
+      this.state = {
+        ...this.state,
+        answers: {
+          ...this.state.answers,
+          [answer.questionId]: answer.value
+        },
+        progress: this.calculateProgress()
+      };
+
+      // Persist to backend
+      const answerData = {
+        assessment_id: this.assessmentId,
+        question_id: answer.questionId,
+        answer: answer.value,
+        timestamp: answer.timestamp
+      };
+
+      await this.assessmentService.saveAnswer(answerData);
+      
+      // Only notify subscribers after successful persistence
       this.notifySubscribers();
     } catch (error) {
-      console.error('Failed to save answer:', error);
+      // Rollback state on error
+      this.state = previousState;
+      this.notifySubscribers();
       throw error;
     }
   }
@@ -174,39 +214,44 @@ export class AssessmentFlowController {
     const currentModule = this.moduleMap.get(this.state.currentModuleId);
     if (!currentModule) return;
 
+    // Save current state for rollback
+    const previousState = { ...this.state };
+
     const currentQuestionIndex = currentModule.questions.findIndex(q => q.id === this.state.currentQuestionId);
     
     if (currentQuestionIndex < currentModule.questions.length - 1) {
       // Next question in current module
       this.state.currentQuestionId = currentModule.questions[currentQuestionIndex + 1].id;
-      
-      // Check if this was the last unanswered question in the module
+    } else {
+      // Check if all questions in current module are answered
       const allQuestionsAnswered = currentModule.questions.every(q => this.state.answers[q.id]);
       if (allQuestionsAnswered && !this.state.completedModules.includes(currentModule.id)) {
         this.state.completedModules.push(currentModule.id);
       }
-    } else {
+
       // Move to next module
       const currentModuleIndex = this.modules.findIndex(m => m.id === currentModule.id);
       if (currentModuleIndex < this.modules.length - 1) {
         const nextModule = this.modules[currentModuleIndex + 1];
         this.state.currentModuleId = nextModule.id;
         this.state.currentQuestionId = nextModule.questions[0].id;
-        
-        if (!this.state.completedModules.includes(currentModule.id)) {
-          this.state.completedModules.push(currentModule.id);
-        }
       } else {
         // Assessment complete
-        if (!this.state.completedModules.includes(currentModule.id)) {
-          this.state.completedModules.push(currentModule.id);
-        }
         this.state.isComplete = true;
       }
     }
 
-    await this.persistState();
-    this.notifySubscribers();
+    // Update progress
+    this.state.progress = this.calculateProgress();
+
+    try {
+      await this.persistState();
+      this.notifySubscribers();
+    } catch (error) {
+      // Roll back state on error
+      this.state = previousState;
+      throw error;
+    }
   }
 
   public async previousQuestion(): Promise<void> {
@@ -256,5 +301,20 @@ export class AssessmentFlowController {
 
   public getAssessmentId(): string | undefined {
     return this.assessmentId;
+  }
+
+  private async ensureInitialized(): Promise<void> {
+    if (!this.assessmentId) {
+      throw new Error('Assessment not initialized');
+    }
+  }
+
+  /**
+   * Updates the assessment service instance.
+   * This is primarily used for testing to simulate different service behaviors.
+   * @param service The new assessment service instance
+   */
+  updateService(service: AssessmentService): void {
+    this.assessmentService = service;
   }
 } 

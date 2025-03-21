@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
-  "testName": "QuestionService - All Modules Operations Module Questions should retrieve operations questions by category",
-  "executionTime": 0.3742499999998472,
-  "memoryUsage": 261136,
-  "timestamp": "2025-03-12T01:50:19.042Z",
-  "type": "test"
-}

@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/ModuleService.test.ts",
-  "testName": "ModuleService getModule should return module by id",
-  "executionTime": 0.30212500000016007,
-  "memoryUsage": 111088,
-  "timestamp": "2025-03-12T02:02:06.286Z",
-  "type": "test"
-}

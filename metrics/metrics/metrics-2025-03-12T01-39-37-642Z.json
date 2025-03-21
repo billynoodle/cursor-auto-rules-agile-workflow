@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
-  "testName": "QuestionService - Core Functionality Question Creation and Validation should throw error for question without applicable disciplines",
-  "executionTime": 0.6072079999999005,
-  "memoryUsage": 281168,
-  "timestamp": "2025-03-12T01:39:37.642Z",
-  "type": "test"
-}

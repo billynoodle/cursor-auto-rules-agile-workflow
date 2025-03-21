@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
-  "testName": "QuestionService - All Modules Financial Module Questions should retrieve financial questions by category",
-  "executionTime": 0.6179590000001554,
-  "memoryUsage": 497240,
-  "timestamp": "2025-03-12T01:50:19.040Z",
-  "type": "test"
-}

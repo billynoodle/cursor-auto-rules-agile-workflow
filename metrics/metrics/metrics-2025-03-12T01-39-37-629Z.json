@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionService.test.ts",
-  "testName": "QuestionService - Core Functionality Question Creation and Validation should create a valid question",
-  "executionTime": 0.3209999999999127,
-  "memoryUsage": 191992,
-  "timestamp": "2025-03-12T01:39:37.629Z",
-  "type": "test"
-}

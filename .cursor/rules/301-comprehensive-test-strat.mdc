@@ -247,6 +247,26 @@ globs: **/*.{ts,tsx,js,jsx}
 - Maintain test Supabase instance with test data
 - Implement database seeding for consistent test data
 
+#### 6.3 Test Results Management
+- Store test results in standardized directory structure:
+  ```
+  tests/
+  └── results/
+      ├── junit/          # Test execution results by type
+      │   ├── unit/      # Unit test results
+      │   ├── integration/ # Integration test results
+      │   └── tooltip/   # Tooltip test results
+      ├── metrics/       # Test metrics data
+      │   └── raw/      # Raw metrics data
+      └── coverage/      # Code coverage reports
+  ```
+- Implement TestResultsStore for persistent storage
+- Track historical test results for trend analysis
+- Extract and store test metrics separately
+- Maintain result indices for efficient retrieval
+- Support result querying by test ID and timestamp
+- Generate test execution reports and summaries
+
 ### 7. Test Maintenance
 - Review and update tests with feature changes
 - Remove obsolete tests promptly

@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
-  "testName": "QuestionService - All Modules Question Types Across Modules should retrieve numeric questions across modules",
-  "executionTime": 0.2915419999999358,
-  "memoryUsage": 325920,
-  "timestamp": "2025-03-12T01:37:33.792Z",
-  "type": "test"
-}

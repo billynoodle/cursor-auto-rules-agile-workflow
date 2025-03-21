@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
-  "testName": "QuestionService - All Modules Patient Care Module Questions should retrieve outcomes tracking questions",
-  "executionTime": 0.26870800000006057,
-  "memoryUsage": 329024,
-  "timestamp": "2025-03-12T01:49:28.548Z",
-  "type": "test"
-}

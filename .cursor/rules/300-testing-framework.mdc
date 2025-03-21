@@ -45,6 +45,22 @@ alwaysApply: false
 - MUST follow naming pattern: `{workflow}.e2e.test.{ext}`
 - SHOULD be limited to 15-20 key business scenarios
 
+### Test Results Management
+- MUST use TestResultsStore for persistent test result storage
+- MUST store results in `/tests/results` directory with subdirectories:
+  - `/junit` - Test execution results by test type
+  - `/metrics` - Test metrics and coverage data
+  - `/coverage` - Code coverage reports
+- MUST include metadata with each test result:
+  - Unique test ID
+  - Timestamp
+  - Test type
+  - Status (passed/failed/skipped)
+  - Duration
+- MUST maintain historical test results for trend analysis
+- SHOULD implement result indexing for efficient retrieval
+- SHOULD extract and store metrics separately from raw results
+
 ## Examples
 
 <example>

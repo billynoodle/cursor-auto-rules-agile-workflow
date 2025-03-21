@@ -8,11 +8,20 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-// Ensure test-results directory exists
-const testResultsDir = path.join(__dirname, '../../test-results');
-if (!fs.existsSync(testResultsDir)) {
-  fs.mkdirSync(testResultsDir, { recursive: true });
-}
+// Ensure results directory structure exists
+const resultsDir = path.join(__dirname, '../../tests/results');
+const dirs = [
+  path.join(resultsDir, 'coverage'),
+  path.join(resultsDir, 'metrics', 'raw'),
+  path.join(resultsDir, 'metrics', 'reports'),
+  path.join(resultsDir, 'junit')
+];
+
+dirs.forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 // Set up global mocks if needed
 // For example, if you need to mock fetch:

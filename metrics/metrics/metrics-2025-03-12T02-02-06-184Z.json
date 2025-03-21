@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionInterconnectedness.test.ts",
-  "testName": "Business Area Interconnectedness Business Impact Analysis should generate meaningful impact statements for each relationship",
-  "executionTime": 0.9008750000002692,
-  "memoryUsage": 2377328,
-  "timestamp": "2025-03-12T02:02:06.184Z",
-  "type": "test"
-}

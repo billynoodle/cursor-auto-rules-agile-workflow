@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
-  "testName": "QuestionService - All Modules Filtering Questions Across Multiple Modules should filter questions by multiple criteria across modules",
-  "executionTime": 0.3934589999998934,
-  "memoryUsage": 327992,
-  "timestamp": "2025-03-12T02:02:06.498Z",
-  "type": "test"
-}

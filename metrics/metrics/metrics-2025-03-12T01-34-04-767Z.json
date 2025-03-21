@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/QuestionServiceAllModules.test.ts",
-  "testName": "QuestionService - All Modules Loading All Questions should load all questions correctly",
-  "executionTime": 219.4146249999999,
-  "memoryUsage": -4870840,
-  "timestamp": "2025-03-12T01:34:04.766Z",
-  "type": "test"
-}

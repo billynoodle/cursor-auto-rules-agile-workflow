@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-03-21T04:19:45.614Z",
+  "testSuite": "tooltip-review",
+  "status": "completed",
+  "results": {
+    "numTotalTests": 0,
+    "numPassedTests": 0,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "startTime": "2025-03-21T04:19:45.614Z",
+    "endTime": "2025-03-21T04:19:45.614Z"
+  },
+  "coverage": null
+}

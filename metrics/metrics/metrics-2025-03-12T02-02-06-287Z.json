@@ -1,8 +1,0 @@
-{
-  "testFile": "/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/ModuleService.test.ts",
-  "testName": "ModuleService getModule should return null if module not found",
-  "executionTime": 0.20745799999986048,
-  "memoryUsage": 101120,
-  "timestamp": "2025-03-12T02:02:06.287Z",
-  "type": "test"
-}
