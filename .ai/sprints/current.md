@@ -4,6 +4,10 @@
 - [ ] Develop core assessment framework for physiotherapy practices
 - [ ] Design and implement initial questionnaire structure with weighted scoring system
 - [ ] Begin server-side assessment engine implementation
+- [ ] Improve test coverage across the codebase
+- [ ] Fix failing tests and TypeScript errors
+- [ ] Implement comprehensive error handling
+- [ ] Enhance offline functionality testing
 
 ## Active Stories
 
@@ -200,3 +204,70 @@ gantt
 - [ ] Code reviewed
 - [ ] Documentation updated
 - [ ] Deployed to staging 
+
+# Current Sprint Status
+
+## Progress (March 19, 2024)
+
+### Completed
+- ✅ Added error handling test cases for assessment services
+- ✅ Fixed TypeScript errors in test files
+- ✅ Improved offline mode test coverage
+- ✅ Added validation failure test cases
+- ✅ Documented test coverage status and issues
+
+### In Progress
+- 🔄 Integration test setup improvements
+- 🔄 Controller test TypeScript fixes
+- 🔄 Branch coverage improvements
+
+### Blocked
+- ⛔ Integration tests (blocked by missing mock data)
+- ⛔ Controller tests (blocked by TypeScript errors)
+
+### Remaining Tasks
+1. Create centralized mock data system
+   - Priority: High
+   - Effort: Medium
+   - Status: Not Started
+
+2. Fix integration test setup
+   - Priority: High
+   - Effort: High
+   - Status: Blocked
+   - Dependencies: Mock data system
+
+3. Address controller test TypeScript errors
+   - Priority: High
+   - Effort: Medium
+   - Status: Not Started
+   - Dependencies: None
+
+4. Improve component test coverage
+   - Priority: Medium
+   - Effort: High
+   - Status: Not Started
+   - Dependencies: None
+
+5. Add missing branch coverage tests
+   - Priority: Medium
+   - Effort: Medium
+   - Status: In Progress
+   - Dependencies: None
+
+## Metrics
+- Total Tasks: 8
+- Completed: 3
+- In Progress: 3
+- Blocked: 2
+- Success Rate: 37.5%
+
+## Risks
+1. Integration test setup complexity
+2. TypeScript configuration issues
+3. Test coverage threshold not met
+
+## Mitigation Strategies
+1. Create shared mock data library
+2. Review and update TypeScript configurations
+3. Focus on high-impact coverage improvements first 

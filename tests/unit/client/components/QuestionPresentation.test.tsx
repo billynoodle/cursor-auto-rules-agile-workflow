@@ -272,4 +272,132 @@ describe('QuestionPresentation', () => {
       }
     });
   });
+
+  describe('Edge Cases and Error Handling', () => {
+    test('handles invalid question type gracefully', () => {
+      const invalidQuestion = {
+        ...mockQuestion,
+        type: 'INVALID_TYPE' as QuestionType
+      };
+      
+      render(
+        <QuestionPresentation
+          {...defaultProps}
+          question={invalidQuestion}
+        />
+      );
+      
+      expect(screen.getByText(/Unsupported question type/i)).toBeInTheDocument();
+      expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
+    });
+
+    test('handles empty options array', async () => {
+      const noOptionsQuestion = {
+        ...mockQuestion,
+        options: []
+      };
+      
+      render(
+        <QuestionPresentation
+          {...defaultProps}
+          question={noOptionsQuestion}
+        />
+      );
+      
+      // Expand content if using progressive disclosure
+      if (defaultProps.showProgressiveDisclosure) {
+        await act(async () => {
+          await userEvent.click(screen.getByTestId('expand-trigger'));
+        });
+      }
+      
+      expect(screen.getByText(/No options available/i)).toBeInTheDocument();
+    });
+
+    test('handles extreme weight values', () => {
+      const extremeWeightQuestion = {
+        ...mockQuestion,
+        weight: 999999
+      };
+      
+      render(
+        <QuestionPresentation
+          {...defaultProps}
+          question={extremeWeightQuestion}
+        />
+      );
+      
+      expect(screen.getByTestId('weight-indicator')).toHaveTextContent('High Impact');
+    });
+
+    test('handles circular dependencies', () => {
+      const circularQuestion = {
+        ...mockQuestion,
+        dependencies: ['self-reference']
+      };
+      
+      render(
+        <QuestionPresentation
+          {...defaultProps}
+          question={circularQuestion}
+        />
+      );
+      
+      expect(screen.getByText(/Unable to process dependencies/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Advanced Accessibility', () => {
+    test('provides appropriate ARIA descriptions for complex content', () => {
+      render(<QuestionPresentation {...defaultProps} />);
+      
+      const questionGroup = screen.getByRole('group');
+      expect(questionGroup).toHaveAttribute('aria-describedby');
+      
+      const description = screen.getByTestId('tooltip-trigger');
+      expect(description).toHaveAttribute('id', expect.stringMatching(/^question-desc-/));
+    });
+
+    test('announces validation errors to screen readers', () => {
+      const { rerender } = render(
+        <QuestionPresentation
+          question={mockQuestion}
+          onSelect={jest.fn()}
+          onNext={jest.fn()}
+          showProgressiveDisclosure={false}
+        />
+      );
+
+      // The validation error should be shown immediately for required questions without a selection
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveAttribute('aria-live', 'assertive');
+      expect(alert).toHaveTextContent(/Please select an option/i);
+
+      // Select an option and verify the error is cleared
+      const option = screen.getByLabelText('Option A');
+      fireEvent.click(option);
+      
+      rerender(
+        <QuestionPresentation
+          question={mockQuestion}
+          selectedOption="opt1"
+          onSelect={jest.fn()}
+          onNext={jest.fn()}
+          showProgressiveDisclosure={false}
+        />
+      );
+
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
+    test('handles focus management during progressive disclosure', async () => {
+      render(<QuestionPresentation {...defaultProps} showProgressiveDisclosure={true} />);
+      
+      const expandButton = screen.getByTestId('expand-trigger');
+      await userEvent.click(expandButton);
+      
+      const firstOption = screen.getByLabelText(mockQuestion.options![0].text);
+      expect(document.activeElement).toBe(firstOption);
+    });
+  });
 }); 

@@ -17,6 +17,10 @@ export class AssessmentFlowController {
   private assessmentService: AssessmentService;
   private assessmentId?: string;
   private userId: string;
+  private currentModule: number = 0;
+  private currentQuestion: number = 0;
+  private answers: Record<string, any> = {};
+  private progress: number = 0;
 
   private constructor(modules: QuestionModule[], assessmentService: AssessmentService, userId: string) {
     this.modules = modules;
@@ -106,8 +110,10 @@ export class AssessmentFlowController {
     }
   }
 
-  private async persistState(): Promise<void> {
-    if (!this.assessmentId) return;
+  public async persistState(): Promise<void> {
+    if (!this.assessmentId) {
+      throw new Error('Assessment not initialized');
+    }
 
     try {
       await this.assessmentService.updateAssessment(this.assessmentId, {
@@ -124,14 +130,27 @@ export class AssessmentFlowController {
     }
   }
 
-  public getCurrentState(): AssessmentState {
+  public getState(): AssessmentState {
     return { ...this.state };
   }
 
-  public async restoreState(state: AssessmentState): Promise<void> {
-    this.state = { ...state };
-    await this.persistState();
+  private setState(newState: Partial<AssessmentState>) {
+    this.state = { ...this.state, ...newState };
     this.notifySubscribers();
+  }
+
+  public async restoreState(state: AssessmentState): Promise<void> {
+    const prevState = { ...this.state };
+    try {
+      this.state = { ...state };
+      await this.persistState();
+      this.notifySubscribers();
+    } catch (error) {
+      // Rollback state on error
+      this.state = prevState;
+      this.notifySubscribers();
+      throw error;
+    }
   }
 
   public subscribe(subscriber: StateSubscriber): () => void {
@@ -142,7 +161,7 @@ export class AssessmentFlowController {
   }
 
   private notifySubscribers(): void {
-    this.subscribers.forEach(subscriber => subscriber(this.getCurrentState()));
+    this.subscribers.forEach(subscriber => subscriber(this.state));
   }
 
   private calculateProgress(): number {
@@ -163,7 +182,7 @@ export class AssessmentFlowController {
       return 100;
     }
 
-    return Math.round((answeredQuestions / totalQuestions) * 100);
+    return Math.floor((answeredQuestions / totalQuestions) * 100);
   }
 
   public async saveAnswer(answer: { questionId: string; value: Answer; timestamp: string }): Promise<void> {
@@ -171,13 +190,14 @@ export class AssessmentFlowController {
     const previousState = { ...this.state };
     
     try {
-      // Validate the answer's question ID matches the current question
-      if (answer.questionId !== this.state.currentQuestionId) {
-        throw new Error('Answer question ID does not match current question');
+      // Validate the question exists
+      const question = this.questionMap.get(answer.questionId);
+      if (!question) {
+        throw new Error(`Question ${answer.questionId} not found`);
       }
 
       if (!this.assessmentId) {
-        throw new Error('Assessment ID is required');
+        throw new Error('Assessment not initialized');
       }
 
       // Update local state
@@ -186,9 +206,11 @@ export class AssessmentFlowController {
         answers: {
           ...this.state.answers,
           [answer.questionId]: answer.value
-        },
-        progress: this.calculateProgress()
+        }
       };
+
+      // Update progress and check module completion
+      this.state.progress = this.calculateProgress();
 
       // Persist to backend
       const answerData = {
@@ -211,70 +233,77 @@ export class AssessmentFlowController {
   }
 
   public async nextQuestion(): Promise<void> {
-    const currentModule = this.moduleMap.get(this.state.currentModuleId);
-    if (!currentModule) return;
+    if (!this.assessmentId) {
+      throw new Error('Assessment not initialized');
+    }
 
-    // Save current state for rollback
-    const previousState = { ...this.state };
+    const prevState = { ...this.state };
 
-    const currentQuestionIndex = currentModule.questions.findIndex(q => q.id === this.state.currentQuestionId);
-    
-    if (currentQuestionIndex < currentModule.questions.length - 1) {
-      // Next question in current module
-      this.state.currentQuestionId = currentModule.questions[currentQuestionIndex + 1].id;
-    } else {
-      // Check if all questions in current module are answered
-      const allQuestionsAnswered = currentModule.questions.every(q => this.state.answers[q.id]);
-      if (allQuestionsAnswered && !this.state.completedModules.includes(currentModule.id)) {
-        this.state.completedModules.push(currentModule.id);
-      }
+    try {
+      // Get current module and question
+      const currentModule = this.modules[this.currentModule];
+      const questions = currentModule.questions;
 
-      // Move to next module
-      const currentModuleIndex = this.modules.findIndex(m => m.id === currentModule.id);
-      if (currentModuleIndex < this.modules.length - 1) {
-        const nextModule = this.modules[currentModuleIndex + 1];
+      // Update current question/module
+      if (this.currentQuestion < questions.length - 1) {
+        this.currentQuestion++;
+        this.state.currentQuestionId = questions[this.currentQuestion].id;
+      } else if (this.currentModule < this.modules.length - 1) {
+        this.currentModule++;
+        this.currentQuestion = 0;
+        const nextModule = this.modules[this.currentModule];
         this.state.currentModuleId = nextModule.id;
         this.state.currentQuestionId = nextModule.questions[0].id;
       } else {
-        // Assessment complete
+        // At the end of assessment
         this.state.isComplete = true;
       }
-    }
 
-    // Update progress
-    this.state.progress = this.calculateProgress();
-
-    try {
+      // Persist state
       await this.persistState();
       this.notifySubscribers();
     } catch (error) {
       // Roll back state on error
-      this.state = previousState;
+      this.state = prevState;
+      this.currentModule = this.modules.findIndex(m => m.id === prevState.currentModuleId);
+      const currentModule = this.modules[this.currentModule];
+      this.currentQuestion = currentModule.questions.findIndex(q => q.id === prevState.currentQuestionId);
       throw error;
     }
   }
 
   public async previousQuestion(): Promise<void> {
-    const currentModule = this.moduleMap.get(this.state.currentModuleId);
-    if (!currentModule) return;
-
-    const currentQuestionIndex = currentModule.questions.findIndex(q => q.id === this.state.currentQuestionId);
-    
-    if (currentQuestionIndex > 0) {
-      // Previous question in current module
-      this.state.currentQuestionId = currentModule.questions[currentQuestionIndex - 1].id;
-    } else {
-      // Move to previous module
-      const currentModuleIndex = this.modules.findIndex(m => m.id === currentModule.id);
-      if (currentModuleIndex > 0) {
-        const previousModule = this.modules[currentModuleIndex - 1];
-        this.state.currentModuleId = previousModule.id;
-        this.state.currentQuestionId = previousModule.questions[previousModule.questions.length - 1].id;
-      }
+    if (!this.assessmentId) {
+      throw new Error('Assessment not initialized');
     }
 
-    await this.persistState();
-    this.notifySubscribers();
+    const prevState = { ...this.state };
+
+    try {
+      // Get current module and question
+      const currentModule = this.modules[this.currentModule];
+
+      // Update current question/module
+      if (this.currentQuestion > 0) {
+        this.currentQuestion--;
+        this.state.currentQuestionId = currentModule.questions[this.currentQuestion].id;
+      } else if (this.currentModule > 0) {
+        this.currentModule--;
+        const prevModule = this.modules[this.currentModule];
+        this.currentQuestion = prevModule.questions.length - 1;
+        this.state.currentModuleId = prevModule.id;
+        this.state.currentQuestionId = prevModule.questions[this.currentQuestion].id;
+      }
+
+      // Persist state
+      await this.persistState();
+      this.notifySubscribers();
+    } catch (error) {
+      // Rollback state on error
+      this.state = prevState;
+      this.notifySubscribers();
+      throw error;
+    }
   }
 
   private updateProgress(): void {
@@ -314,7 +343,101 @@ export class AssessmentFlowController {
    * This is primarily used for testing to simulate different service behaviors.
    * @param service The new assessment service instance
    */
-  updateService(service: AssessmentService): void {
+  public updateService(service: AssessmentService) {
     this.assessmentService = service;
+  }
+
+  private getQuestionsInCurrentModule(): Question[] {
+    const currentModule = this.moduleMap.get(this.state.currentModuleId);
+    return currentModule?.questions || [];
+  }
+
+  public async navigateToQuestion(questionId: string): Promise<void> {
+    await this.ensureInitialized();
+    
+    const question = this.questionMap.get(questionId);
+    if (!question) {
+      throw new Error(`Question ${questionId} not found`);
+    }
+
+    const prevState = {
+      currentModuleId: this.state.currentModuleId,
+      currentQuestionId: this.state.currentQuestionId
+    };
+
+    try {
+      // Update state with new question and its module
+      this.state.currentQuestionId = questionId;
+      this.state.currentModuleId = question.moduleId;
+
+      // Persist state
+      await this.persistState();
+      this.notifySubscribers();
+    } catch (error) {
+      // Roll back state on error
+      this.state.currentModuleId = prevState.currentModuleId;
+      this.state.currentQuestionId = prevState.currentQuestionId;
+      throw error;
+    }
+  }
+
+  public async navigateToModule(moduleId: string): Promise<void> {
+    await this.ensureInitialized();
+    
+    const module = this.moduleMap.get(moduleId);
+    if (!module) {
+      throw new Error(`Module ${moduleId} not found`);
+    }
+
+    const prevState = {
+      currentModuleId: this.state.currentModuleId,
+      currentQuestionId: this.state.currentQuestionId
+    };
+
+    try {
+      // Update state with new module and its first question
+      this.state.currentModuleId = moduleId;
+      this.state.currentQuestionId = module.questions[0].id;
+
+      // Persist state
+      await this.persistState();
+      this.notifySubscribers();
+    } catch (error) {
+      // Roll back state on error
+      this.state.currentModuleId = prevState.currentModuleId;
+      this.state.currentQuestionId = prevState.currentQuestionId;
+      throw error;
+    }
+  }
+
+  public isModuleComplete(moduleId: string): boolean {
+    const module = this.moduleMap.get(moduleId);
+    if (!module) return false;
+    return module.questions.every(q => this.state.answers[q.id]);
+  }
+
+  public isAssessmentComplete(): boolean {
+    return this.state.isComplete;
+  }
+
+  public getQuestionsForModule(moduleId: string): Question[] {
+    const module = this.moduleMap.get(moduleId);
+    return module?.questions || [];
+  }
+
+  public getCurrentModuleQuestions(): Question[] {
+    return this.getQuestionsForModule(this.state.currentModuleId);
+  }
+
+  public async nextModule(): Promise<void> {
+    if (this.currentModule < this.modules.length - 1) {
+      this.currentModule++;
+      this.currentQuestion = 0;
+      const nextModule = this.modules[this.currentModule];
+      this.state.currentModuleId = nextModule.id;
+      this.state.currentQuestionId = nextModule.questions[0].id;
+      await this.persistState();
+      this.notifySubscribers();
+    }
   }
 } 

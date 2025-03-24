@@ -6,6 +6,23 @@ This directory contains all test-related files and configurations for the projec
 
 ```
 tests/
+├── __mocks__/           # Centralized mocks directory
+│   ├── services/        # Service mocks
+│   │   ├── supabase/   # Supabase-related mocks
+│   │   │   ├── client.ts
+│   │   │   └── types.ts
+│   │   └── offline/    # Offline service mocks
+│   │       ├── service.ts
+│   │       └── types.ts
+│   ├── data/           # Test data mocks
+│   │   ├── assessment/
+│   │   │   ├── index.ts
+│   │   │   ├── answers.ts
+│   │   │   └── modules.ts
+│   │   └── errors/     # Error scenario mocks
+│   │       └── index.ts
+│   └── utils/          # Mock utilities
+│       └── helpers.ts
 ├── e2e/              # End-to-end tests
 ├── integration/      # Integration tests
 ├── unit/            # Unit tests
@@ -311,9 +328,93 @@ console.log(prettyDOM(element));  // Print specific element
 - Use TestResultsStore for result tracking
 - Monitor coverage trends
 
+## Mock Patterns
+
+### Mock Organization
+All mocks should be centralized in the `tests/__mocks__` directory following these guidelines:
+
+1. Service Mocks
+   - Place service-specific mocks in `__mocks__/services/<service-name>/`
+   - Include type definitions in separate files
+   - Use index files for clean exports
+
+2. Data Mocks
+   - Store test data mocks in `__mocks__/data/<domain>/`
+   - Keep related data together (e.g., all assessment-related mocks)
+   - Use factory functions for data creation
+
+3. Error Scenarios
+   - Centralize error mocks in `__mocks__/data/errors/`
+   - Document each error scenario
+   - Use consistent error patterns
+
+### Supabase Client Mocking
+The Supabase client requires careful mocking due to its chained method pattern. Our implementation provides:
+
+```typescript
+const mockSingle = jest.fn<() => Promise<MockResponse<any>>>();
+const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
+const mockSelect = jest.fn().mockReturnValue({ eq: mockEq, single: mockSingle });
+```
+
+#### Known Issues
+- TypeScript errors with `mockResolvedValue` on PostgrestFilterBuilder
+- Query builder chain type definitions need improvement
+- Some methods missing from mock implementation
+
+### Offline Service Mocking
+The offline service mock needs to handle:
+- Online/offline state
+- Data storage and retrieval
+- Error conditions
+
+#### Current Challenges
+- Type definitions for mock methods
+- Proper implementation of Jest mock functions
+- Consistent behavior with actual service
+
+## Test Coverage Requirements
+- Statements: 80%
+- Branches: 80%
+- Functions: 80%
+- Lines: 80%
+
+Current coverage is below these thresholds and needs improvement.
+
+## Running Tests
+```bash
+npm test -- tests/unit/services/assessment/*.test.ts --coverage
+```
+
+## Test Organization
+- Unit tests in `tests/unit/`
+- Integration tests planned
+- Mock implementations in `tests/__mocks__/`
+
+## Best Practices
+1. Use TDD approach
+2. Mock external dependencies
+3. Test error conditions
+4. Maintain type safety
+5. Document complex mocks
+6. Keep mocks in centralized location
+7. Use consistent mock patterns
+8. Document mock usage
+
+## TODO
+- [ ] Fix TypeScript errors in test files
+- [ ] Improve mock implementations
+- [ ] Add missing test cases
+- [ ] Set up integration tests
+- [ ] Document mock patterns
+- [ ] Implement mock consolidation plan
+- [ ] Create mock usage guidelines
+
 ## Contributing
 
 1. Follow the test patterns in this guide
 2. Maintain or exceed coverage requirements
 3. Add documentation for new test patterns
-4. Update test templates as needed 
+4. Update test templates as needed
+5. Place mocks in appropriate directories
+6. Keep mock implementations consistent 

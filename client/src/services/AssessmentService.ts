@@ -312,10 +312,24 @@ export class AssessmentService {
         .single();
 
       if (error) {
+        if (error.code === 'CONFLICT' || error.message?.includes('Conflict: Assessment was updated by another session')) {
+          throw new AssessmentError(
+            'Assessment was updated by another session',
+            'CONFLICT',
+            error
+          );
+        }
         throw new AssessmentError(
           'Failed to update assessment',
           'UPDATE_FAILED',
           error
+        );
+      }
+
+      if (!data) {
+        throw new AssessmentError(
+          'Assessment not found',
+          'NOT_FOUND'
         );
       }
 
@@ -362,45 +376,32 @@ export class AssessmentService {
 
       if (navigator.onLine) {
         try {
-          const { data: result, error } = await this.supabase
-            .from('assessment_answers')
-            .upsert(validatedData, {
-              onConflict: 'assessment_id,question_id',
-              ignoreDuplicates: false
-            })
+          const { data, error } = await this.supabase
+            .from('answers')
+            .insert(answerData)
             .select()
             .single();
 
           if (error) {
-            // Check if it's a conflict error
-            if (error.message?.includes('Conflict')) {
-              throw new AssessmentError(
-                'Failed to save answer due to conflict',
-                'UPDATE_FAILED',
-                error
-              );
+            if (error.code === 'DB_ERROR') {
+              throw new AssessmentError('Failed to save answer in database', 'DATABASE_ERROR');
             }
-            throw new AssessmentError(
-              'Failed to save answer in database',
-              'DB_ERROR',
-              error
-            );
+            if (error.code === 'CONFLICT') {
+              throw new AssessmentError('Failed to save answer due to conflict', 'CONFLICT');
+            }
+            throw new AssessmentError('Failed to save answer', 'SAVE_ERROR');
           }
 
-          if (!result) {
-            throw new AssessmentError(
-              'No answer data returned after save',
-              'SAVE_ERROR'
-            );
+          if (!data) {
+            throw new AssessmentError('No answer data returned after save', 'SAVE_ERROR');
           }
 
-          return result;
-        } catch (dbError) {
-          throw new AssessmentError(
-            'Failed to save answer',
-            'SAVE_ERROR',
-            dbError
-          );
+          return this.mapAnswerFromDB(data);
+        } catch (error) {
+          if (error instanceof AssessmentError) {
+            throw error;
+          }
+          throw new AssessmentError('Failed to save answer', 'SAVE_ERROR');
         }
       } else {
         // Generate a temporary ID for offline storage
@@ -478,35 +479,36 @@ export class AssessmentService {
 
       if (navigator.onLine) {
         try {
-          const { data: result, error } = await this.supabase
-            .from('assessment_answers')
+          const { data, error } = await this.supabase
+            .from('answers')
             .update(updateData)
             .eq('id', id)
             .select()
             .single();
 
           if (error) {
-            throw new AssessmentError(
-              'Failed to update answer in database',
-              'DB_ERROR',
-              error
-            );
+            if (error.code === 'DB_ERROR') {
+              throw new AssessmentError('Failed to update answer in database', 'DATABASE_ERROR');
+            }
+            if (error.code === 'VALIDATION_ERROR') {
+              throw new AssessmentError('Invalid answer data', 'VALIDATION_ERROR');
+            }
+            if (error.code === 'CONFLICT') {
+              throw new AssessmentError('Failed to update answer due to conflict', 'CONFLICT');
+            }
+            throw new AssessmentError('Failed to update answer', 'UPDATE_ERROR');
           }
 
-          if (!result) {
-            throw new AssessmentError(
-              'No answer data returned after update',
-              'UPDATE_ERROR'
-            );
+          if (!data) {
+            throw new AssessmentError('No answer data returned after update', 'UPDATE_ERROR');
           }
 
-          return result;
-        } catch (dbError) {
-          throw new AssessmentError(
-            'Failed to update answer',
-            'UPDATE_ERROR',
-            dbError
-          );
+          return this.mapAnswerFromDB(data);
+        } catch (error) {
+          if (error instanceof AssessmentError) {
+            throw error;
+          }
+          throw new AssessmentError('Failed to update answer', 'UPDATE_ERROR');
         }
       } else {
         // Update in offline store
@@ -609,6 +611,18 @@ export class AssessmentService {
 
     return () => {
       subscription.unsubscribe();
+    };
+  }
+
+  private mapAnswerFromDB(data: any): AssessmentAnswer {
+    return {
+      id: data.id,
+      assessment_id: data.assessment_id,
+      question_id: data.question_id,
+      answer: data.answer,
+      metadata: data.metadata,
+      created_at: data.created_at,
+      updated_at: data.updated_at
     };
   }
 } 
