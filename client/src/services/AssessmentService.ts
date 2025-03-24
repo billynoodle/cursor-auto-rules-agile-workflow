@@ -376,27 +376,35 @@ export class AssessmentService {
 
       if (navigator.onLine) {
         try {
-          const { data, error } = await this.supabase
-            .from('answers')
-            .insert(answerData)
-            .select()
+          const { data: result, error: dbError } = await this.supabase
+            .from('assessment_answers')
+            .upsert(validatedData)
+            .select('*')
             .single();
 
-          if (error) {
-            if (error.code === 'DB_ERROR') {
-              throw new AssessmentError('Failed to save answer in database', 'DATABASE_ERROR');
+          if (dbError) {
+            if (dbError.code === '23505') {
+              throw new AssessmentError(
+                'Failed to save answer due to conflict',
+                'SAVE_ERROR',
+                dbError
+              );
             }
-            if (error.code === 'CONFLICT') {
-              throw new AssessmentError('Failed to save answer due to conflict', 'CONFLICT');
-            }
-            throw new AssessmentError('Failed to save answer', 'SAVE_ERROR');
+            throw new AssessmentError(
+              'Failed to save answer',
+              'SAVE_ERROR',
+              dbError
+            );
           }
 
-          if (!data) {
-            throw new AssessmentError('No answer data returned after save', 'SAVE_ERROR');
+          if (!result) {
+            throw new AssessmentError(
+              'No answer data returned after save',
+              'SAVE_ERROR'
+            );
           }
 
-          return this.mapAnswerFromDB(data);
+          return result;
         } catch (error) {
           if (error instanceof AssessmentError) {
             throw error;
@@ -464,52 +472,33 @@ export class AssessmentService {
     }
   }
 
-  public async updateAnswer(id: string, update: Partial<Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'>>): Promise<AssessmentAnswer> {
+  async updateAnswer(id: string, updateData: Partial<AssessmentAnswer>): Promise<AssessmentAnswer> {
     try {
-      // Validate update data
-      if (Object.keys(update).length > 0) {
-        answerSchema.partial().parse(update);
-      }
-
-      const now = new Date().toISOString();
-      const updateData = {
-        ...update,
-        updated_at: now
-      };
-
       if (navigator.onLine) {
-        try {
-          const { data, error } = await this.supabase
-            .from('answers')
-            .update(updateData)
-            .eq('id', id)
-            .select()
-            .single();
+        // Validate required fields when online
+        if (!updateData.assessment_id || !updateData.question_id) {
+          throw new AssessmentError('Invalid answer data', 'VALIDATION_ERROR');
+        }
 
-          if (error) {
-            if (error.code === 'DB_ERROR') {
-              throw new AssessmentError('Failed to update answer in database', 'DATABASE_ERROR');
-            }
-            if (error.code === 'VALIDATION_ERROR') {
-              throw new AssessmentError('Invalid answer data', 'VALIDATION_ERROR');
-            }
-            if (error.code === 'CONFLICT') {
-              throw new AssessmentError('Failed to update answer due to conflict', 'CONFLICT');
-            }
-            throw new AssessmentError('Failed to update answer', 'UPDATE_ERROR');
-          }
+        const { data, error } = await this.supabase
+          .from('assessment_answers')
+          .update(updateData)
+          .eq('id', id)
+          .select('*')
+          .single();
 
-          if (!data) {
-            throw new AssessmentError('No answer data returned after update', 'UPDATE_ERROR');
-          }
-
-          return this.mapAnswerFromDB(data);
-        } catch (error) {
-          if (error instanceof AssessmentError) {
-            throw error;
+        if (error) {
+          if (error.code === '23505') {
+            throw new AssessmentError('Failed to update answer due to conflict', 'CONFLICT');
           }
           throw new AssessmentError('Failed to update answer', 'UPDATE_ERROR');
         }
+
+        if (!data) {
+          throw new AssessmentError('No answer data returned after update', 'UPDATE_ERROR');
+        }
+
+        return this.mapAnswerFromDB(data);
       } else {
         // Update in offline store
         const offlineDataStr = localStorage.getItem('assessment_offline_data');
@@ -540,21 +529,10 @@ export class AssessmentService {
         return updatedAnswer as AssessmentAnswer;
       }
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new AssessmentError(
-          'Invalid answer data',
-          'VALIDATION_ERROR',
-          error
-        );
-      }
       if (error instanceof AssessmentError) {
         throw error;
       }
-      throw new AssessmentError(
-        'Failed to update answer',
-        'UPDATE_ERROR',
-        error
-      );
+      throw new AssessmentError('Failed to update answer', 'UPDATE_ERROR');
     }
   }
 
@@ -625,4 +603,11 @@ export class AssessmentService {
       updated_at: data.updated_at
     };
   }
-} 
+
+  private async validateAnswer(data: Partial<AssessmentAnswer>): Promise<void> {
+    if (Object.keys(data).length > 0) {
+      answerSchema.partial().parse(data);
+    }
+  }
+}
+

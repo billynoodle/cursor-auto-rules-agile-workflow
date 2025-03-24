@@ -50,6 +50,11 @@ export class AssessmentFlowController {
   }
 
   static async create(modules: QuestionModule[], assessmentService: AssessmentService, userId: string, existingAssessmentId?: string): Promise<AssessmentFlowController> {
+    // Validate module structure
+    if (!modules.length || modules.some(module => !module.questions || !module.questions.length)) {
+      throw new Error('Invalid module structure');
+    }
+
     const controller = new AssessmentFlowController(modules, assessmentService, userId);
     
     if (existingAssessmentId) {
@@ -190,14 +195,14 @@ export class AssessmentFlowController {
     const previousState = { ...this.state };
     
     try {
+      if (!this.assessmentId) {
+        throw new Error('Assessment not initialized');
+      }
+
       // Validate the question exists
       const question = this.questionMap.get(answer.questionId);
       if (!question) {
         throw new Error(`Question ${answer.questionId} not found`);
-      }
-
-      if (!this.assessmentId) {
-        throw new Error('Assessment not initialized');
       }
 
       // Update local state
@@ -439,5 +444,17 @@ export class AssessmentFlowController {
       await this.persistState();
       this.notifySubscribers();
     }
+  }
+
+  /**
+   * Gets the current state of the assessment flow
+   * @returns The current AssessmentState
+   */
+  public getCurrentState(): AssessmentState {
+    return {
+      ...this.state,
+      answers: { ...this.state.answers },
+      completedModules: [...this.state.completedModules]
+    };
   }
 } 

@@ -1,6 +1,13 @@
 import { QuestionModule, Answer } from '../../../../client/src/types/assessment';
 import { Assessment, AssessmentAnswer, DatabaseSchema } from '../../../../client/src/types/database';
 import { SupabaseClient } from '@supabase/supabase-js';
+import {
+  generateMockModules,
+  generateMockAssessment,
+  generateMockAnswers,
+  generateFullMockData,
+  GeneratorOptions
+} from './generators';
 
 export const TEST_USER_ID = '123e4567-e89b-12d3-a456-426614174000';
 export const TEST_ASSESSMENT_ID = '987fcdeb-51a2-43f8-96cd-426614174000';
@@ -11,45 +18,19 @@ export interface MockOptions {
   simulateConflict?: boolean;
 }
 
-export const mockModules: QuestionModule[] = [
-  {
-    id: 'module1',
-    title: 'Module 1',
-    description: 'First module',
-    category: 'operations',
-    questions: [
-      {
-        id: 'q1',
-        text: 'Question 1',
-        type: 'text',
-        moduleId: 'module1',
-        weight: 1
-      },
-      {
-        id: 'q2',
-        text: 'Question 2',
-        type: 'numeric',
-        moduleId: 'module1',
-        weight: 1
-      }
-    ]
-  },
-  {
-    id: 'module2',
-    title: 'Module 2',
-    description: 'Second module',
-    category: 'operations',
-    questions: [
-      {
-        id: 'q3',
-        text: 'Question 3',
-        type: 'boolean',
-        moduleId: 'module2',
-        weight: 1
-      }
-    ]
-  }
-];
+// Export generators
+export {
+  generateMockModules,
+  generateMockAssessment,
+  generateMockAnswers,
+  generateFullMockData
+};
+export type { GeneratorOptions };
+
+// Use generators for default mock data
+export const mockModules = generateMockModules();
+export const mockAssessment = generateMockAssessment();
+export const mockAnswers = generateMockAnswers(mockModules);
 
 export const createMockAnswer = (value: any): Answer => ({ value });
 

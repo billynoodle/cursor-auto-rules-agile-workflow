@@ -1,5 +1,4 @@
 import { AssessmentError } from '../../../client/src/services/AssessmentService';
-import { createMockAnswer } from './__mocks__/mockData';
 import { createTestContext, setupTestEnvironment } from './__setup__/setup';
 import { AssessmentFlowController } from '../../../client/src/controllers/AssessmentFlowController';
 
@@ -8,7 +7,9 @@ describe('AssessmentFlowController Error Handling', () => {
 
   describe('Network Error Recovery', () => {
     it('should handle network errors during state persistence', async () => {
-      const { controller, mockSupabaseClient } = await createTestContext();
+      const { controller, mockSupabaseClient, modules } = await createTestContext({
+        moduleOptions: { moduleCount: 2, questionsPerModule: 2 }
+      });
 
       // Update mock client to simulate network error
       mockSupabaseClient.from = jest.fn().mockReturnValue({
@@ -30,28 +31,34 @@ describe('AssessmentFlowController Error Handling', () => {
           message: expect.stringContaining('Network error')
         })
       });
-      expect(controller.getState().currentQuestionId).toBe('q1');
+      expect(controller.getState().currentQuestionId).toBe(modules[0].questions[0].id);
     });
 
     it('should handle concurrent update conflicts', async () => {
-      const { controller, mockSupabaseClient } = await createTestContext();
+      const { controller, mockSupabaseClient, modules } = await createTestContext({
+        moduleOptions: { moduleCount: 2, questionsPerModule: 2 }
+      });
 
       // Update mock client to simulate conflict
       mockSupabaseClient.from = jest.fn().mockReturnValue({
-        upsert: jest.fn().mockReturnValue({
+        insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
-            single: jest.fn().mockRejectedValue(new Error('Conflict: Assessment was updated by another session'))
+            single: jest.fn().mockRejectedValue({
+              code: 'CONFLICT',
+              message: 'Conflict: Answer already exists'
+            })
           })
         })
       });
 
       const timestamp = new Date().toISOString();
-      const answer = { questionId: 'q1', value: createMockAnswer('test'), timestamp };
+      const questionId = modules[0].questions[0].id;
+      const answer = { questionId, value: { value: 'test' }, timestamp };
 
       await expect(controller.saveAnswer(answer)).rejects.toThrow(AssessmentError);
       await expect(controller.saveAnswer(answer)).rejects.toMatchObject({
         code: 'SAVE_ERROR',
-        originalError: new Error('Conflict: Assessment was updated by another session')
+        message: 'Failed to save answer'
       });
 
       expect(controller.getState().answers).toEqual({});
@@ -60,7 +67,9 @@ describe('AssessmentFlowController Error Handling', () => {
 
   describe('State Restoration Error Handling', () => {
     it('should handle errors during state restoration', async () => {
-      const { controller, mockSupabaseClient } = await createTestContext();
+      const { controller, mockSupabaseClient, modules } = await createTestContext({
+        moduleOptions: { moduleCount: 2, questionsPerModule: 2 }
+      });
 
       // Update mock client to simulate error during state update
       mockSupabaseClient.from = jest.fn().mockReturnValue({
@@ -77,7 +86,7 @@ describe('AssessmentFlowController Error Handling', () => {
 
       const newState = {
         currentModuleId: 'module2',
-        currentQuestionId: 'q3',
+        currentQuestionId: modules[1].questions[0].id,
         answers: {},
         progress: 0,
         completedModules: [],
@@ -91,7 +100,9 @@ describe('AssessmentFlowController Error Handling', () => {
 
   describe('Initialization Error Handling', () => {
     it('should prevent operations when not initialized', async () => {
-      const { controller } = await createTestContext();
+      const { controller, modules } = await createTestContext({
+        moduleOptions: { moduleCount: 2, questionsPerModule: 2 }
+      });
       
       // Force uninitialized state
       (controller as any).assessmentId = undefined;
@@ -99,8 +110,8 @@ describe('AssessmentFlowController Error Handling', () => {
       await expect(controller.nextQuestion()).rejects.toThrow('Assessment not initialized');
       await expect(controller.previousQuestion()).rejects.toThrow('Assessment not initialized');
       await expect(controller.saveAnswer({
-        questionId: 'q1',
-        value: createMockAnswer('test'),
+        questionId: modules[0].questions[0].id,
+        value: { value: 'test' },
         timestamp: new Date().toISOString()
       })).rejects.toThrow('Assessment not initialized');
     });

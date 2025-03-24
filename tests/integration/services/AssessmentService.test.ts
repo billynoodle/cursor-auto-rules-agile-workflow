@@ -1,6 +1,6 @@
 import { AssessmentService } from '../../../client/src/services/AssessmentService';
 import { AssessmentError } from '../../../client/src/services/AssessmentService';
-import { createMockSupabaseClient, mockAssessmentData, mockErrorScenarios, TEST_USER_ID, TEST_ASSESSMENT_ID } from '../controllers/__mocks__/mockData';
+import { createMockSupabaseClient, mockAssessmentData, mockErrorScenarios, TEST_USER_ID, TEST_ASSESSMENT_ID } from '../../../tests/__mocks__/data/assessment';
 import { Assessment, AssessmentAnswer } from '../../../client/src/types/database';
 
 describe('AssessmentService', () => {
@@ -264,7 +264,7 @@ describe('AssessmentService', () => {
           select: jest.fn().mockReturnValue({
             single: jest.fn().mockResolvedValue({
               data: null,
-              error: { message: 'Conflict', code: 'CONFLICT' }
+              error: { message: 'Conflict', code: '23505' }
             })
           })
         })
@@ -368,6 +368,8 @@ describe('AssessmentService', () => {
               single: jest.fn().mockResolvedValue({
                 data: {
                   ...answerData,
+                  assessment_id: '123',
+                  question_id: 'q1',
                   id: '456',
                   answer: { value: 'Updated answer' },
                   created_at: new Date().toISOString(),
@@ -381,6 +383,8 @@ describe('AssessmentService', () => {
       });
       service = new AssessmentService(mockClient);
       const result = await service.updateAnswer('456', {
+        assessment_id: '123',
+        question_id: 'q1',
         answer: { value: 'Updated answer' }
       });
       expect(result).toBeDefined();
@@ -390,6 +394,7 @@ describe('AssessmentService', () => {
     it('should handle validation errors when updating answers', async () => {
       service = new AssessmentService(createMockSupabaseClient());
       const invalidUpdate = {
+        assessment_id: undefined as any,
         question_id: undefined as any
       };
       await expect(service.updateAnswer('456', invalidUpdate))
@@ -412,9 +417,13 @@ describe('AssessmentService', () => {
         })
       });
       service = new AssessmentService(mockClient);
-      await expect(service.updateAnswer('456', { answer: { value: 'test' } }))
+      await expect(service.updateAnswer('456', { 
+        assessment_id: '123',
+        question_id: 'q1',
+        answer: { value: 'test' }
+      }))
         .rejects
-        .toThrow('Failed to update answer in database');
+        .toThrow('Failed to update answer');
     });
 
     it('should handle missing data after update', async () => {
@@ -432,7 +441,11 @@ describe('AssessmentService', () => {
         })
       });
       service = new AssessmentService(mockClient);
-      await expect(service.updateAnswer('456', { answer: { value: 'test' } }))
+      await expect(service.updateAnswer('456', {
+        assessment_id: '123',
+        question_id: 'q1',
+        answer: { value: 'test' }
+      }))
         .rejects
         .toThrow('No answer data returned after update');
     });

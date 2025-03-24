@@ -46,7 +46,10 @@ export function validateAssessment(assessment: Partial<Assessment>): void {
  */
 export function validateAnswer(answer: Partial<AssessmentAnswer>): void {
   try {
-    answerSchema.parse(answer);
+    if (!answer.assessment_id || !answer.question_id) {
+      throw new Error('Missing required fields');
+    }
+    answerSchema.partial().parse(answer);
   } catch (error) {
     throw new AssessmentError('Invalid answer data', 'VALIDATION_ERROR', error);
   }

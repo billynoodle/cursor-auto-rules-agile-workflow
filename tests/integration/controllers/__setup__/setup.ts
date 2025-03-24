@@ -1,24 +1,38 @@
-import { AssessmentService } from '../../../../client/src/services/assessment/AssessmentService';
 import { AssessmentFlowController } from '../../../../client/src/controllers/AssessmentFlowController';
+import { AssessmentService } from '../../../../client/src/services/AssessmentService';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { createMockSupabaseClient, mockModules, TEST_USER_ID } from '../../../__mocks__/data/assessment';
+import { 
+  createMockSupabaseClient, 
+  generateMockModules,
+  TEST_USER_ID,
+  MockOptions,
+  GeneratorOptions 
+} from '../../../__mocks__/data/assessment';
 import { DatabaseSchema } from '../../../../client/src/types/database';
 
 export interface TestContext {
   mockSupabaseClient: jest.Mocked<SupabaseClient<DatabaseSchema>>;
   assessmentService: AssessmentService;
   controller: AssessmentFlowController;
+  modules: ReturnType<typeof generateMockModules>;
 }
 
-export const createTestContext = async (options = {}): Promise<TestContext> => {
-  const mockSupabaseClient = createMockSupabaseClient(options);
+export interface TestContextOptions extends MockOptions {
+  moduleOptions?: GeneratorOptions;
+}
+
+export const createTestContext = async (options: TestContextOptions = {}): Promise<TestContext> => {
+  const { moduleOptions, ...mockOptions } = options;
+  const mockSupabaseClient = createMockSupabaseClient(mockOptions);
   const assessmentService = new AssessmentService(mockSupabaseClient);
-  const controller = await AssessmentFlowController.create(mockModules, assessmentService, TEST_USER_ID);
+  const modules = generateMockModules(moduleOptions);
+  const controller = await AssessmentFlowController.create(modules, assessmentService, TEST_USER_ID);
 
   return {
     mockSupabaseClient,
     assessmentService,
-    controller
+    controller,
+    modules
   };
 };
 
