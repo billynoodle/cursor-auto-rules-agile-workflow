@@ -1,4 +1,4 @@
-import { QuestionModule, Answer, Question, ModuleCategory } from '../../../../client/src/types/assessment';
+import { Module, Score, Question, AssessmentCategory, QuestionType, ModuleStatus } from '../../../../client/src/types/assessment.types';
 import { Assessment, AssessmentAnswer, DatabaseSchema, AssessmentStatus } from '../../../../client/src/types/database';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,20 +13,30 @@ export interface GeneratorOptions {
 export const generateMockQuestion = (moduleId: string, index: number): Question => ({
   id: `q${moduleId}-${index}`,
   text: `Question ${index} for module ${moduleId}`,
-  type: ['text', 'numeric', 'boolean'][index % 3] as 'text' | 'numeric' | 'boolean',
-  moduleId,
-  weight: 1
+  type: [QuestionType.TEXT, QuestionType.NUMERIC, QuestionType.MULTIPLE_CHOICE][index % 3],
+  required: true,
+  weight: 1,
+  dependencies: []
 });
 
-export const generateMockModule = (index: number, questionCount: number): QuestionModule => ({
-  id: `module${index}`,
-  title: `Module ${index}`,
-  description: `Description for module ${index}`,
-  category: 'operations' as ModuleCategory,
-  questions: Array.from({ length: questionCount }, (_, i) => generateMockQuestion(`module${index}`, i + 1))
-});
+export const generateMockModule = (index: number, questionCount: number): Module => {
+  const questions = Array.from({ length: questionCount }, (_, i) => generateMockQuestion(`module${index}`, i + 1));
+  
+  return {
+    id: `module${index}`,
+    name: `Module ${index}`,
+    description: `Description for module ${index}`,
+    categories: [AssessmentCategory.OPERATIONS],
+    status: ModuleStatus.AVAILABLE,
+    progress: 0,
+    prerequisites: [],
+    completedQuestions: 0,
+    totalQuestions: questionCount,
+    estimatedTimeMinutes: 15
+  };
+};
 
-export const generateMockModules = (options: GeneratorOptions = {}): QuestionModule[] => {
+export const generateMockModules = (options: GeneratorOptions = {}): Module[] => {
   const { moduleCount = 3, questionsPerModule = 3 } = options;
   return Array.from({ length: moduleCount }, (_, i) => generateMockModule(i + 1, questionsPerModule));
 };
@@ -73,25 +83,20 @@ export const generateMockAnswer = (questionId: string, value: any): AssessmentAn
   }
 });
 
-export const generateMockAnswers = (modules: QuestionModule[]): Record<string, Answer> => {
-  const answers: Record<string, Answer> = {};
+export const generateMockAnswers = (modules: Module[]): Record<string, Score> => {
+  const answers: Record<string, Score> = {};
   
   modules.forEach(module => {
-    module.questions.forEach(question => {
-      let value: any;
-      switch (question.type) {
-        case 'text':
-          value = `Answer for ${question.id}`;
-          break;
-        case 'numeric':
-          value = Math.floor(Math.random() * 100);
-          break;
-        case 'boolean':
-          value = Math.random() > 0.5;
-          break;
-      }
-      answers[question.id] = { value };
-    });
+    // Since questions are generated separately, we'll just create scores for the total questions
+    for (let i = 0; i < module.totalQuestions; i++) {
+      const questionId = `q${module.id}-${i + 1}`;
+      answers[questionId] = {
+        questionId,
+        rawScore: Math.floor(Math.random() * 100),
+        weightedScore: Math.floor(Math.random() * 100),
+        maxPossible: 100
+      };
+    }
   });
 
   return answers;

@@ -1,252 +1,181 @@
-# Epic-1: Core Assessment Framework Development for Allied Health Practices
-# Story-2: Enhance UI Components with Radix UI for Improved Accessibility and User Experience
-
-## Story
-
-**As a** healthcare practice administrator
-**I want** an accessible and user-friendly assessment interface
-**so that** I can complete the assessment efficiently regardless of my device or accessibility needs
-
-## Status
-
-In Progress
-
-## Context
-
-Following the successful implementation of the core assessment questionnaire functionality in Story-1, we now need to enhance the user interface components to provide a better user experience and ensure accessibility compliance. The current implementation uses basic HTML elements with custom styling, which has limitations in terms of accessibility and mobile responsiveness.
-
-### Background Information
-- Current implementation uses basic HTML elements (radio buttons, inputs, textareas)
-- Custom CSS is used for styling
-- Basic accessibility attributes are in place
-- All core functionality is working and tested
-- Comprehensive testing framework implemented with Jest and React Testing Library
-
-### Current State
-- Assessment page is functional with working module navigation
-- Questions can be answered and progress is tracked
-- Module unlocking logic is implemented
-- Tests are passing with 206 total tests across 17 test suites
-- Branch coverage at 75.96% (target: 80%)
-- Mock implementations standardized for Supabase client
-- Error handling and offline functionality tests in place
-
-### Technical Context
-- React application using TypeScript
-- Radix UI library is already installed but not utilized
-- Current component structure:
-  - QuestionnaireNavigation
-  - QuestionModule
-  - Question
-  - Custom tooltips
-- Comprehensive test organization:
-  - Unit tests for services and components
-  - Integration tests for API endpoints
-  - End-to-end tests for critical flows
-  - Performance testing setup
-
-### Business Drivers
-- Need for better accessibility compliance
-- Improved mobile user experience
-- Consistent design language across components
-- Future scalability for additional question types
-
-### Relevant History
-- Story-1 established the core assessment framework
-- Current implementation focuses on functionality over advanced UI features
-- Test coverage is comprehensive for existing components
-
-### Progress Metrics
-- Test Coverage: 75.96% branch coverage (target: 80%)
-- Total Tests: 206 tests passing
-- Test Suites: 17 suites organized by component and functionality
-- Mock Implementation: Standardized Supabase client mocks completed
-- Documentation: Updated architecture and testing standards
-- Next Steps: Improve branch coverage to meet 80% target
-
-## Estimation
-
-Story Points: 5
-(Equivalent to 5 days of human development or 50 minutes of AI development)
-
-## Constraints
-
-1. Technical Constraints
-   - Must maintain existing functionality
-   - Must pass all current tests after migration
-   - Must support all current question types
-   - Must maintain or improve current accessibility features
-
-2. Business Constraints
-   - Cannot disrupt user experience during migration
-   - Must maintain or improve performance
-   - Must support all modern browsers
-   - Must work on mobile devices
-
-3. Timeline Constraints
-   - Should be completed before adding new assessment modules
-   - Migration should be done component by component to minimize disruption 
-
-# Story 2a: Server Setup and Architecture Implementation
+# Story 2a: Server-Side Assessment Engine Implementation
 
 ## Overview
-Set up the foundational server architecture to support complex business logic, integrations, and advanced features while maintaining security and scalability.
+Implement the server-side assessment engine that handles complex business logic, scoring algorithms, and data processing for the allied health business assessment framework.
+
+## Current Implementation Status
+The server already has a foundation with:
+
+### Models
+- ✅ Question model
+- ✅ AssessmentModule model
+- ✅ Various enums and types
+- ✅ Basic model relationships
+
+### Services
+- ✅ ResearchDocumentationService
+- ✅ ModuleService
+- ✅ QuestionService
+
+### Structure
+- ✅ Basic folder organization
+- ✅ TypeScript configuration
+- ✅ Initial middleware setup
+- ✅ API routes structure
 
 ## Requirements
 
-### 1. Server Setup
-- Initialize Express.js application with TypeScript
-- Configure environment variables
-- Set up development and production configurations
-- Implement logging system
-- Configure error handling
+### 1. Assessment Engine Core
+- [ ] Implement scoring algorithm service
+- [ ] Create assessment state management
+- [ ] Add progress tracking logic
+- [ ] Implement answer validation
+- [ ] Add recommendation engine
 
-### 2. Security Configuration
-- Set up CORS policies
-- Configure security headers
-- Implement request validation
-- Set up authentication middleware
-- Add API key validation
+### 2. Data Processing
+- [ ] Create data aggregation service
+- [ ] Implement statistical analysis
+- [ ] Add benchmarking capabilities
+- [ ] Create reporting service
+- [ ] Implement data export functionality
 
-### 3. Database Integration
-- Configure Prisma client
-- Set up database migrations
-- Create database models
-- Implement connection pooling
-- Add database logging
+### 3. Integration Layer
+- [ ] Set up Supabase client
+- [ ] Implement data synchronization
+- [ ] Add real-time updates
+- [ ] Create webhook handlers
+- [ ] Set up event processing
 
-### 4. Testing Framework
-- Set up Jest with TypeScript
-- Configure test environment
-- Add test utilities
-- Set up test database
-- Create test scripts
+### 4. Performance Optimization
+- [ ] Implement caching strategy
+- [ ] Add database indexing
+- [ ] Optimize query performance
+- [ ] Set up connection pooling
+- [ ] Add load balancing support
 
-### 5. CI/CD Pipeline
-- Set up GitHub Actions
-- Configure deployment workflow
-- Add quality checks
-- Set up environment management
-- Configure monitoring
-
-## Acceptance Criteria
-1. Server starts successfully with TypeScript
-2. All security configurations are in place
-3. Database connections are working
-4. Test framework is operational
-5. CI/CD pipeline is functional
-6. Documentation is complete
+### 5. Security Enhancement
+- [ ] Implement rate limiting
+- [ ] Add request validation
+- [ ] Set up audit logging
+- [ ] Enhance error handling
+- [ ] Add security headers
 
 ## Technical Approach
 
-### Architecture
+### Assessment Engine Architecture
 ```typescript
-// Server structure
+// Assessment Engine Structure
 src/
-├── api/
-│   ├── routes/
-│   ├── controllers/
-│   └── middleware/
-├── config/
-│   ├── database.ts
-│   └── server.ts
 ├── services/
-│   └── base/
-├── utils/
-│   └── logger.ts
-├── validation/
-│   └── schemas/
-└── index.ts
+│   ├── AssessmentEngine/
+│   │   ├── ScoringService.ts
+│   │   ├── StateManager.ts
+│   │   ├── ProgressTracker.ts
+│   │   └── RecommendationEngine.ts
+│   ├── DataProcessing/
+│   │   ├── AggregationService.ts
+│   │   ├── StatisticsService.ts
+│   │   └── ReportingService.ts
+│   └── Integration/
+│       ├── SupabaseClient.ts
+│       ├── SyncService.ts
+│       └── WebhookHandler.ts
+└── models/
+    ├── Assessment.ts
+    ├── Score.ts
+    └── Recommendation.ts
 ```
 
 ### Implementation Steps
-1. Basic Server Setup
-   - Install dependencies
-   - Configure TypeScript
-   - Set up Express
-   - Add middleware
+1. Core Engine Development
+   - Implement scoring algorithms
+   - Create state management
+   - Add progress tracking
+   - Build recommendation engine
 
-2. Security Implementation
-   - Add CORS
-   - Configure Helmet
-   - Set up validation
-   - Add authentication
+2. Data Processing Implementation
+   - Create aggregation services
+   - Implement statistical analysis
+   - Add reporting capabilities
+   - Set up data export
 
-3. Database Setup
-   - Configure Prisma
-   - Create models
-   - Set up migrations
-   - Add connections
+3. Integration Development
+   - Set up Supabase integration
+   - Implement synchronization
+   - Add real-time features
+   - Create webhook handling
 
-4. Testing Configuration
-   - Set up Jest
-   - Add test utilities
-   - Create test DB
-   - Write base tests
+4. Performance Optimization
+   - Implement caching
+   - Optimize database queries
+   - Add connection pooling
+   - Set up load balancing
 
-5. CI/CD Setup
-   - Configure GitHub Actions
-   - Add deployment
-   - Set up monitoring
-   - Add quality checks
+5. Security Implementation
+   - Add rate limiting
+   - Implement validation
+   - Set up audit logging
+   - Enhance error handling
 
 ## Dependencies
 - Express.js
 - TypeScript
 - Prisma
-- Jest
-- GitHub Actions
+- Supabase Client
+- Statistical Libraries
 
 ## Testing Strategy
 1. Unit Tests
-   - Server configuration
-   - Middleware functions
-   - Utility functions
-   - Database operations
+   - Scoring algorithms
+   - Data processing
+   - State management
+   - Validation logic
 
 2. Integration Tests
+   - Database operations
    - API endpoints
-   - Database interactions
-   - Authentication flow
-   - Error handling
+   - Supabase integration
+   - Webhook handling
 
-3. Security Tests
-   - CORS validation
-   - Authentication checks
-   - Input validation
-   - Rate limiting
+3. Performance Tests
+   - Load testing
+   - Stress testing
+   - Concurrency testing
+   - Memory usage
 
 ## Metrics
 - Test Coverage: > 90%
-- Build Time: < 5 minutes
-- Startup Time: < 3 seconds
+- Response Time: < 200ms
 - Memory Usage: < 512MB
+- CPU Usage: < 70%
+- Error Rate: < 0.1%
 
 ## Progress Tracking
 
 ### Current Status
-- 🔄 Setting up initial project structure
-- 📝 Planning implementation details
-- 🎯 Defining technical requirements
-- 📊 Creating test strategy
+- ✅ Basic server structure set up
+- ✅ Initial models implemented
+- ✅ Core services created
+- 🔄 Planning assessment engine
+- 📝 Designing integration layer
 
 ### Next Steps
-1. Initialize project with TypeScript
-2. Set up basic Express server
-3. Configure development environment
-4. Add initial middleware
-5. Create base test suite
+1. Implement scoring algorithm service
+2. Create assessment state management
+3. Add progress tracking logic
+4. Set up Supabase integration
+5. Implement data processing services
 
 ### Technical Debt
 1. Comprehensive error handling
-2. Advanced logging setup
-3. Performance monitoring
-4. Documentation automation
-5. Security hardening
+2. Performance optimization
+3. Security hardening
+4. Documentation updates
+5. Monitoring setup
 
 ## Notes
-- Focus on maintainable architecture
-- Ensure scalability from start
-- Document all configurations
-- Consider cloud deployment
-- Plan for monitoring 
+- Build on existing server structure
+- Maintain TypeScript best practices
+- Focus on scalability
+- Consider future extensions
+- Document all algorithms 

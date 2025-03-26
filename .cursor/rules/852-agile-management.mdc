@@ -1,6 +1,6 @@
 ---
 description: IMPLEMENT comprehensive agile workflow management to ENSURE effective project tracking and delivery
-globs: .ai/{epics,sprints,stories}/**/*
+globs: 
 alwaysApply: false
 ---
 

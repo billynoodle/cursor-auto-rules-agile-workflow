@@ -163,8 +163,9 @@ sequenceDiagram
     participant U as User
     participant N as Navigation Component
     participant M as Module State
-    participant A as Assessment System
+    participant P as Progress Tracker
     participant S as Supabase
+    participant A as Assessment System
     
     U->>N: Select Module
     N->>M: Check Module Status
@@ -172,18 +173,38 @@ sequenceDiagram
     alt Module Locked
         M->>N: Return Locked Status
         N->>U: Display Lock Indicator
+        Note over M: Maintain Current Module State
     else Module Available
         M->>N: Return Available Status
         N->>A: Load Module Content
-        A->>S: Fetch Module Data
+        A->>S: Fetch Module Data & Saved Answers
         S->>A: Return Module Data
         A->>U: Display Module
-        U->>A: Complete Module
-        A->>M: Update Progress
+        U->>A: Answer Questions
+        A->>S: Save Answers to Storage
+        A->>P: Calculate Progress
+        P->>M: Update Module Progress
         M->>N: Update Navigation State
         N->>U: Update Progress Indicators
     end
 ```
+
+### State Management Requirements
+
+1. **Module State Persistence**
+   - Current module selection must persist when attempting to access locked modules
+   - Module progress must be accurately calculated based on answered questions
+   - Module prerequisites must be enforced for navigation
+
+2. **Answer Management**
+   - All answers must be immediately persisted to localStorage
+   - Progress calculations must reflect the current state of answers
+   - Answer changes must trigger progress updates
+
+3. **Progress Tracking**
+   - Progress should be calculated per module
+   - Progress indicators should update in real-time
+   - Progress should be displayed consistently across navigation and content areas
 
 ## Data Models
 
@@ -338,15 +359,15 @@ sequenceDiagram
 │   │   │   │   ├── /supabase    # Supabase client and services
 │   │   │   │   ├── /api         # Custom API service clients
 │   │   │   │   ├── /analysis    # Analysis service clients
-│   │   │   ├── /store           # Redux store configuration
-│   │   │   ├── /types           # TypeScript type definitions
-│   │   │   └── /utils           # Utility functions
-│   │   │       ├── /formatters  # Data formatting utilities
-│   │   │       ├── /analysis    # Analysis helper functions
-│   │   │       ├── /visualization # Visualization utilities
-│   │   │   ├── package.json         # Frontend dependencies
-│   │   │   └── tsconfig.json        # TypeScript configuration
-│   │   │
+│   │   │   │   ├── /store           # Redux store configuration
+│   │   │   │   ├── /types           # TypeScript type definitions
+│   │   │   │   └── /utils           # Utility functions
+│   │   │   │       ├── /formatters  # Data formatting utilities
+│   │   │   │       ├── /analysis    # Analysis helper functions
+│   │   │   │       ├── /visualization # Visualization utilities
+│   │   │   │   ├── package.json         # Frontend dependencies
+│   │   │   │   └── tsconfig.json        # TypeScript configuration
+│   │   │   │
 │   │   ├── /server                  # Backend Node.js/Express application
 │   │   │   ├── /src                 # Source code
 │   │   │   │   ├── /api             # API routes and controllers

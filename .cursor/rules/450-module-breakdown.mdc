@@ -1,6 +1,7 @@
 ---
 description: BREAK DOWN large code files into smaller modules when they exceed 300 lines or contain multiple logical components to IMPROVE maintainability and code organization
 globs: **/*.{ts,js,tsx,jsx,py,rb,cs,java,php,go,swift,kt,vue,svelte,scala,rs}
+alwaysApply: false
 ---
 
 # Automatic File Module Breakdown Rule

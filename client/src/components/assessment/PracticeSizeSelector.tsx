@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import './PracticeSizeSelector.css';
 
 interface PracticeSize {
@@ -13,6 +13,7 @@ interface PracticeSizeSelectorProps {
   selectedSize?: string;
 }
 
+// Move static data outside component
 const practiceSizes: PracticeSize[] = [
   {
     id: 'solo',
@@ -46,18 +47,26 @@ const practiceSizes: PracticeSize[] = [
   },
 ];
 
-export const PracticeSizeSelector: React.FC<PracticeSizeSelectorProps> = ({
+export const PracticeSizeSelector = memo(({
   onSelect,
   selectedSize,
-}) => {
+}: PracticeSizeSelectorProps) => {
   const [hoveredSize, setHoveredSize] = useState<string | null>(null);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, sizeId: string) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>, sizeId: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       onSelect(sizeId);
     }
-  };
+  }, [onSelect]);
+
+  const handleMouseEnter = useCallback((sizeId: string) => {
+    setHoveredSize(sizeId);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setHoveredSize(null);
+  }, []);
 
   return (
     <div className="practice-size-selector" role="radiogroup" aria-label="Practice Size Selection">
@@ -74,8 +83,8 @@ export const PracticeSizeSelector: React.FC<PracticeSizeSelectorProps> = ({
             tabIndex={0}
             onClick={() => onSelect(size.id)}
             onKeyDown={(e) => handleKeyDown(e, size.id)}
-            onMouseEnter={() => setHoveredSize(size.id)}
-            onMouseLeave={() => setHoveredSize(null)}
+            onMouseEnter={() => handleMouseEnter(size.id)}
+            onMouseLeave={handleMouseLeave}
           >
             <div className="size-content">
               <div className="size-header">
@@ -98,4 +107,6 @@ export const PracticeSizeSelector: React.FC<PracticeSizeSelectorProps> = ({
       </div>
     </div>
   );
-}; 
+});
+
+PracticeSizeSelector.displayName = 'PracticeSizeSelector'; 

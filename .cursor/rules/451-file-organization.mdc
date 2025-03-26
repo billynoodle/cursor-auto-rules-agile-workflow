@@ -1,6 +1,7 @@
 ---
 description: ORGANIZE codebase with consistent file structure and clear module boundaries to IMPROVE maintainability and navigation
 globs: **/*.{ts,js,tsx,jsx,py,rb,cs,java,php,go,swift,kt,vue,svelte,scala,rs}
+alwaysApply: false
 ---
 
 # File Organization and Structure

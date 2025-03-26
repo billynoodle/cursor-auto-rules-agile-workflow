@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback, memo } from 'react';
 import Question from './Question';
 import { Question as QuestionType } from '../../types/assessment.types';
 import './QuestionModule.css';
@@ -21,25 +21,27 @@ interface QuestionModuleProps {
  * - Progress indicator
  * - Mobile-friendly design
  */
-export function QuestionModule({
+const QuestionModule = memo(({
   id,
   title,
   description,
   questions,
   onAnswerChange,
   answers
-}: QuestionModuleProps): JSX.Element {
+}: QuestionModuleProps): JSX.Element => {
   const [isExpanded, setIsExpanded] = useState(true);
   
-  // Calculate completion percentage
-  const answeredQuestions = questions.filter(q => answers[q.id] !== undefined);
-  const completionPercentage = questions.length > 0 
-    ? Math.round((answeredQuestions.length / questions.length) * 100) 
-    : 0;
+  // Memoize completion percentage calculation
+  const completionPercentage = useMemo(() => {
+    const answeredQuestions = questions.filter(q => answers[q.id] !== undefined);
+    return questions.length > 0 
+      ? Math.round((answeredQuestions.length / questions.length) * 100) 
+      : 0;
+  }, [questions, answers]);
   
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const toggleExpand = useCallback(() => {
+    setIsExpanded(prev => !prev);
+  }, []);
 
   return (
     <div className="question-module">
@@ -82,4 +84,8 @@ export function QuestionModule({
       </div>
     </div>
   );
-} 
+});
+
+QuestionModule.displayName = 'QuestionModule';
+
+export { QuestionModule }; 

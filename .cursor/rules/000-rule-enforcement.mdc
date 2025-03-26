@@ -1,0 +1,142 @@
+---
+description: 
+globs: **/*
+alwaysApply: false
+---
+ # Rule Enforcement Standards
+
+<version>1.0.0</version>
+
+## Context
+- Applied to ALL AI operations
+- Ensures consistent rule application
+- Prevents rule oversight
+- Maintains documentation integrity
+- Reduces AI hallucinations
+
+## Requirements
+
+### 1. Rule Validation Process
+
+#### Pre-Operation Check
+- List applicable rules for the operation
+- Verify rule requirements
+- Check for rule conflicts
+- Document rule dependencies
+
+#### During Operation
+- Follow rule-specific templates
+- Validate against rule constraints
+- Track rule compliance
+- Document deviations
+
+#### Post-Operation Check
+- Verify rule compliance
+- Document rule adherence
+- Update relevant documentation
+- Track rule effectiveness
+
+### 2. Rule Priority System
+
+#### Critical Rules (000-099)
+- Must NEVER be bypassed
+- Require explicit validation
+- Document all applications
+Example: 000-cursor-rules.mdc
+
+#### Architecture Rules (100-299)
+- Guide system design
+- Ensure technical consistency
+- Maintain system boundaries
+Example: 701-architecture-patterns.mdc
+
+#### Testing Rules (300-399)
+- Ensure quality standards
+- Guide test implementation
+- Maintain coverage requirements
+Example: 301-comprehensive-test-strat.mdc
+
+#### Documentation Rules (400-499)
+- Format and structure
+- Content requirements
+- Update patterns
+Example: 400-md-docs.mdc
+
+#### Implementation Rules (500-699)
+- Code standards
+- Best practices
+- Pattern enforcement
+Example: 451-file-organization.mdc
+
+#### Process Rules (700-899)
+- Workflow standards
+- Development practices
+- Team collaboration
+Example: 850-agent-workflow.mdc
+
+#### Template Rules (900-999)
+- Document templates
+- Structure definitions
+- Format standards
+Example: 903-story-template.mdc
+
+### 3. Rule Application Workflow
+
+```mermaid
+graph TD
+    A[Receive Operation Request] -->|Check Rules| B[Identify Applicable Rules]
+    B -->|Validate| C[Pre-Operation Check]
+    C -->|Execute| D[Operation with Rule Compliance]
+    D -->|Verify| E[Post-Operation Check]
+    E -->|Document| F[Update Documentation]
+    F -->|Track| G[Rule Effectiveness]
+
+    style A fill:#f9f,stroke:#333
+    style B fill:#bbf,stroke:#333
+    style C fill:#bfb,stroke:#333
+    style D fill:#fbb,stroke:#333
+    style E fill:#bff,stroke:#333
+    style F fill:#fcb,stroke:#333
+    style G fill:#ccc,stroke:#333
+```
+
+### 4. Rule Validation Checklist
+
+#### For Each Operation
+- [ ] List applicable rules
+- [ ] Check rule requirements
+- [ ] Verify no conflicts
+- [ ] Document compliance
+- [ ] Track deviations
+- [ ] Update documentation
+
+#### For Each Document
+- [ ] Follow templates
+- [ ] Check formatting
+- [ ] Verify cross-references
+- [ ] Update related docs
+- [ ] Track changes
+
+#### For Each Implementation
+- [ ] Apply coding standards
+- [ ] Follow patterns
+- [ ] Check test coverage
+- [ ] Document decisions
+
+## Critical Notes
+- NEVER skip rule validation
+- ALWAYS document rule application
+- NEVER ignore rule conflicts
+- ALWAYS track deviations
+- NEVER bypass critical rules
+- ALWAYS update documentation
+- NEVER assume rule compliance
+- ALWAYS verify rule effectiveness
+
+## Integration Points
+- Follow @702-documentation-standards for updates
+- Apply @701-architecture-patterns for structure
+- Use @903-story-template for stories
+- Follow @850-agent-workflow for process
+- Apply @301-comprehensive-test-strat for testing
+- Use @400-md-docs for documentation

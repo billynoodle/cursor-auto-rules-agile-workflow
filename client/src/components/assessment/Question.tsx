@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { QuestionType, QuestionOption as QuestionOptionType } from '../../types/assessment.types';
 import './Question.css';
 
@@ -21,7 +21,7 @@ interface QuestionProps {
  * - Accessible design
  * - Mobile-friendly layout
  */
-export function Question({
+const Question = memo(({
   id,
   text,
   description,
@@ -29,9 +29,22 @@ export function Question({
   options = [],
   value,
   onChange
-}: QuestionProps): JSX.Element {
-  // Render different input types based on question type
-  const renderQuestionInput = () => {
+}: QuestionProps): JSX.Element => {
+  // Memoize the change handlers
+  const handleNumericChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(parseFloat(e.target.value));
+  }, [onChange]);
+
+  const handleTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange(e.target.value);
+  }, [onChange]);
+
+  const handleOptionChange = useCallback((optionValue: string | number) => {
+    onChange(optionValue);
+  }, [onChange]);
+
+  // Memoize question input rendering
+  const questionInput = useMemo(() => {
     switch (type) {
       case QuestionType.MULTIPLE_CHOICE:
         return (
@@ -43,7 +56,7 @@ export function Question({
                   name={id}
                   value={option.value}
                   checked={value === option.value}
-                  onChange={() => onChange(option.value)}
+                  onChange={() => handleOptionChange(option.value)}
                 />
                 <span className="option-text">{option.text}</span>
               </label>
@@ -57,7 +70,7 @@ export function Question({
             type="number"
             className="question-input numeric"
             value={value as number || ''}
-            onChange={(e) => onChange(parseFloat(e.target.value))}
+            onChange={handleNumericChange}
             aria-labelledby={`question-${id}`}
           />
         );
@@ -67,7 +80,7 @@ export function Question({
           <textarea
             className="question-input text"
             value={value as string || ''}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={handleTextChange}
             aria-labelledby={`question-${id}`}
             rows={3}
           />
@@ -83,7 +96,7 @@ export function Question({
                   name={id}
                   value={option.value}
                   checked={value === option.value}
-                  onChange={() => onChange(option.value)}
+                  onChange={() => handleOptionChange(option.value)}
                 />
                 <span className="likert-value">{option.value}</span>
                 <span className="likert-text">{option.text}</span>
@@ -95,7 +108,7 @@ export function Question({
       default:
         return null;
     }
-  };
+  }, [type, options, value, id, handleNumericChange, handleTextChange, handleOptionChange]);
 
   return (
     <div className="question-container">
@@ -112,10 +125,13 @@ export function Question({
       </div>
       
       <div className="question-body">
-        {renderQuestionInput()}
+        {questionInput}
       </div>
     </div>
   );
-}
+});
 
+Question.displayName = 'Question';
+
+export { Question };
 export default Question; 
