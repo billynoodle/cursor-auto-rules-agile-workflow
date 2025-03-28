@@ -142,5 +142,23 @@
       "functions": 79.68,
       "lines": 80.38
     }
+  },
+  {
+    "timestamp": "2025-03-27-17-05",
+    "testSuite": "unit-tests",
+    "status": "completed",
+    "results": {
+      "numTotalTests": 69,
+      "numPassedTests": 65,
+      "numFailedTests": 4,
+      "numPendingTests": 0,
+      "startTime": 1743055548147
+    },
+    "coverage": {
+      "statements": "Unknown",
+      "branches": "Unknown",
+      "functions": "Unknown",
+      "lines": "Unknown"
+    }
   }
 ]

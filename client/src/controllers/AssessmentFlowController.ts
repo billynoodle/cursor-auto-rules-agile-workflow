@@ -73,10 +73,14 @@ export class AssessmentFlowController {
 
       const answers = await this.assessmentService.getAnswers(assessmentId);
       
-      // Convert answers to state format
+      // Convert answers from database format to application format
       const stateAnswers: Record<string, Answer> = {};
       answers.forEach((answer: AssessmentAnswer) => {
-        stateAnswers[answer.question_id] = answer.answer as Answer;
+        const dbAnswer = answer.answer as Record<string, unknown>;
+        stateAnswers[answer.question_id] = {
+          value: dbAnswer.value as string | number | boolean | string[],
+          metadata: dbAnswer.metadata as Record<string, unknown> | undefined
+        };
       });
 
       this.state = {
@@ -175,7 +179,7 @@ export class AssessmentFlowController {
 
     // Check if all questions in a module are answered
     this.modules.forEach(module => {
-      const allQuestionsAnswered = module.questions.every(q => this.state.answers[q.id]);
+      const allQuestionsAnswered = module.questions.every((question: Question) => this.state.answers[question.id]);
       if (allQuestionsAnswered && !this.state.completedModules.includes(module.id)) {
         this.state.completedModules.push(module.id);
       }
@@ -191,43 +195,33 @@ export class AssessmentFlowController {
   }
 
   public async saveAnswer(answer: { questionId: string; value: Answer; timestamp: string }): Promise<void> {
-    // Store the current state before making changes
+    if (!this.assessmentId) {
+      throw new Error('Assessment not initialized');
+    }
+
     const previousState = { ...this.state };
     
     try {
-      if (!this.assessmentId) {
-        throw new Error('Assessment not initialized');
-      }
-
-      // Validate the question exists
-      const question = this.questionMap.get(answer.questionId);
-      if (!question) {
-        throw new Error(`Question ${answer.questionId} not found`);
-      }
-
-      // Update local state
-      this.state = {
-        ...this.state,
-        answers: {
-          ...this.state.answers,
-          [answer.questionId]: answer.value
+      // Convert application Answer type to database format
+      const dbAnswer: Record<string, unknown> = {
+        value: answer.value.value,
+        metadata: {
+          ...answer.value.metadata,
+          timestamp: answer.timestamp
         }
       };
 
-      // Update progress and check module completion
-      this.state.progress = this.calculateProgress();
-
-      // Persist to backend
-      const answerData = {
+      await this.assessmentService.saveAnswer({
         assessment_id: this.assessmentId,
         question_id: answer.questionId,
-        answer: answer.value,
-        timestamp: answer.timestamp
-      };
-
-      await this.assessmentService.saveAnswer(answerData);
+        answer: dbAnswer
+      });
       
-      // Only notify subscribers after successful persistence
+      // Update local state
+      this.state.answers[answer.questionId] = answer.value;
+      this.state.progress = this.calculateProgress();
+      
+      await this.persistState();
       this.notifySubscribers();
     } catch (error) {
       // Rollback state on error
@@ -357,6 +351,15 @@ export class AssessmentFlowController {
     return currentModule?.questions || [];
   }
 
+  private findModuleIdForQuestion(questionId: string): string {
+    for (const module of this.modules) {
+      if (module.questions.some(q => q.id === questionId)) {
+        return module.id;
+      }
+    }
+    throw new Error(`No module found for question ${questionId}`);
+  }
+
   public async navigateToQuestion(questionId: string): Promise<void> {
     await this.ensureInitialized();
     
@@ -373,7 +376,7 @@ export class AssessmentFlowController {
     try {
       // Update state with new question and its module
       this.state.currentQuestionId = questionId;
-      this.state.currentModuleId = question.moduleId;
+      this.state.currentModuleId = this.findModuleIdForQuestion(questionId);
 
       // Persist state
       await this.persistState();

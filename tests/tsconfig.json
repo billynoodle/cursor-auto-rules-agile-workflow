@@ -1,0 +1,41 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["../src/*"],
+      "@test/*": ["./*"],
+      "@server/*": ["../server/src/*"],
+      "@client/*": ["../client/src/*"],
+      "@mocks/*": ["../__mocks__/*"],
+      "../../../../client/src/*": ["../client/src/*"],
+      "../../../../server/src/*": ["../server/src/*"],
+      "../../../client/src/*": ["../client/src/*"],
+      "../../../server/src/*": ["../server/src/*"],
+      "../../client/src/*": ["../client/src/*"],
+      "../../server/src/*": ["../server/src/*"]
+    },
+    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "target": "es2020",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noEmit": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../client/src/**/*.ts",
+    "../client/src/**/*.tsx",
+    "../server/src/**/*.ts",
+    "../__mocks__/**/*.ts",
+    "../__mocks__/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "dist", "build"]
+}

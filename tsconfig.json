@@ -18,7 +18,9 @@
     "baseUrl": ".",
     "paths": {
       "@client/*": ["client/src/*"],
-      "@server/*": ["server/src/*"]
+      "@server/*": ["server/src/*"],
+      "@__mocks__/*": ["__mocks__/*"],
+      "@test/*": ["tests/*"]
     },
     "typeRoots": [
       "./node_modules/@types",
@@ -32,6 +34,7 @@
     "client/src/**/*",
     "server/src/**/*",
     "tests/**/*",
+    "__mocks__/**/*",
     "client/src/types/module-augmentation.d.ts"
   ],
   "exclude": ["node_modules"]

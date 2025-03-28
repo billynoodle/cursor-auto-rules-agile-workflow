@@ -11,8 +11,7 @@ export interface Assessment {
   completed_modules: string[];
   is_complete: boolean;
   status: AssessmentStatus;
-  metadata?: Record<string, any>;
-  deleted_at?: string;
+  metadata?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -21,9 +20,8 @@ export interface AssessmentAnswer {
   id: string;
   assessment_id: string;
   question_id: string;
-  answer: Record<string, any>;
-  metadata?: Record<string, any>;
-  deleted_at?: string;
+  answer: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -32,33 +30,14 @@ export interface DatabaseSchema {
   public: {
     Tables: {
       assessments: {
-        Row: {
-          id: string;
-          user_id: string;
-          current_module_id: string;
-          progress: number;
-          completed_modules: string[];
-          is_complete: boolean;
-          status: 'not_started' | 'in_progress' | 'completed' | 'archived';
-          metadata?: Record<string, any>;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: Omit<DatabaseSchema['public']['Tables']['assessments']['Row'], 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<DatabaseSchema['public']['Tables']['assessments']['Insert']>;
+        Row: Assessment;
+        Insert: Omit<Assessment, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Assessment, 'id' | 'created_at'>>;
       };
-      answers: {
-        Row: {
-          id: string;
-          assessment_id: string;
-          question_id: string;
-          answer: Record<string, any>;
-          metadata?: Record<string, any>;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: Omit<DatabaseSchema['public']['Tables']['answers']['Row'], 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<DatabaseSchema['public']['Tables']['answers']['Insert']>;
+      assessment_answers: {
+        Row: AssessmentAnswer;
+        Insert: Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<AssessmentAnswer, 'id' | 'created_at'>>;
       };
     };
     Functions: {

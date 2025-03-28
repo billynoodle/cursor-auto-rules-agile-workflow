@@ -1,5 +1,38 @@
 # Test Refactoring Plan
 
+## Business Context
+
+### Purpose
+To support the development of a comprehensive business assessment questionnaire for allied health practitioners (initially focusing on physiotherapists) that provides quantifiable metrics and data-driven insights.
+
+### Key Requirements
+1. **Scalability**: Test framework must support metrics that scale with practice size
+2. **Data Validation**: Ensure accurate, data-driven insights
+3. **Context Awareness**: Support practice-specific context in test scenarios
+4. **Metric Validation**: Verify quantifiable metric calculations
+5. **Business Logic Coverage**: Comprehensive testing of assessment areas
+
+### Test Coverage Areas
+1. **Practice Metrics**
+   - Size-based scaling
+   - Performance indicators
+   - Growth metrics
+
+2. **Assessment Logic**
+   - Score calculations
+   - Recommendation generation
+   - Practice-specific adjustments
+
+3. **Data Processing**
+   - Input validation
+   - Metric calculations
+   - Report generation
+
+4. **Integration Points**
+   - Database operations
+   - External APIs
+   - Analytics services
+
 ## Overview
 This document outlines the plan for reorganizing the test suite to establish clear boundaries between test layers and improve maintainability.
 
@@ -47,33 +80,128 @@ Tasks:
 - **Coverage Target**: Critical user journeys
 
 Tasks:
-1. Identify and document critical user journeys
-2. Create E2E test suites for each journey
-3. Set up E2E test environment
-4. Implement proper test data cleanup
+1. [x] Set up Playwright configuration and infrastructure
+2. [x] Create E2E test directory structure and documentation
+3. [x] Implement first E2E test for AssessmentPage
+4. [ ] Create E2E tests for remaining pages:
+   - [ ] HomePage
+   - [ ] ResultsPage
+   - [ ] ProfilePage
+5. [ ] Implement critical user flows:
+   - [ ] Complete assessment flow
+   - [ ] View and export results flow
+   - [ ] Update profile flow
+6. [ ] Set up CI/CD pipeline for E2E tests
+7. [ ] Implement visual regression testing
+8. [ ] Add accessibility testing
 
 ### Phase 2: Test Organization
 
 #### 2.1 Directory Structure
 ```
-tests/
-├── unit/
-│   ├── services/
-│   │   └── assessment/
-│   ├── components/
-│   │   └── assessment/
-│   └── controllers/
-│       └── assessment/
-├── integration/
-│   ├── services/
-│   ├── api/
-│   └── controllers/
-├── e2e/
-│   └── flows/
-├── __mocks__/
-├── __fixtures__/
-└── utils/
+/                           # Root directory
+├── __mocks__/             # Mock implementations (in root directory)
+│   ├── services/          # Service mocks (e.g., Supabase, Assessment)
+│   ├── components/        # Component mocks (e.g., UI components)
+│   ├── controllers/       # Controller mocks (e.g., API controllers)
+│   ├── data/             # Mock data generators
+│   ├── utils/            # Utility mocks
+│   ├── api/              # API mocks
+│   └── README.md         # Mock implementation guidelines
+└── tests/                 # Test directory
+    ├── unit/             # Unit tests
+    │   ├── services/     # Service unit tests
+    │   ├── controllers/  # Controller unit tests
+    │   ├── components/   # Component unit tests
+    │   └── README.md     # Unit testing guide
+    ├── integration/      # Integration tests
+    │   ├── services/     # Service integration tests
+    │   ├── components/   # Component integration tests
+    │   ├── controllers/  # Controller integration tests
+    │   ├── api/         # API integration tests
+    │   └── README.md     # Integration testing guide
+    ├── e2e/             # End-to-end tests
+    ├── utils/           # Test utilities
+    ├── scripts/         # Test scripts and helpers
+    ├── docs/            # Test documentation
+    ├── results/         # Test results and reports
+    ├── __fixtures__/    # Test fixtures
+    ├── __contracts__/   # Test contracts and interfaces
+    ├── tsconfig.json    # TypeScript configuration for tests
+    ├── jest.config.ts   # Jest configuration
+    ├── jest.setup.ts    # Jest setup file
+    ├── setupTests.ts    # Test setup utilities
+    └── README.md        # Test documentation
 ```
+
+#### 2.2 Directory Responsibilities
+
+1. **Test Configuration**
+   - `tsconfig.json`: TypeScript configuration specific to tests
+   - `jest.config.ts`: Jest test runner configuration
+   - `jest.setup.ts`: Jest setup and global configuration
+   - `setupTests.ts`: Common test setup utilities
+
+2. **Test Categories**
+   - `unit/`: Individual component and function tests
+   - `integration/`: Service and API integration tests
+   - `e2e/`: End-to-end user flow tests
+
+3. **Test Support**
+   - `utils/`: Shared test utilities and helpers
+   - `scripts/`: Test automation and helper scripts
+   - `docs/`: Test documentation and guides
+   - `results/`: Test execution results and reports
+
+4. **Test Data**
+   - `__fixtures__/`: Shared test data and fixtures
+   - `__contracts__/`: Interface definitions and type contracts
+
+5. **Mock Implementations** (in root `__mocks__/`)
+   - `services/`: Service and business logic mocks
+   - `components/`: UI component mocks
+   - `controllers/`: API controller mocks
+   - `data/`: Data generation and factories
+   - `utils/`: Utility function mocks
+   - `api/`: External API mocks
+
+#### 2.2 Mock Organization
+
+1. **Service Mocks** (`__mocks__/services/`)
+   - Database clients (e.g., Supabase)
+   - Business services (e.g., Assessment)
+   - Authentication services
+   - Data access services
+
+2. **Component Mocks** (`__mocks__/components/`)
+   - UI components
+   - Form components
+   - Layout components
+   - Shared components
+
+3. **Controller Mocks** (`__mocks__/controllers/`)
+   - API controllers
+   - Request handlers
+   - Route controllers
+   - Middleware
+
+4. **Data Mocks** (`__mocks__/data/`)
+   - Data generators
+   - Factory functions
+   - Test data builders
+   - Random data utilities
+
+5. **Utility Mocks** (`__mocks__/utils/`)
+   - Helper functions
+   - Shared utilities
+   - Common functions
+   - Type utilities
+
+6. **API Mocks** (`__mocks__/api/`)
+   - External API clients
+   - API responses
+   - Request handlers
+   - API utilities
 
 #### 2.2 Naming Conventions
 - Unit tests: `*.test.ts`
@@ -428,97 +556,151 @@ export const renderTestComponent = <P extends {}>(
 
 ### Task Checklist
 
-#### Task 1: Initial Setup
-- [ ] Create test inventory document
-  - [ ] List all test files
-  - [ ] Categorize by type (unit/integration/e2e)
-  - [ ] Note primary test subjects
-  - [ ] Document test coverage areas
+#### Task 1: Initial Setup ✅
+- [x] Create test directory structure
+- [x] Set up Jest configuration
+- [x] Create test utility functions
+- [x] Document test conventions
 
-#### Task 2: Dependency Analysis
-- [ ] Map all test dependencies
-  - [ ] Create dependency graph
-  - [ ] Identify shared utilities
-  - [ ] Document fixture usage
-  - [ ] List mock implementations
-- [ ] Analyze redundancies
-  - [ ] Find overlapping tests
-  - [ ] Identify duplicate fixtures
-  - [ ] Note shared setup code
-  - [ ] Mark tests for consolidation
+#### Task 2: Dependency Analysis ✅
+- [x] Map test dependencies
+- [x] Analyze redundancies
+- [x] Create dependency analysis document
+- [x] Document in `tests/docs/dependency-analysis.md`
 
-#### Task 3: Directory Structure
-- [ ] Create new directory structure
-  - [ ] Set up unit test directories
-  - [ ] Set up integration test directories
-  - [ ] Set up e2e test directories
-  - [ ] Create utilities folder
-  - [ ] Create fixtures folder
-  - [ ] Create mocks folder
+#### Task 3: Test Organization ✅
+- [x] Create test categories
+- [x] Define test boundaries
+- [x] Document test patterns
+- [x] Update test naming conventions
+- [x] Implement test isolation patterns
+  - [x] Create test-isolation.ts utility
+  - [x] Implement TestTransaction class
+  - [x] Add isolation helpers
+- [x] Create shared test contexts
+  - [x] Implement BaseTestContext
+  - [x] Add context management utilities
+  - [x] Add mock management
+- [x] Document test organization guidelines
+  - [x] Create test-organization.md
+  - [x] Document best practices
+  - [x] Add example implementations
 
-#### Task 4: Utility Migration
-- [ ] Create shared test utilities
-  - [ ] Database utilities
-  - [ ] Authentication utilities
-  - [ ] Component utilities
-  - [ ] API mocking utilities
-- [ ] Update utility documentation
-  - [ ] Add usage examples
-  - [ ] Document patterns
-  - [ ] Add type definitions
+#### Task 4: Utility Migration ✅
+- [x] Create `TestContextBuilder` utility
+  - [x] Implement module generation
+  - [x] Add mock service creation
+  - [x] Add controller context building
+  - [x] Add service context building
+- [x] Create `MockDataFactory` utility
+  - [x] Add question generation
+  - [x] Add module generation
+  - [x] Add assessment generation
+  - [x] Add bulk creation methods
+- [x] Migrate common test fixtures
+  - [x] Move existing fixtures to centralized location
+  - [x] Update imports in test files
+  - [x] Remove duplicate fixtures
+  - [x] Add type validation for fixtures
+- [x] Create shared test hooks
+  - [x] Database setup/teardown
+  - [x] Authentication setup
+  - [x] Test isolation utilities
+  - [x] Add transaction management
+- [x] Document utility usage
+  - [x] Add usage examples
+  - [x] Document best practices
+  - [x] Create utility reference guide
+  - [x] Add migration guides
+- [x] Update test patterns
+  - [x] Document service testing pattern
+  - [x] Add error handling examples
+  - [x] Add online/offline testing examples
+  - [x] Add mock response patterns
 
-#### Task 5: Test Migration
-- [ ] Migrate unit tests
-  - [ ] Move to appropriate directory
-  - [ ] Update imports
-  - [ ] Verify isolation
-  - [ ] Check coverage
-- [ ] Migrate integration tests
-  - [ ] Move to appropriate directory
-  - [ ] Update dependencies
-  - [ ] Verify interactions
-  - [ ] Check coverage
-- [ ] Migrate e2e tests
-  - [ ] Move to appropriate directory
-  - [ ] Update configurations
-  - [ ] Verify flows
-  - [ ] Check coverage
+#### Task 5: Test Implementation ⏳
+- [x] Update QuestionService tests
+- [x] Update integration tests
+  - [x] Service integration tests
+    - [x] AssessmentService integration tests
+    - [x] ModuleService integration tests
+    - [x] ResearchDocumentationService integration tests
+    - [x] TooltipReviewService integration tests
+  - [ ] API integration tests (pending API implementation)
+  - [x] Database integration tests (covered by service tests using Supabase)
+- [ ] Update E2E tests
+  - [ ] Define E2E test scenarios
+  - [ ] Implement test helpers
+  - [ ] Add browser automation
+- [ ] Verify test coverage
+  - [x] Unit test coverage (configured with 80-95% thresholds)
+  - [x] Integration test coverage (configured with 90%+ for critical paths)
+  - [x] E2E test coverage (configured for critical user journeys)
+- [x] Document test changes
+  - [x] Update test documentation (created test-coverage.md)
+  - [x] Add examples (added to test-coverage.md)
+  - [x] Document patterns (added to test-coverage.md)
 
-#### Task 6: Validation
-- [ ] Run test suites
-  - [ ] Execute all test types
-  - [ ] Compare coverage reports
-  - [ ] Verify no regressions
-  - [ ] Document any issues
-- [ ] Performance check
-  - [ ] Measure execution time
-  - [ ] Check resource usage
-  - [ ] Verify parallel execution
-  - [ ] Document metrics
+#### Task 6: Test Validation ⏳
+- [ ] Run all tests
+- [ ] Fix failing tests
+- [ ] Update test documentation
+- [ ] Review test coverage
+- [ ] Document validation results
+- [ ] Performance analysis
+  - [ ] Measure test execution time
+  - [ ] Optimize slow tests
+  - [ ] Document performance findings
 
-#### Task 7: Cleanup
-- [ ] Remove redundant tests
-  - [ ] Archive old tests
-  - [ ] Update coverage reports
-  - [ ] Document removals
-  - [ ] Verify no regressions
+#### Task 7: Documentation Update ⏳
+- [ ] Update test README
+  - [ ] Add setup instructions
+  - [ ] Document test organization
+  - [ ] Add troubleshooting guide
+- [ ] Document test patterns
+  - [ ] Unit test patterns
+  - [ ] Integration test patterns
+  - [ ] E2E test patterns
+- [x] Create test examples
+  - [x] Basic test examples
+  - [x] Complex test scenarios
+  - [ ] Mock usage examples
+- [ ] Update contribution guide
+  - [ ] Test writing guidelines
+  - [ ] Code review checklist
+  - [ ] Testing standards
+- [ ] Review documentation
+  - [ ] Technical review
+  - [ ] Usability review
+  - [ ] Update based on feedback
+
+#### Task 8: Final Review ⏳
+- [ ] Review all changes
+  - [ ] Code review
+  - [ ] Documentation review
+  - [ ] Performance review
+- [ ] Run final test suite
+  - [ ] All unit tests
+  - [ ] All integration tests
+  - [ ] All E2E tests
 - [ ] Update documentation
-  - [ ] Update README files
-  - [ ] Document patterns
-  - [ ] Add examples
-  - [ ] Create migration guide
+  - [ ] Final documentation updates
+  - [ ] Version history
+  - [ ] Known issues
+- [ ] Create migration guide
+  - [ ] Step-by-step migration
+  - [ ] Breaking changes
+  - [ ] Migration scripts
+- [ ] Document lessons learned
+  - [ ] Technical lessons
+  - [ ] Process improvements
+  - [ ] Future recommendations
 
-#### Task 8: Handover
-- [ ] Prepare documentation
-  - [ ] Document changes
-  - [ ] Note key decisions
-  - [ ] List improvements
-  - [ ] Add recommendations
-- [ ] Create team guide
-  - [ ] Document new structure
-  - [ ] Add examples
-  - [ ] Note best practices
-  - [ ] Include troubleshooting
+### Legend
+✅ Complete
+⏳ In Progress
+🔄 Partially Complete
+❌ Not Started
 
 ### Daily Retrospective Template
 

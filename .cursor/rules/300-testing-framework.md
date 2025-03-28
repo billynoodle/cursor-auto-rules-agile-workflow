@@ -38,38 +38,43 @@ IMPLEMENT comprehensive testing with clear boundaries between test types to PREV
 
 ### 2. Directory Structure
 ```
-tests/
-├── unit/
-│   ├── services/         # Pure business logic
-│   ├── components/       # UI components
-│   └── controllers/      # UI logic
-├── integration/
-│   ├── services/        # Service interactions
-│   ├── api/            # API contracts
-│   └── controllers/     # Controller-service integration
-├── e2e/
-│   └── flows/          # User journeys
-├── __mocks__/          # Mock implementations
-├── __fixtures__/       # Test data
-└── utils/             # Test utilities
+/                           # Project root
+├── __mocks__/             # Global mock implementations
+│   ├── services/          # Service mocks (e.g. Supabase)
+│   ├── components/        # Component mocks
+│   ├── controllers/       # Controller mocks
+│   ├── data/             # Mock data generators
+│   ├── utils/            # Mock utilities
+│   └── api/              # API mocks
+├── tests/                 # Test suites
+│   ├── unit/
+│   │   ├── services/     # Pure business logic
+│   │   ├── components/   # UI components
+│   │   └── controllers/  # UI logic
+│   ├── integration/
+│   │   ├── services/     # Service interactions
+│   │   ├── api/         # API contracts
+│   │   └── controllers/  # Controller-service integration
+│   ├── e2e/
+│   │   └── flows/       # User journeys
+│   ├── __fixtures__/    # Test data
+│   └── utils/           # Test utilities
 ```
 
 ### 3. Test Implementation
 
 #### Unit Tests
 ```typescript
-// GOOD: Clear unit test with proper isolation
+// GOOD: Clear unit test with proper isolation using test utilities
 describe('AssessmentService', () => {
-  let service: AssessmentService;
-  let mockDb: jest.Mocked<Database>;
+  let context: BaseTestContext;
   
-  beforeEach(() => {
-    mockDb = createMockDatabase();
-    service = new AssessmentService(mockDb);
+  beforeEach(async () => {
+    context = await UnitTestUtils.createTestContext();
   });
   
   it('should calculate assessment score', () => {
-    const result = service.calculateScore(mockAssessmentData);
+    const result = context.service.calculateScore(mockAssessmentData);
     expect(result).toBe(expectedScore);
   });
 });
@@ -85,20 +90,22 @@ describe('AssessmentService', () => {
 
 #### Integration Tests
 ```typescript
-// GOOD: Clear integration test
-describe('AssessmentFlow', () => {
-  let controller: AssessmentFlowController;
-  let service: AssessmentService;
+// GOOD: Clear integration test using test utilities
+describe('AssessmentFlowController - Initialization', () => {
+  let context: BaseTestContext;
   
   beforeEach(async () => {
-    service = new AssessmentService(testDb);
-    controller = new AssessmentFlowController(service);
+    context = await IntegrationTestUtils.createTestContext({
+      moduleOptions: {
+        moduleCount: 2,
+        questionsPerModule: 2
+      }
+    });
   });
   
-  it('should save assessment state', async () => {
-    await controller.saveState(mockState);
-    const saved = await service.getState();
-    expect(saved).toEqual(mockState);
+  it('should create a new assessment and initialize state correctly', async () => {
+    const { controller, modules } = context;
+    expect(controller.getState().currentModuleId).toBe(modules[0].id);
   });
 });
 
@@ -111,19 +118,60 @@ describe('AssessmentFlow', () => {
 });
 ```
 
-### 4. Test Data Management
-- MUST use typed fixtures for test data
-- MUST ensure test data isolation
-- MUST clean up test data after execution
-- MUST use unique identifiers for test data
-- MUST store fixtures in `__fixtures__` directory
+### 4. Test Utilities
 
-### 5. Mocking Strategy
-- MUST mock external dependencies in unit tests
-- MUST use MSW for API mocking in integration tests
-- MUST mock browser APIs consistently
-- MUST document mock implementations
-- MUST store mocks in `__mocks__` directory
+#### Base Test Context
+```typescript
+// tests/utils/controller-test-utils.ts
+export interface BaseTestContext {
+  mockSupabaseClient: ReturnType<typeof createMockSupabaseClient>;
+  assessmentService: AssessmentService;
+  controller: AssessmentFlowController;
+  modules: ReturnType<typeof generateMockModules>;
+}
+
+export interface TestContextOptions extends MockOptions {
+  moduleOptions?: GeneratorOptions;
+  mockBehavior?: 'unit' | 'integration';
+}
+
+export const createBaseTestContext = async (
+  options: TestContextOptions = {}
+): Promise<BaseTestContext> => {
+  // Implementation...
+};
+```
+
+#### Test Environment Setup
+```typescript
+export const setupTestEnvironment = () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+};
+```
+
+### 5. Mock Implementation
+- MUST place mocks in root `__mocks__` directory
+- MUST follow service/component structure in mocks
+- MUST provide typed mock generators
+- MUST document mock behavior options
+- MUST version control mock implementations
+- MUST maintain mock parity with real implementations
+
+Example mock structure:
+```
+__mocks__/
+├── services/
+│   └── supabase/
+│       ├── client.ts      # Mock Supabase client
+│       ├── types.ts       # Mock types
+│       └── index.ts       # Mock exports
+├── data/
+│   └── assessment/
+│       ├── generators.ts  # Mock data generators
+│       └── types.ts       # Generator types
+```
 
 ### 6. Test Results Management
 - MUST use TestResultsStore for result persistence
@@ -140,10 +188,14 @@ describe('AssessmentFlow', () => {
 
 ## Critical Notes
 - NEVER mix responsibilities across test layers
-- ALWAYS mock external dependencies in unit tests
+- ALWAYS use test utilities for consistent setup
 - NEVER test business logic in integration tests
 - ALWAYS use appropriate test doubles
 - NEVER share state between tests
 - ALWAYS clean up test data
 - NEVER skip error case testing
-- ALWAYS include both positive and negative test cases 
+- ALWAYS include both positive and negative test cases
+- NEVER place mocks inside test directories
+- ALWAYS use typed mock generators
+- NEVER use real services in unit tests
+- ALWAYS document mock behavior options 

@@ -5,57 +5,59 @@ globs: **/*
 
 # Agent Workflow Standards
 
-<version>1.3.0</version>
+<version>1.4.0</version>
 
 ## Context
 - Applied when I am working within the agile framework
 - Guides my interaction with stories and tasks
 - Ensures consistent development approach
 - Maintains project momentum
+- Enforces rule compliance
 
 ## Requirements
 
-### 1. Story Analysis Process
+### 1. Rule Validation Process
 
 #### Initial Assessment
-- Read full story requirements
-- Review related documentation
-- Identify technical constraints
-- Validate against architecture
-- Check existing test coverage
+- Check @000-rule-enforcement for applicable rules
+- Validate against rule requirements
+- Document rule compliance plan
+- Identify potential conflicts
 
 #### Implementation Planning
-- Create test scenarios first
-- Break down into subtasks
-- Identify potential blockers
-- Plan incremental delivery
-- Document approach decisions
+- Apply relevant rule templates
+- Follow rule-specific patterns
+- Document rule adherence
+- Track any deviations
 
 ### 2. Development Workflow
 
 #### Code Changes
-- Follow test-driven development
+- Follow test-driven development (@805-tdd-implementation)
 - Make atomic commits
-- Update documentation inline
+- Update documentation (@702-documentation-standards)
 - Add progress comments
 - Track technical debt
+- Validate against rules
 
 #### Progress Updates
-- Update story status
+- Update story status (@903-story-template)
 - Document blockers immediately
 - Track completion metrics
 - Link related changes
 - Record decisions made
 - Create daily retrospectives
+- Verify rule compliance
 
 ### 3. Quality Standards
 
 #### Code Quality
-- Write tests first
-- Follow architecture patterns
-- Maintain documentation
+- Write tests first (@301-comprehensive-test-strat)
+- Follow architecture patterns (@701-architecture-patterns)
+- Maintain documentation (@400-md-docs)
 - Consider performance
 - Handle edge cases
+- Check rule adherence
 
 #### Review Process
 - Self-review changes
@@ -63,6 +65,7 @@ globs: **/*
 - Check acceptance criteria
 - Validate dependencies
 - Document impact
+- Verify rule compliance
 
 ### 4. Communication Protocol
 
@@ -72,6 +75,7 @@ globs: **/*
 - Highlight blockers early
 - Reference related items
 - Provide next steps
+- Document rule adherence
 
 #### Technical Documentation
 - Update inline comments
@@ -79,30 +83,27 @@ globs: **/*
 - Document decisions
 - Link related changes
 - Explain trade-offs
+- Track rule compliance
 
-### 5. Retrospective Management
+### 5. Rule Compliance Management
 
-#### Daily Retrospectives
-- Create using template
-- Document all sections:
-  - What Went Well
-  - What Could Be Improved
-  - Action Items
-  - Learnings
-  - Next Steps
-  - Metrics Summary
-  - Dependencies Update
-  - Notes for Tomorrow
-- Store in .ai/sprints/retrospectives/
-- Track action items
-- Monitor improvements
+#### Pre-Operation
+- [ ] List applicable rules
+- [ ] Check requirements
+- [ ] Document compliance plan
+- [ ] Verify no conflicts
 
-#### Sprint Retrospectives
-- Create at sprint end
-- Analyze sprint metrics
-- Document key learnings
-- Plan improvements
-- Update templates if needed
+#### During Operation
+- [ ] Follow rule templates
+- [ ] Track compliance
+- [ ] Document deviations
+- [ ] Update documentation
+
+#### Post-Operation
+- [ ] Verify compliance
+- [ ] Update documentation
+- [ ] Track effectiveness
+- [ ] Plan improvements
 
 ## Examples
 
@@ -149,20 +150,19 @@ No retrospective needed...
 </example>
 
 ## Critical Notes
-- NEVER skip requirements analysis
-- ALWAYS write tests first
-- NEVER leave progress untracked
-- ALWAYS document decisions
-- NEVER ignore blockers
-- ALWAYS validate against architecture
-- NEVER skip daily retrospectives
-- ALWAYS update story status
+- NEVER skip rule validation
+- ALWAYS document compliance
+- NEVER ignore conflicts
+- ALWAYS track deviations
+- NEVER bypass critical rules
+- ALWAYS update documentation
+- NEVER assume compliance
+- ALWAYS verify effectiveness
 
 ## Integration Points
-- Follow @852-agile-management for agile standards
-- Follow @853-sprint-workflow for sprint management
-- Store progress in .ai/epics/*/stories/*/
-- Track epics in .ai/epics/
-- Maintain sprints in .ai/sprints/
-- Keep retrospectives in .ai/sprints/retrospectives/
-- Access rules in .cursor/rules/
+- Follow @000-rule-enforcement for validation
+- Use @903-story-template for stories
+- Apply @702-documentation-standards
+- Follow @301-comprehensive-test-strat
+- Use @400-md-docs for documentation
+- Apply @701-architecture-patterns

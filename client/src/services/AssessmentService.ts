@@ -1,17 +1,11 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { Assessment, AssessmentAnswer, AssessmentStatus, DatabaseSchema } from '../types/database';
 import { z } from 'zod';
+import { AssessmentError } from './assessment/AssessmentError';
+import { OfflineService } from './assessment/OfflineService';
+import { AnswerService } from './assessment/AnswerService';
 
-export class AssessmentError extends Error {
-  constructor(
-    message: string,
-    public code: string,
-    public originalError?: unknown
-  ) {
-    super(message);
-    this.name = 'AssessmentError';
-  }
-}
+export { AssessmentError } from './assessment/AssessmentError';
 
 // Validation schemas
 const assessmentSchema = z.object({
@@ -39,111 +33,20 @@ const answerSchema = z.object({
 });
 
 export class AssessmentService {
-  private supabase: SupabaseClient<DatabaseSchema>;
-  private offlineStore: Map<string, unknown> = new Map();
-  private syncQueue: Array<() => Promise<void>> = [];
-  private isSyncing = false;
+  private readonly offlineService: OfflineService;
+  private readonly answerService: AnswerService;
 
-  constructor(supabaseClient: SupabaseClient<DatabaseSchema>) {
-    this.supabase = supabaseClient;
-    this.initializeOfflineSupport();
+  constructor(private readonly supabase: SupabaseClient<DatabaseSchema>) {
+    this.offlineService = new OfflineService(supabase);
+    this.answerService = new AnswerService(supabase, this.offlineService);
   }
 
-  private initializeOfflineSupport() {
-    // Load offline data from localStorage
-    const offlineData = localStorage.getItem('assessment_offline_data');
-    if (offlineData) {
-      this.offlineStore = new Map(JSON.parse(offlineData));
-    }
-
-    // Set up online/offline listeners
-    window.addEventListener('online', () => this.syncOfflineData());
-    window.addEventListener('offline', () => {
-      console.log('App is offline. Data will be stored locally.');
-    });
+  public async checkOnlineStatus(): Promise<boolean> {
+    return this.offlineService.isOnline();
   }
 
-  private async syncOfflineData(): Promise<void> {
-    const offlineDataStr = localStorage.getItem('assessment_offline_data');
-    if (!offlineDataStr) return;
-
-    const offlineDataArray = JSON.parse(offlineDataStr);
-    const syncPromises: Promise<void>[] = [];
-
-    for (const [key, data] of offlineDataArray) {
-      if (key.startsWith('assessment_')) {
-        const { id, ...assessmentData } = data as Assessment;
-        syncPromises.push(
-          (async () => {
-            const { error } = await this.supabase
-              .from('assessments')
-              .insert(assessmentData)
-              .select()
-              .single();
-
-            if (error) {
-              throw new AssessmentError(
-                error.message,
-                error.code,
-                error
-              );
-            }
-          })()
-        );
-      } else if (key.startsWith('answer_')) {
-        const { id, ...answerData } = data as AssessmentAnswer;
-        syncPromises.push(
-          (async () => {
-            const { error } = await this.supabase
-              .from('assessment_answers')
-              .insert(answerData)
-              .select()
-              .single();
-
-            if (error) {
-              throw new AssessmentError(
-                error.message,
-                error.code,
-                error
-              );
-            }
-          })()
-        );
-      }
-    }
-
-    try {
-      await Promise.all(syncPromises);
-      // Clear offline data after successful sync
-      localStorage.removeItem('assessment_offline_data');
-    } catch (error) {
-      throw new AssessmentError(
-        'Failed to sync offline data',
-        'SYNC_ERROR',
-        error
-      );
-    }
-  }
-
-  // Add a method to check online status and trigger sync
-  public async checkOnlineStatus(): Promise<void> {
-    if (navigator.onLine) {
-      await this.syncOfflineData();
-    }
-  }
-
-  // Add event listeners for online/offline status
   public setupOfflineSync(): void {
-    window.addEventListener('online', async () => {
-      await this.syncOfflineData();
-    });
-  }
-
-  private saveToOfflineStore(key: string, data: unknown) {
-    const offlineDataStr = localStorage.getItem('assessment_offline_data');
-    const offlineData = offlineDataStr ? JSON.parse(offlineDataStr) : [];
-    offlineData.push([key, data]);
-    localStorage.setItem('assessment_offline_data', JSON.stringify(offlineData));
+    this.offlineService.setupOfflineSync();
   }
 
   public async createAssessment(data: Omit<Assessment, 'id' | 'created_at' | 'updated_at'>): Promise<Assessment> {
@@ -159,7 +62,7 @@ export class AssessmentService {
       // Validate input data
       const validatedData = assessmentSchema.parse(assessmentData);
 
-      if (navigator.onLine) {
+      if (this.offlineService.isOnline()) {
         try {
           const { data: result, error } = await this.supabase
             .from('assessments')
@@ -197,7 +100,7 @@ export class AssessmentService {
           ...validatedData,
           id: offlineId
         };
-        this.saveToOfflineStore(offlineId, offlineAssessment);
+        this.offlineService.storeOfflineData(offlineId, offlineAssessment);
         return offlineAssessment;
       }
     } catch (error) {
@@ -208,30 +111,22 @@ export class AssessmentService {
           error
         );
       }
-      if (error instanceof AssessmentError) {
-        throw error;
-      }
-      throw new AssessmentError(
-        'Failed to create assessment',
-        'CREATE_ERROR',
-        error
-      );
+      throw error;
     }
   }
 
   public async getAssessment(id: string): Promise<Assessment> {
-    if (navigator.onLine) {
+    if (this.offlineService.isOnline()) {
       const { data, error } = await this.supabase
         .from('assessments')
-        .select()
+        .select('*')
         .eq('id', id)
-        .is('deleted_at', null)
         .single();
 
       if (error) {
         throw new AssessmentError(
-          error.message,
-          error.code,
+          'Failed to fetch assessment',
+          'FETCH_ERROR',
           error
         );
       }
@@ -245,295 +140,114 @@ export class AssessmentService {
 
       return data;
     } else {
-      // Check offline store
-      const offlineDataStr = localStorage.getItem('assessment_offline_data');
-      if (!offlineDataStr) {
-        throw new AssessmentError(
-          'No offline data available',
-          'OFFLINE_DATA_NOT_FOUND'
-        );
-      }
-
-      const offlineData = JSON.parse(offlineDataStr);
-      const assessment = offlineData.find(([key, _]: [string, unknown]) => key === `assessment_${id}`)?.[1] as Assessment | undefined;
-
-      if (!assessment) {
-        throw new AssessmentError(
-          'Assessment not found in offline store',
-          'NOT_FOUND'
-        );
-      }
-
-      return assessment;
-    }
-  }
-
-  async updateAssessment(id: string, update: Partial<Omit<Assessment, 'id' | 'created_at' | 'updated_at'>>): Promise<Assessment> {
-    try {
-      // Validate update data
-      if (Object.keys(update).length > 0) {
-        assessmentSchema.partial().parse(update);
-      }
-
-      if (!navigator.onLine) {
-        const offlineDataStr = localStorage.getItem('assessment_offline_data');
-        const offlineData = offlineDataStr ? JSON.parse(offlineDataStr) : [];
-        const assessmentIndex = offlineData.findIndex(([key, _]: [string, any]) => key === `assessment_${id}`);
-        
-        if (assessmentIndex === -1) {
-          throw new AssessmentError(
-            'Assessment not found in offline store',
-            'NOT_FOUND'
-          );
-        }
-
-        const existingData = offlineData[assessmentIndex][1] as Assessment;
-        const updatedAssessment = {
-          ...existingData,
-          ...update,
-          updated_at: new Date().toISOString()
-        };
-
-        offlineData[assessmentIndex] = [`assessment_${id}`, updatedAssessment];
-        localStorage.setItem('assessment_offline_data', JSON.stringify(offlineData));
-
-        return updatedAssessment;
-      }
-
-      const { data, error } = await this.supabase
-        .from('assessments')
-        .update({
-          ...update,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-        .is('deleted_at', null)
-        .select()
-        .single();
-
-      if (error) {
-        if (error.code === 'CONFLICT' || error.message?.includes('Conflict: Assessment was updated by another session')) {
-          throw new AssessmentError(
-            'Assessment was updated by another session',
-            'CONFLICT',
-            error
-          );
-        }
-        throw new AssessmentError(
-          'Failed to update assessment',
-          'UPDATE_FAILED',
-          error
-        );
-      }
-
-      if (!data) {
+      const offlineData = this.offlineService.getOfflineData(id) as Assessment | undefined;
+      if (!offlineData) {
         throw new AssessmentError(
           'Assessment not found',
           'NOT_FOUND'
         );
       }
-
-      return data;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new AssessmentError(
-          'Invalid update data',
-          'VALIDATION_ERROR',
-          error
-        );
-      }
-      if (error instanceof AssessmentError) throw error;
-      throw new AssessmentError('Failed to update assessment', 'UPDATE_ERROR', error);
+      return offlineData;
     }
   }
 
-  async softDeleteAssessment(id: string): Promise<void> {
-    const { error } = await this.supabase
-      .rpc('soft_delete_assessment', { assessment_id: id });
-
-    if (error) throw error;
-  }
-
-  async restoreAssessment(id: string): Promise<void> {
-    const { error } = await this.supabase
-      .rpc('restore_assessment', { assessment_id: id });
-
-    if (error) throw error;
-  }
-
-  public async saveAnswer(data: Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'>): Promise<AssessmentAnswer> {
+  public async updateAssessment(
+    id: string,
+    data: Partial<Omit<Assessment, 'id' | 'created_at'>>
+  ): Promise<Assessment> {
     try {
-      // Add timestamps
       const now = new Date().toISOString();
-      const answerData = {
+      const updateData = {
         ...data,
-        created_at: now,
         updated_at: now
       };
 
-      // Validate input data
-      const validatedData = answerSchema.parse(answerData);
+      if (this.offlineService.isOnline()) {
+        const { data: result, error } = await this.supabase
+          .from('assessments')
+          .update(updateData)
+          .eq('id', id)
+          .select()
+          .single();
 
-      if (navigator.onLine) {
-        try {
-          const { data: result, error: dbError } = await this.supabase
-            .from('assessment_answers')
-            .upsert(validatedData)
-            .select('*')
-            .single();
-
-          if (dbError) {
-            if (dbError.code === '23505') {
-              throw new AssessmentError(
-                'Failed to save answer due to conflict',
-                'SAVE_ERROR',
-                dbError
-              );
-            }
-            throw new AssessmentError(
-              'Failed to save answer',
-              'SAVE_ERROR',
-              dbError
-            );
-          }
-
-          if (!result) {
-            throw new AssessmentError(
-              'No answer data returned after save',
-              'SAVE_ERROR'
-            );
-          }
-
-          return result;
-        } catch (error) {
-          if (error instanceof AssessmentError) {
-            throw error;
-          }
-          throw new AssessmentError('Failed to save answer', 'SAVE_ERROR');
+        if (error) {
+          throw new AssessmentError(
+            'Failed to update assessment',
+            'UPDATE_ERROR',
+            error
+          );
         }
+
+        if (!result) {
+          throw new AssessmentError(
+            'Assessment not found',
+            'NOT_FOUND'
+          );
+        }
+
+        return result;
       } else {
-        // Generate a temporary ID for offline storage
-        const offlineId = `answer_${Date.now()}`;
-        const offlineAnswer = {
-          ...validatedData,
-          id: offlineId
+        const offlineData = this.offlineService.getOfflineData(id) as Assessment | undefined;
+        if (!offlineData) {
+          throw new AssessmentError(
+            'Assessment not found',
+            'NOT_FOUND'
+          );
+        }
+
+        const updatedAssessment = {
+          ...offlineData,
+          ...updateData
         };
-        this.saveToOfflineStore(offlineId, offlineAnswer);
-        return offlineAnswer;
+        this.offlineService.storeOfflineData(id, updatedAssessment);
+        return updatedAssessment;
       }
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        throw new AssessmentError(
-          'Invalid answer data',
-          'VALIDATION_ERROR',
-          error
-        );
-      }
-      if (error instanceof AssessmentError) {
-        throw error;
-      }
       throw new AssessmentError(
-        'Failed to save answer',
-        'SAVE_ERROR',
+        'Failed to update assessment',
+        'UPDATE_ERROR',
         error
       );
     }
   }
 
-  public async getAnswers(assessmentId: string): Promise<AssessmentAnswer[]> {
-    if (navigator.onLine) {
-      const { data, error } = await this.supabase
-        .from('assessment_answers')
-        .select()
-        .eq('assessment_id', assessmentId);
+  public async deleteAssessment(id: string): Promise<void> {
+    if (this.offlineService.isOnline()) {
+      const { error } = await this.supabase
+        .from('assessments')
+        .delete()
+        .eq('id', id);
 
       if (error) {
         throw new AssessmentError(
-          error.message,
-          error.code,
+          'Failed to delete assessment',
+          'DELETE_ERROR',
           error
         );
       }
-
-      return data || [];
     } else {
-      // Check offline store
-      const offlineDataStr = localStorage.getItem('assessment_offline_data');
-      if (!offlineDataStr) {
-        return [];
-      }
-
-      const offlineData = JSON.parse(offlineDataStr);
-      const answers = offlineData
-        .filter(([key, _]: [string, unknown]) => key.startsWith(`answer_${assessmentId}`))
-        .map(([_, data]: [string, AssessmentAnswer]) => data);
-
-      return answers;
+      this.offlineService.removeOfflineData(id);
     }
   }
 
-  async updateAnswer(id: string, updateData: Partial<AssessmentAnswer>): Promise<AssessmentAnswer> {
-    try {
-      if (navigator.onLine) {
-        // Validate required fields when online
-        if (!updateData.assessment_id || !updateData.question_id) {
-          throw new AssessmentError('Invalid answer data', 'VALIDATION_ERROR');
-        }
+  // Answer-related methods delegated to AnswerService
+  public async saveAnswer(data: Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'>): Promise<AssessmentAnswer> {
+    return this.answerService.saveAnswer(data);
+  }
 
-        const { data, error } = await this.supabase
-          .from('assessment_answers')
-          .update(updateData)
-          .eq('id', id)
-          .select('*')
-          .single();
+  public async getAnswers(assessmentId: string): Promise<AssessmentAnswer[]> {
+    return this.answerService.getAnswers(assessmentId);
+  }
 
-        if (error) {
-          if (error.code === '23505') {
-            throw new AssessmentError('Failed to update answer due to conflict', 'CONFLICT');
-          }
-          throw new AssessmentError('Failed to update answer', 'UPDATE_ERROR');
-        }
+  public async updateAnswer(
+    answerId: string,
+    data: Partial<Omit<AssessmentAnswer, 'id' | 'created_at'>>
+  ): Promise<AssessmentAnswer> {
+    return this.answerService.updateAnswer(answerId, data);
+  }
 
-        if (!data) {
-          throw new AssessmentError('No answer data returned after update', 'UPDATE_ERROR');
-        }
-
-        return this.mapAnswerFromDB(data);
-      } else {
-        // Update in offline store
-        const offlineDataStr = localStorage.getItem('assessment_offline_data');
-        if (!offlineDataStr) {
-          throw new AssessmentError(
-            'No offline data available',
-            'OFFLINE_DATA_NOT_FOUND'
-          );
-        }
-
-        const offlineDataArray = JSON.parse(offlineDataStr);
-        const offlineData = new Map(offlineDataArray);
-        const answer = offlineData.get(`answer_${id}`);
-
-        if (!answer) {
-          throw new AssessmentError(
-            'Answer not found in offline store',
-            'NOT_FOUND'
-          );
-        }
-
-        const updatedAnswer = {
-          ...answer,
-          ...updateData
-        };
-
-        this.saveToOfflineStore(`answer_${id}`, updatedAnswer);
-        return updatedAnswer as AssessmentAnswer;
-      }
-    } catch (error) {
-      if (error instanceof AssessmentError) {
-        throw error;
-      }
-      throw new AssessmentError('Failed to update answer', 'UPDATE_ERROR');
-    }
+  public async deleteAnswer(answerId: string): Promise<void> {
+    return this.answerService.deleteAnswer(answerId);
   }
 
   public async getUserAssessments(userId: string, status?: AssessmentStatus): Promise<Assessment[]> {

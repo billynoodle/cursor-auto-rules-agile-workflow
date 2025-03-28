@@ -7,7 +7,7 @@ import {
   TEST_USER_ID,
   MockOptions,
   GeneratorOptions 
-} from '../../../__mocks__/data/assessment';
+} from '../../../../__mocks__/data/assessment';
 import { DatabaseSchema } from '../../../../client/src/types/database';
 
 export interface TestContext {
