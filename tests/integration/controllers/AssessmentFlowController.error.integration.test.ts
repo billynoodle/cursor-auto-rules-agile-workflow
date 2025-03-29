@@ -1,6 +1,6 @@
-import { AssessmentError } from '../../../client/src/services/AssessmentService';
+import { AssessmentError } from '@client/services/AssessmentService';
 import { createTestContext, setupTestEnvironment } from './__setup__/setup';
-import { AssessmentFlowController } from '../../../client/src/controllers/AssessmentFlowController';
+import { AssessmentFlowController } from '@client/controllers/AssessmentFlowController';
 
 describe('AssessmentFlowController Error Handling', () => {
   setupTestEnvironment();

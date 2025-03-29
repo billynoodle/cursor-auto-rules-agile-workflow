@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Question from '../../../../client/src/components/assessment/Question';
-import { QuestionType } from '../../../../client/src/types/assessment.types';
+import { Question } from '@client/components/assessment/Question';
+import { QuestionType } from '@client/types/assessment';
 
 describe('Question Component', () => {
   const mockMultipleChoiceProps = {
@@ -132,20 +132,21 @@ describe('Question Component', () => {
     test('renders all scale options', () => {
       render(<Question {...mockLikertProps} />);
       options.forEach(option => {
+        expect(screen.getByText(option.value)).toBeInTheDocument();
         expect(screen.getByText(option.text)).toBeInTheDocument();
       });
     });
 
     test('handles scale selection', () => {
       render(<Question {...mockLikertProps} />);
-      const agree = screen.getByRole('radio', { name: '4 Agree' });
+      const agree = screen.getByRole('radio', { name: /^Agree$/ });
       fireEvent.click(agree);
       expect(mockLikertProps.onChange).toHaveBeenCalledWith('4');
     });
 
     test('marks selected scale value as checked', () => {
       render(<Question {...mockLikertProps} value="4" />);
-      const agree = screen.getByRole('radio', { name: '4 Agree' }) as HTMLInputElement;
+      const agree = screen.getByRole('radio', { name: /^Agree$/ }) as HTMLInputElement;
       expect(agree.checked).toBe(true);
     });
   });

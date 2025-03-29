@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { supabase, getCurrentUser } from '../services/supabase';
+import { supabase, getCurrentUser } from '@services/supabase';
 import { User } from '@supabase/supabase-js';
-import { Database } from '../types/supabase';
+import { Database } from '@types/supabase';
 
 interface UseSupabaseHook {
   user: User | null;

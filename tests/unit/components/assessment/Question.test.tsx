@@ -1,7 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { jest } from '@jest/globals';
-import Question from '@client/components/assessment/Question';
-import { QuestionType } from '@client/types/assessment.types';
+import { Question } from '@client/components/assessment/Question';
+import { QuestionType, AssessmentCategory } from '@client/types/assessment';
+import { DisciplineType } from '@client/types/discipline';
+import { PracticeSize } from '@client/types/practice';
 
 describe('Question', () => {
   const mockOnChange = jest.fn();

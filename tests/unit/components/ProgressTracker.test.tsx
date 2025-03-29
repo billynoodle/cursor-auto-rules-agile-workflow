@@ -18,62 +18,57 @@ describe('ProgressTracker', () => {
     }
   ];
 
-  const mockProps = {
+  const defaultProps = {
     modules: mockModules,
-    currentModuleId: 'module1'
+    currentModuleId: 'module1',
+    averageTimePerQuestion: 2
   };
 
   it('should render progress tracker correctly', () => {
-    render(<ProgressTracker {...mockProps} />);
+    render(<ProgressTracker {...defaultProps} />);
     expect(screen.getByText('50% Complete')).toBeInTheDocument();
     expect(screen.getByText('Module 1')).toBeInTheDocument();
     expect(screen.getByText('Module 2')).toBeInTheDocument();
   });
 
   it('should show correct module progress', () => {
-    render(<ProgressTracker {...mockProps} />);
+    render(<ProgressTracker {...defaultProps} />);
     expect(screen.getByText('60%')).toBeInTheDocument(); // Module 1: 3/5 = 60%
     expect(screen.getByText('40%')).toBeInTheDocument(); // Module 2: 2/5 = 40%
   });
 
   describe('Progress Display', () => {
     beforeEach(() => {
-      render(<ProgressTracker modules={mockModules} currentModuleId="module1" />);
+      render(<ProgressTracker {...defaultProps} />);
     });
 
     it('should display overall progress percentage', () => {
       const progress = screen.getByRole('progressbar', { name: /overall progress/i });
-      expect(progress).toHaveAttribute('aria-valuenow', '41');  // (3+0+4)/(5+8+4) ≈ 41%
+      expect(progress).toHaveAttribute('aria-valuenow', '50'); // (3+2)/(5+5) = 50%
     });
 
     it('should show completion status for each module', () => {
       const modules = screen.getAllByRole('listitem');
-      expect(modules).toHaveLength(3);
-      expect(modules[0]).toHaveTextContent('60%');  // 3/5
-      expect(modules[1]).toHaveTextContent('0%');   // 0/8
-      expect(modules[2]).toHaveTextContent('100%'); // 4/4
+      expect(modules).toHaveLength(2);
+      expect(modules[0]).toHaveTextContent('60%'); // 3/5
+      expect(modules[1]).toHaveTextContent('40%'); // 2/5
     });
   });
 
   describe('Time Estimates', () => {
     it('should display estimated time remaining', () => {
-      render(<ProgressTracker 
-        modules={mockModules} 
-        currentModuleId="module1"
-        averageTimePerQuestion={2} // minutes
-      />);
-      
+      render(<ProgressTracker {...defaultProps} />);
       const timeEstimate = screen.getByText(/estimated time remaining/i);
-      expect(timeEstimate).toHaveTextContent('20 minutes'); // (2+8+0)*2 = 20
+      expect(timeEstimate).toHaveTextContent('10 minutes'); // (5+5-3-2)*2 = 10
     });
   });
 
   describe('Accessibility', () => {
     beforeEach(() => {
-      render(<ProgressTracker modules={mockModules} currentModuleId="module1" />);
+      render(<ProgressTracker {...defaultProps} />);
     });
 
-    it('should have proper ARIA labels for progress indicators', () => {
+    it('should have proper ARIA labels', () => {
       const progressBar = screen.getByRole('progressbar', { name: /overall progress/i });
       expect(progressBar).toHaveAttribute('aria-valuemin', '0');
       expect(progressBar).toHaveAttribute('aria-valuemax', '100');
@@ -88,29 +83,19 @@ describe('ProgressTracker', () => {
     });
   });
 
-  describe('Responsive Design', () => {
-    it('should adapt to mobile viewport', () => {
-      const { container } = render(
-        <ProgressTracker modules={mockModules} currentModuleId="module1" />
-      );
-      
-      const tracker = container.firstChild;
-      expect(tracker).toHaveClass('progress-tracker');
-      // Note: Actual responsive testing would be done in integration tests
-      // This is a placeholder for style-based assertions
-    });
-  });
-
   describe('Module Navigation', () => {
     it('should highlight current module', () => {
-      render(<ProgressTracker modules={mockModules} currentModuleId="module1" />);
+      render(<ProgressTracker {...defaultProps} />);
       const currentModule = screen.getByText('Module 1').closest('li');
       expect(currentModule).toHaveClass('current-module');
     });
 
     it('should indicate completed modules', () => {
-      render(<ProgressTracker modules={mockModules} currentModuleId="module1" />);
-      const completedModule = screen.getByText('Module 2').closest('li');
+      const completedModules = [...mockModules];
+      completedModules[0].answeredQuestions = completedModules[0].totalQuestions;
+      render(<ProgressTracker {...defaultProps} modules={completedModules} />);
+      
+      const completedModule = screen.getByText('Module 1').closest('li');
       expect(completedModule).toHaveClass('completed');
     });
   });

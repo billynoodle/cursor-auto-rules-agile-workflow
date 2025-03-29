@@ -1,13 +1,13 @@
 import '@jest/globals';
-import { QuestionService } from '../../../server/src/services/QuestionService';
+import { QuestionService } from '@server/services/QuestionService';
 import { MockDataFactory } from '../../utils/test-helpers/MockDataFactory';
-import { Question } from '../../../server/src/models/Question';
-import { QuestionType } from '../../../server/src/models/QuestionType';
-import { AssessmentCategory } from '../../../server/src/models/AssessmentCategory';
-import { DisciplineType } from '../../../server/src/models/DisciplineType';
-import { PracticeSize } from '../../../server/src/models/PracticeSize';
-import { Country } from '../../../server/src/models/Country';
-import { loadAllQuestions } from '../../../server/src/data/questions';
+import { Question } from '@server/models/Question';
+import { QuestionType } from '@server/models/QuestionType';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { PracticeSize } from '@server/models/PracticeSize';
+import { DisciplineType } from '@server/models/DisciplineType';
+import { Country } from '@server/models/Country';
+import { loadAllQuestions } from '@server/data/questions';
 
 // Import question data sets
 import * as financial from '../../../server/src/data/questions/financial';
@@ -21,13 +21,59 @@ import { TestContextBuilder } from '../../utils/test-helpers/TestContextBuilder'
 describe('QuestionService', () => {
   let questionService: QuestionService;
 
+  const mockQuestions: Question[] = [
+    {
+      id: 'q1',
+      text: 'Test Question 1',
+      moduleId: 'module1',
+      type: QuestionType.MULTIPLE_CHOICE,
+      options: [
+        { value: 'A', text: 'Option A', score: 1 },
+        { value: 'B', text: 'Option B', score: 2 },
+        { value: 'C', text: 'Option C', score: 3 }
+      ],
+      category: AssessmentCategory.OPERATIONS,
+      applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+      applicablePracticeSizes: [PracticeSize.SMALL],
+      universalQuestion: false,
+      weight: 1
+    },
+    {
+      id: 'q2',
+      text: 'Test Question 2',
+      moduleId: 'module1',
+      type: QuestionType.TEXT,
+      category: AssessmentCategory.COMPLIANCE,
+      applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+      applicablePracticeSizes: [PracticeSize.MEDIUM],
+      universalQuestion: false,
+      weight: 1
+    },
+    {
+      id: 'q3',
+      text: 'Test Question 3',
+      moduleId: 'module2',
+      type: QuestionType.MULTIPLE_CHOICE,
+      options: [
+        { value: 'Yes', text: 'Yes', score: 1 },
+        { value: 'No', text: 'No', score: 0 }
+      ],
+      category: AssessmentCategory.COMPLIANCE,
+      applicableDisciplines: [DisciplineType.OCCUPATIONAL_THERAPY],
+      applicablePracticeSizes: [PracticeSize.LARGE],
+      universalQuestion: false,
+      weight: 1
+    }
+  ];
+
   beforeEach(() => {
     questionService = new QuestionService();
+    questionService.addQuestions(mockQuestions);
   });
 
   describe('Core Question Operations', () => {
     it('should retrieve a question by id', () => {
-      const mockQuestion = MockDataFactory.createServerQuestion();
+      const mockQuestion = MockDataFactory.createQuestion();
       questionService.addQuestions([mockQuestion]);
 
       const result = questionService.getQuestionById(mockQuestion.id);
@@ -35,7 +81,7 @@ describe('QuestionService', () => {
     });
 
     it('should return undefined for non-existent question id', () => {
-      const mockQuestion = MockDataFactory.createServerQuestion();
+      const mockQuestion = MockDataFactory.createQuestion();
       questionService.addQuestions([mockQuestion]);
 
       const result = questionService.getQuestionById('non-existent-id');
@@ -43,103 +89,56 @@ describe('QuestionService', () => {
     });
 
     it('should get all questions', () => {
-      const mockQuestions = MockDataFactory.createBulkServerQuestions(3);
-      questionService.addQuestions(mockQuestions);
-
-      const result = questionService.getAllQuestions();
-      expect(result).toEqual(mockQuestions);
+      const questions = questionService.getAllQuestions();
+      expect(questions).toHaveLength(mockQuestions.length);
+      expect(questions).toEqual(expect.arrayContaining(mockQuestions));
     });
   });
 
   describe('Module Operations', () => {
     it('should get questions by module', () => {
-      const moduleId = 'test-module';
-      const moduleQuestions = MockDataFactory.createBulkServerQuestions(3, { moduleId });
-      const otherQuestions = MockDataFactory.createBulkServerQuestions(2, { moduleId: 'other-module' });
-      
-      questionService.addQuestions([...moduleQuestions, ...otherQuestions]);
-
-      const result = questionService.getQuestionsByModule(moduleId);
-      expect(result).toEqual(moduleQuestions);
+      const module1Questions = questionService.getQuestionsByModule('module1');
+      expect(module1Questions).toHaveLength(2);
+      expect(module1Questions.every(q => q.moduleId === 'module1')).toBe(true);
     });
 
     it('should handle empty module results', () => {
-      const mockQuestions = MockDataFactory.createBulkServerQuestions(2);
-      questionService.addQuestions(mockQuestions);
-
-      const result = questionService.getQuestionsByModule('non-existent-module');
-      expect(result).toEqual([]);
+      const emptyModuleQuestions = questionService.getQuestionsByModule('non-existent');
+      expect(emptyModuleQuestions).toHaveLength(0);
     });
   });
 
   describe('Compliance Questions', () => {
     it('should filter compliance questions', () => {
-      const complianceQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        category: AssessmentCategory.COMPLIANCE
-      });
-      const otherQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        category: AssessmentCategory.OPERATIONS
-      });
-      
-      questionService.addQuestions([...complianceQuestions, ...otherQuestions]);
-
-      const result = questionService.getQuestionsByCategory(AssessmentCategory.COMPLIANCE);
-      expect(result).toEqual(complianceQuestions);
+      const complianceQuestions = questionService.getQuestionsByCategory(AssessmentCategory.COMPLIANCE);
+      expect(complianceQuestions).toHaveLength(2);
+      expect(complianceQuestions.every(q => q.category === AssessmentCategory.COMPLIANCE)).toBe(true);
     });
 
     it('should handle regulatory compliance questions', () => {
-      const regulatoryQuestions = MockDataFactory.createBulkServerQuestions(3, {
-        category: AssessmentCategory.COMPLIANCE,
-        text: 'Regulatory requirement'
-      });
-      
-      questionService.addQuestions(regulatoryQuestions);
-      const result = questionService.getQuestionsByCategory(AssessmentCategory.COMPLIANCE);
-      expect(result).toEqual(regulatoryQuestions);
+      const regulatoryQuestions = questionService.getQuestionsByCategory(AssessmentCategory.COMPLIANCE);
+      expect(regulatoryQuestions).toHaveLength(2);
+      expect(regulatoryQuestions.every(q => q.category === AssessmentCategory.COMPLIANCE)).toBe(true);
     });
   });
 
   describe('Cross-Module Operations', () => {
     it('should filter questions by discipline', () => {
-      const physioQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        applicableDisciplines: [DisciplineType.PHYSIOTHERAPY]
-      });
-      const otherQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        applicableDisciplines: [DisciplineType.OCCUPATIONAL_THERAPY]
-      });
-      
-      questionService.addQuestions([...physioQuestions, ...otherQuestions]);
-
-      const result = questionService.getQuestionsByDiscipline(DisciplineType.PHYSIOTHERAPY);
-      expect(result).toEqual(physioQuestions);
+      const physioQuestions = questionService.getQuestionsByDiscipline(DisciplineType.PHYSIOTHERAPY);
+      expect(physioQuestions).toHaveLength(2);
+      expect(physioQuestions.every(q => q.applicableDisciplines.includes(DisciplineType.PHYSIOTHERAPY))).toBe(true);
     });
 
     it('should filter questions by practice size', () => {
-      const smallPracticeQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        applicablePracticeSizes: [PracticeSize.SMALL]
-      });
-      const largePracticeQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        applicablePracticeSizes: [PracticeSize.LARGE]
-      });
-      
-      questionService.addQuestions([...smallPracticeQuestions, ...largePracticeQuestions]);
-
-      const result = questionService.getQuestionsByPracticeSize(PracticeSize.SMALL);
-      expect(result).toEqual(smallPracticeQuestions);
+      const smallPracticeQuestions = questionService.getQuestionsByPracticeSize(PracticeSize.SMALL);
+      expect(smallPracticeQuestions).toHaveLength(1);
+      expect(smallPracticeQuestions[0].applicablePracticeSizes).toContain(PracticeSize.SMALL);
     });
 
     it('should filter questions by type', () => {
-      const multipleChoiceQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        type: QuestionType.MULTIPLE_CHOICE
-      });
-      const numericQuestions = MockDataFactory.createBulkServerQuestions(2, {
-        type: QuestionType.NUMERIC
-      });
-      
-      questionService.addQuestions([...multipleChoiceQuestions, ...numericQuestions]);
-
-      const result = questionService.getQuestionsByType(QuestionType.MULTIPLE_CHOICE);
-      expect(result).toEqual(multipleChoiceQuestions);
+      const multipleChoiceQuestions = questionService.getQuestionsByType(QuestionType.MULTIPLE_CHOICE);
+      expect(multipleChoiceQuestions).toHaveLength(2);
+      expect(multipleChoiceQuestions.every(q => q.type === QuestionType.MULTIPLE_CHOICE)).toBe(true);
     });
   });
 
@@ -152,7 +151,7 @@ describe('QuestionService', () => {
 
     it('should validate question type', () => {
       const invalidQuestion = {
-        ...MockDataFactory.createServerQuestion(),
+        ...MockDataFactory.createQuestion(),
         type: 'invalid-type' as QuestionType
       };
 
@@ -162,7 +161,7 @@ describe('QuestionService', () => {
 
     it('should validate multiple choice options', () => {
       const invalidQuestion = {
-        ...MockDataFactory.createServerQuestion(),
+        ...MockDataFactory.createQuestion(),
         type: QuestionType.MULTIPLE_CHOICE,
         options: []
       };
@@ -175,7 +174,7 @@ describe('QuestionService', () => {
   describe('Core Functionality', () => {
     describe('Question Creation and Validation', () => {
       it('should create a valid question', () => {
-        const validQuestion = MockDataFactory.createServerQuestion({
+        const validQuestion = MockDataFactory.createQuestion({
           id: 'test-001',
           type: QuestionType.MULTIPLE_CHOICE,
           moduleId: 'module-1'
@@ -200,7 +199,7 @@ describe('QuestionService', () => {
       });
 
       it('should throw error for invalid question type', () => {
-        const invalidQuestion = MockDataFactory.createServerQuestion({
+        const invalidQuestion = MockDataFactory.createQuestion({
           type: 'INVALID_TYPE' as QuestionType
         });
 
@@ -212,7 +211,7 @@ describe('QuestionService', () => {
 
     describe('Question Retrieval', () => {
       it('should retrieve question by id', () => {
-        const validQuestion = MockDataFactory.createServerQuestion({
+        const validQuestion = MockDataFactory.createQuestion({
           id: 'test-001',
           type: QuestionType.MULTIPLE_CHOICE,
           moduleId: 'module-1'

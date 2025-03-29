@@ -2,7 +2,9 @@ import React from 'react';
 import { render, fireEvent, screen } from '@test/utils/test-utils';
 import '@testing-library/jest-dom';
 import { QuestionModule } from '@client/components/assessment/QuestionModule';
-import { Question, QuestionType } from '@client/types/assessment.types';
+import { Question, QuestionType, AssessmentCategory } from '@client/types/assessment';
+import { DisciplineType } from '@client/types/discipline';
+import { PracticeSize } from '@client/types/practice';
 
 console.log('[QuestionModule.test.tsx] Test file loaded');
 console.log('[QuestionModule.test.tsx] React version:', React.version);
@@ -26,23 +28,33 @@ describe('QuestionModule', () => {
   const mockQuestions: Question[] = [
     {
       id: 'q1',
-      text: 'Test Question 1',
+      text: 'Multiple choice question',
       type: QuestionType.MULTIPLE_CHOICE,
       required: true,
       weight: 1,
       dependencies: [],
+      category: AssessmentCategory.OPERATIONS,
+      moduleId: 'test-module',
+      applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+      universalQuestion: true,
+      applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM],
       options: [
-        { id: 'opt1', value: 'a', score: 1, text: 'Option A' },
-        { id: 'opt2', value: 'b', score: 2, text: 'Option B' }
+        { id: 'opt1', value: 'option1', text: 'Option 1', score: 1 },
+        { id: 'opt2', value: 'option2', text: 'Option 2', score: 2 }
       ]
     },
     {
       id: 'q2',
-      text: 'Test Question 2',
+      text: 'Text question',
       type: QuestionType.TEXT,
       required: true,
       weight: 1,
-      dependencies: []
+      dependencies: [],
+      category: AssessmentCategory.OPERATIONS,
+      moduleId: 'test-module',
+      applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+      universalQuestion: true,
+      applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM]
     }
   ];
 
@@ -153,9 +165,14 @@ describe('QuestionModule', () => {
     required: true,
     weight: 1,
     dependencies: [],
+    category: AssessmentCategory.OPERATIONS,
+    moduleId: 'test-module',
+    applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+    universalQuestion: true,
+    applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM],
     options: [
-      { id: '1', value: 'option1', text: 'Option 1', score: 1 },
-      { id: '2', value: 'option2', text: 'Option 2', score: 2 }
+      { id: 'opt1', value: 'option1', text: 'Option 1', score: 1 },
+      { id: 'opt2', value: 'option2', text: 'Option 2', score: 2 }
     ]
   };
 
@@ -164,6 +181,7 @@ describe('QuestionModule', () => {
     title: 'Test Module',
     questions: [mockQuestion],
     onAnswerChange: jest.fn(),
+    currentQuestionId: 'test-question',
     answers: {}
   };
 
@@ -177,5 +195,29 @@ describe('QuestionModule', () => {
     render(<QuestionModule {...mockProps} />);
     fireEvent.click(screen.getByLabelText('Option 1'));
     expect(mockProps.onAnswerChange).toHaveBeenCalledWith('test-question', 'option1');
+  });
+
+  it('should render question options correctly', () => {
+    const mockQuestion: Question = {
+      id: 'test-question',
+      type: QuestionType.MULTIPLE_CHOICE,
+      text: 'Test question',
+      required: true,
+      weight: 1,
+      dependencies: [],
+      category: AssessmentCategory.OPERATIONS,
+      moduleId: 'test-module',
+      applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+      universalQuestion: true,
+      applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM],
+      options: [
+        { id: 'opt1', value: 'option1', text: 'Option 1', score: 1 },
+        { id: 'opt2', value: 'option2', text: 'Option 2', score: 2 }
+      ]
+    };
+
+    render(<QuestionModule {...mockProps} />);
+    expect(screen.getByText('Test Module')).toBeInTheDocument();
+    expect(screen.getByText('Test Question')).toBeInTheDocument();
   });
 }); 

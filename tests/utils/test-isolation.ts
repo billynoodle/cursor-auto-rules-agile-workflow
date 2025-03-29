@@ -2,7 +2,6 @@ import { jest } from '@jest/globals';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { DatabaseSchema } from '@client/types/database';
 import { createMockSupabaseClient } from '@__mocks__/services/supabase/client';
-import { createMockOfflineService } from '@__mocks__/services/offline';
 import { OfflineService } from '@client/services/assessment/OfflineService';
 
 export interface IsolatedTestContext<T = any> {
@@ -31,13 +30,8 @@ export async function createIsolatedTestContext<T>(
   ) => T,
   options: TestIsolationOptions = {}
 ): Promise<IsolatedTestContext<T>> {
-  const mockSupabaseClient = createMockSupabaseClient({
-    simulateNetworkError: options.simulateNetworkError,
-    simulateTimeout: options.simulateTimeout,
-    simulateConflict: options.simulateConflict
-  });
-
-  const mockOfflineService = createMockOfflineService();
+  const mockClient = createMockSupabaseClient(options) as jest.Mocked<SupabaseClient<DatabaseSchema>>;
+  const mockOfflineService = createMockOfflineService() as jest.Mocked<OfflineService>;
   
   if (typeof options.isOnline === 'boolean') {
     Object.defineProperty(mockOfflineService, 'isOnline', {
@@ -46,7 +40,7 @@ export async function createIsolatedTestContext<T>(
     });
   }
 
-  const instance = factory(mockSupabaseClient, mockOfflineService);
+  const instance = factory(mockClient, mockOfflineService);
 
   const cleanup = async () => {
     jest.clearAllMocks();
@@ -54,7 +48,7 @@ export async function createIsolatedTestContext<T>(
   };
 
   return {
-    mockSupabaseClient,
+    mockSupabaseClient: mockClient,
     mockOfflineService,
     instance,
     cleanup
@@ -151,4 +145,21 @@ export function createTestDatabaseContext() {
       storage.delete(tableName);
     }
   };
+}
+
+export function createMockOfflineService(): jest.Mocked<OfflineService> {
+  const mock = {
+    STORAGE_KEY: 'assessment_offline_data',
+    setupOfflineSync: jest.fn(),
+    storeOfflineData: jest.fn(),
+    getOfflineData: jest.fn(),
+    getAllOfflineData: jest.fn(),
+    removeOfflineData: jest.fn(),
+    clearOfflineData: jest.fn(),
+    syncOfflineData: jest.fn(),
+    syncAssessment: jest.fn(),
+    syncAnswer: jest.fn(),
+    isOnline: jest.fn().mockReturnValue(true),
+  };
+  return mock as unknown as jest.Mocked<OfflineService>;
 } 

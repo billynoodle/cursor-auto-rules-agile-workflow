@@ -1,57 +1,60 @@
-import { AssessmentService, AssessmentError } from '@client/services/AssessmentService';
-import { createMockSupabaseClient } from '@mocks/services/supabase/client';
-import { Assessment, AssessmentAnswer } from '@client/types/database';
+import { AssessmentValidation } from '../../../client/src/services/assessment/AssessmentValidation';
+import { AssessmentError } from '../../../client/src/services/assessment/AssessmentError';
+import { AssessmentStatus } from '../../../client/src/types/assessment';
+import { createMockSupabaseClient } from '../../utils/test-helpers';
 
-describe('AssessmentService Validation', () => {
-  let service: AssessmentService;
+describe('AssessmentValidation', () => {
+  let service: AssessmentValidation;
 
   beforeEach(() => {
-    service = new AssessmentService(createMockSupabaseClient());
+    service = new AssessmentValidation(createMockSupabaseClient());
   });
 
-  describe('Assessment Validation', () => {
-    const validAssessment: Omit<Assessment, 'id' | 'created_at' | 'updated_at'> = {
-      user_id: 'user123',
-      current_module_id: 'module123',
-      current_question_id: 'question123',
-      progress: 50,
-      completed_modules: ['module1', 'module2'],
-      is_complete: false,
-      status: 'in_progress',
-      metadata: { key: 'value' }
-    };
+  describe('createAssessment', () => {
+    it('should validate assessment data', async () => {
+      const validAssessment = {
+        id: '00000000-0000-0000-0000-000000000001',
+        user_id: '00000000-0000-0000-0000-000000000002',
+        status: 'draft' as AssessmentStatus,
+        current_module_id: 'module1',
+        current_question_id: 'q1',
+        completed_modules: [],
+        progress: 0,
+        is_complete: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-    it('should validate a correct assessment object', async () => {
       await expect(service.createAssessment(validAssessment)).resolves.toBeDefined();
     });
 
-    it('should throw AssessmentError for invalid assessment', async () => {
+    it('should reject invalid assessment data', async () => {
       const invalidAssessment = {
-        ...validAssessment,
-        is_complete: 'false' as any,
-        status: 'invalid_status' as any,
+        id: '00000000-0000-0000-0000-000000000001',
+        status: 'invalid' as AssessmentStatus,
+        progress: -1
       };
 
       await expect(service.createAssessment(invalidAssessment)).rejects.toThrow(AssessmentError);
     });
   });
 
-  describe('Answer Validation', () => {
-    const validAnswer: Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'> = {
-      assessment_id: 'assessment123',
-      question_id: 'question123',
-      answer: { selected: 'option1' },
-      metadata: { timestamp: Date.now() }
-    };
+  describe('saveAnswer', () => {
+    it('should validate answer data', async () => {
+      const validAnswer = {
+        assessment_id: '00000000-0000-0000-0000-000000000001',
+        question_id: 'q1',
+        answer: { value: 'test', score: 1 }
+      };
 
-    it('should validate a correct answer object', async () => {
       await expect(service.saveAnswer(validAnswer)).resolves.toBeDefined();
     });
 
-    it('should throw AssessmentError for invalid answer', async () => {
+    it('should reject invalid answer data', async () => {
       const invalidAnswer = {
-        ...validAnswer,
-        metadata: 'invalid_metadata' as any
+        assessment_id: '00000000-0000-0000-0000-000000000001',
+        question_id: 'q1',
+        answer: undefined
       };
 
       await expect(service.saveAnswer(invalidAnswer)).rejects.toThrow(AssessmentError);

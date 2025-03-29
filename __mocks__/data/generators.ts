@@ -1,4 +1,4 @@
-import { Assessment, AssessmentAnswer, AssessmentStatus } from '../../../client/src/types/database';
+import { Assessment, AssessmentAnswer, AssessmentStatus } from '@client/types/database';
 import { PostgrestSingleResponse, PostgrestResponseSuccess } from '@supabase/postgrest-js';
 
 export function generateMockId(): string {
@@ -26,13 +26,15 @@ export function generateMockAssessment(overrides: Partial<Assessment> = {}): Ass
 }
 
 export function generateMockAnswer(overrides: Partial<AssessmentAnswer> = {}): AssessmentAnswer & { id: string; created_at: string; updated_at: string } {
+  const now = new Date().toISOString();
   return {
     id: generateMockId(),
     assessment_id: generateMockId(),
     question_id: generateMockId(),
     answer: { value: 'mock_answer' },
-    created_at: generateTimestamp(),
-    updated_at: generateTimestamp(),
+    metadata: { source: 'test' },
+    created_at: now,
+    updated_at: now,
     ...overrides
   };
 }

@@ -1,13 +1,13 @@
 import '@jest/globals';
-import { QuestionService } from '../../../server/src/services/QuestionService';
-import { Question } from '../../../server/src/models/Question';
-import { QuestionType } from '../../../server/src/models/QuestionType';
-import { AssessmentCategory } from '../../../server/src/models/AssessmentCategory';
-import { DisciplineType } from '../../../server/src/models/DisciplineType';
-import { PracticeSize } from '../../../server/src/models/PracticeSize';
-import { Country } from '../../../server/src/models/Country';
-import { complianceQuestions } from '../../../server/src/data/questions/compliance';
-import { regulatoryComplianceQuestions } from '../../../server/src/data/questions/compliance/regulatory-compliance';
+import { QuestionService } from '@server/services/QuestionService';
+import { Question } from '@server/models/Question';
+import { QuestionType } from '@server/models/QuestionType';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { DisciplineType } from '@server/models/DisciplineType';
+import { PracticeSize } from '@server/models/PracticeSize';
+import { Country } from '@server/models/Country';
+import { complianceQuestions } from '@server/data/questions/compliance';
+import { regulatoryComplianceQuestions } from '@server/data/questions/compliance/regulatory-compliance';
 
 describe('QuestionService - Compliance Questions', () => {
   let questionService: QuestionService;

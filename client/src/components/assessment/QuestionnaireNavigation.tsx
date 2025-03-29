@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AssessmentCategory, Module, ModuleStatus } from '../../types/assessment.types';
+import { AssessmentCategory, Module, ModuleStatus } from '@/types/assessment.types';
 import './QuestionnaireNavigation.css';
 
 interface QuestionnaireNavigationProps {
@@ -34,17 +34,21 @@ export const QuestionnaireNavigation: React.FC<QuestionnaireNavigationProps> = (
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
-    setIsMobile(mediaQuery.matches);
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      const mediaQuery = window.matchMedia('(max-width: 768px)');
+      setIsMobile(mediaQuery.matches);
 
-    const handleResize = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mediaQuery.addEventListener('change', handleResize);
-    return () => mediaQuery.removeEventListener('change', handleResize);
+      const handleResize = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+      mediaQuery.addEventListener('change', handleResize);
+
+      return () => mediaQuery.removeEventListener('change', handleResize);
+    }
+    return undefined;
   }, []);
 
   const calculateOverallProgress = () => {
-    const totalQuestions = modules.reduce((sum, module) => sum + module.totalQuestions, 0);
-    const completedQuestions = modules.reduce((sum, module) => sum + module.completedQuestions, 0);
+    const totalQuestions = modules.reduce((sum, module) => sum + (module.totalQuestions || 0), 0);
+    const completedQuestions = modules.reduce((sum, module) => sum + (module.completedQuestions || 0), 0);
     return Math.round((completedQuestions / totalQuestions) * 100);
   };
 
@@ -68,8 +72,8 @@ export const QuestionnaireNavigation: React.FC<QuestionnaireNavigationProps> = (
   const renderModuleItem = (module: Module) => {
     const isLocked = module.status === ModuleStatus.LOCKED;
     const isActive = module.id === currentModule;
-    const prerequisiteNames = module.prerequisites
-      .map(preId => modules.find(m => m.id === preId)?.name)
+    const prerequisiteNames = (module.prerequisites || [])
+      .map((preId: string) => modules.find(m => m.id === preId)?.name)
       .filter(Boolean)
       .join(', ');
 
@@ -78,7 +82,7 @@ export const QuestionnaireNavigation: React.FC<QuestionnaireNavigationProps> = (
         key={module.id}
         data-testid={`module-item-${module.id}`}
         role="listitem"
-        aria-label={`${module.name} - ${module.status === ModuleStatus.LOCKED ? 'Locked' : 'Available'}`}
+        aria-label={`${module.name || module.title} - ${module.status === ModuleStatus.LOCKED ? 'Locked' : 'Available'}`}
         aria-live="polite"
       >
         <button
@@ -92,11 +96,11 @@ export const QuestionnaireNavigation: React.FC<QuestionnaireNavigationProps> = (
           data-testid={`module-button-${module.id}`}
         >
           <div className="module-info">
-            <h3>{module.name}</h3>
+            <h3>{module.name || module.title}</h3>
             <div className="module-meta">
               <span className="time">{module.estimatedTimeMinutes} min</span>
               <span className="progress">{module.progress}%</span>
-              <span className="questions">{module.completedQuestions}/{module.totalQuestions} questions</span>
+              <span className="questions">{module.completedQuestions || 0}/{module.totalQuestions || 0} questions</span>
             </div>
             {isLocked && (
               <div className="lock-info">

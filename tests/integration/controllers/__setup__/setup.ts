@@ -1,5 +1,5 @@
-import { AssessmentFlowController } from '../../../../client/src/controllers/AssessmentFlowController';
-import { AssessmentService } from '../../../../client/src/services/AssessmentService';
+import { AssessmentFlowController } from '@client/controllers/AssessmentFlowController';
+import { AssessmentService } from '@client/services/AssessmentService';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { 
   createMockSupabaseClient, 
@@ -7,11 +7,11 @@ import {
   TEST_USER_ID,
   MockOptions,
   GeneratorOptions 
-} from '../../../../__mocks__/data/assessment';
-import { DatabaseSchema } from '../../../../client/src/types/database';
+} from '@__mocks__/data/assessment';
+import { DatabaseSchema } from '@client/types/database';
 
 export interface TestContext {
-  mockSupabaseClient: jest.Mocked<SupabaseClient<DatabaseSchema>>;
+  mockSupabaseClient: ReturnType<typeof createMockSupabaseClient>;
   assessmentService: AssessmentService;
   controller: AssessmentFlowController;
   modules: ReturnType<typeof generateMockModules>;

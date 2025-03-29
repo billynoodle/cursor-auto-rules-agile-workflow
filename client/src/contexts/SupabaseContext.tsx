@@ -1,6 +1,6 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { User } from '@supabase/supabase-js';
-import { useSupabase } from '../hooks/useSupabase';
+import { useSupabase } from '@/hooks/useSupabase';
 
 // Define the context type
 interface SupabaseContextType {

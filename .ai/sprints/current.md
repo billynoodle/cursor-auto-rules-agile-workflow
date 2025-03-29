@@ -15,7 +15,7 @@
 | Story ID | Title | Points | Status | Blockers |
 |----------|-------|--------|---------|-----------|
 | STORY-1 | Design Comprehensive Business Assessment Questionnaire Structure | 6 | In Progress | Component Integration Required |
-| STORY-2a | Server-Side Assessment Engine Implementation | 5 | In Progress | None |
+| STORY-2 | Server-Side Assessment Engine Implementation | 5 | In Progress | None |
 | STORY-3 | AssessmentPage Component Integration | 5 | Not Started | None |
 
 ## Sprint Metrics

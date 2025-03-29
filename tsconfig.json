@@ -17,8 +17,17 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@client/*": ["client/src/*"],
+      "@/*": ["client/src/*"],
+      "@components/*": ["client/src/components/*"],
+      "@services/*": ["client/src/services/*"],
+      "@types/*": ["client/src/types/*"],
+      "@utils/*": ["client/src/utils/*"],
+      "@lib/*": ["client/src/lib/*"],
+      "@hooks/*": ["client/src/hooks/*"],
+      "@contexts/*": ["client/src/contexts/*"],
+      "@pages/*": ["client/src/pages/*"],
       "@server/*": ["server/src/*"],
+      "@client/*": ["client/src/*"],
       "@__mocks__/*": ["__mocks__/*"],
       "@test/*": ["tests/*"]
     },

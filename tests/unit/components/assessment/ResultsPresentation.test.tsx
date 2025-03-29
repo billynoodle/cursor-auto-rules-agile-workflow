@@ -40,13 +40,15 @@ describe('ResultsPresentation', () => {
   it('should render results presentation correctly', () => {
     render(<ResultsPresentation results={mockResults} />);
     expect(screen.getByText('Test Practice')).toBeInTheDocument();
-    expect(screen.getByText('85%')).toBeInTheDocument();
+    const scoreValue = screen.getByRole('meter').parentElement?.querySelector('.score-value');
+    expect(scoreValue).toHaveTextContent('85%');
   });
 
   it('should show recommendation details when clicked', () => {
     render(<ResultsPresentation results={mockResults} />);
     const recommendationButton = screen.getByText('Test Action');
     fireEvent.click(recommendationButton);
-    expect(screen.getByText('Category: Test Category')).toBeInTheDocument();
+    const categoryText = screen.getByText(/Category:/).parentElement?.textContent;
+    expect(categoryText).toBe('Category: Test Category');
   });
 }); 

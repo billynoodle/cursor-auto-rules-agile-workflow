@@ -3,17 +3,19 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["../src/*"],
-      "@test/*": ["./*"],
+      "@/*": ["../client/src/*"],
+      "@components/*": ["../client/src/components/*"],
+      "@services/*": ["../client/src/services/*"],
+      "@types/*": ["../client/src/types/*"],
+      "@utils/*": ["../client/src/utils/*"],
+      "@lib/*": ["../client/src/lib/*"],
+      "@hooks/*": ["../client/src/hooks/*"],
+      "@contexts/*": ["../client/src/contexts/*"],
+      "@pages/*": ["../client/src/pages/*"],
       "@server/*": ["../server/src/*"],
       "@client/*": ["../client/src/*"],
-      "@mocks/*": ["../__mocks__/*"],
-      "../../../../client/src/*": ["../client/src/*"],
-      "../../../../server/src/*": ["../server/src/*"],
-      "../../../client/src/*": ["../client/src/*"],
-      "../../../server/src/*": ["../server/src/*"],
-      "../../client/src/*": ["../client/src/*"],
-      "../../server/src/*": ["../server/src/*"]
+      "@__mocks__/*": ["../__mocks__/*"],
+      "@test/*": ["./*"]
     },
     "types": ["jest", "node", "@testing-library/jest-dom"],
     "esModuleInterop": true,

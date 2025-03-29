@@ -3,20 +3,26 @@ import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { QuestionPresentation } from '@client/components/assessment/QuestionPresentation';
-import { Question, QuestionType } from '@client/types/assessment.types';
+import { Question, QuestionOption, QuestionType, AssessmentCategory } from '@client/types/assessment';
+import { DisciplineType } from '@client/types/discipline';
+import { PracticeSize } from '@client/types/practice';
 
 const mockQuestion: Question = {
-  id: '1',
-  text: 'Test Question',
+  id: 'test-question',
+  text: 'Test question',
   type: QuestionType.MULTIPLE_CHOICE,
-  description: 'This is a test question',
+  category: AssessmentCategory.OPERATIONS,
+  moduleId: 'test-module',
+  applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+  universalQuestion: true,
+  applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM],
   required: true,
   weight: 1,
   dependencies: [],
+  helpText: 'This is a test question',
   options: [
-    { id: '1', text: 'Option 1', value: '1', score: 1 },
-    { id: '2', text: 'Option 2', value: '2', score: 2 },
-    { id: '3', text: 'Option 3', value: '3', score: 3 }
+    { id: 'opt1', value: 'option1', text: 'Option 1', score: 1 },
+    { id: 'opt2', value: 'option2', text: 'Option 2', score: 2 }
   ]
 };
 
@@ -68,7 +74,7 @@ describe('QuestionPresentation', () => {
     await act(async () => {
       fireEvent.click(expandButton);
     });
-    expect(screen.getByText(mockQuestion.description!, { selector: '.question-description' })).toBeInTheDocument();
+    expect(screen.getByText(mockQuestion.helpText!, { selector: '.question-description' })).toBeInTheDocument();
   });
 
   it('handles navigation button clicks', () => {
@@ -134,13 +140,13 @@ describe('QuestionPresentation', () => {
   describe('Progressive Disclosure', () => {
     it('initially hides content when progressive disclosure is enabled', () => {
       render(<QuestionPresentation {...defaultProps} />);
-      expect(screen.queryByText(mockQuestion.description!, { selector: '.question-description' })).not.toBeInTheDocument();
+      expect(screen.queryByText(mockQuestion.helpText!, { selector: '.question-description' })).not.toBeInTheDocument();
       expect(screen.getByTestId('expand-trigger')).toBeInTheDocument();
     });
 
     it('shows all content when progressive disclosure is disabled', () => {
       render(<QuestionPresentation {...defaultProps} showProgressiveDisclosure={false} />);
-      expect(screen.getByText(mockQuestion.description!, { selector: '.question-description' })).toBeInTheDocument();
+      expect(screen.getByText(mockQuestion.helpText!, { selector: '.question-description' })).toBeInTheDocument();
       expect(screen.queryByTestId('expand-trigger')).not.toBeInTheDocument();
     });
 

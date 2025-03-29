@@ -1,5 +1,5 @@
-import { OfflineService } from '../../../client/src/services/assessment/OfflineService';
-import { Assessment, AssessmentAnswer } from '../../../client/src/types/database';
+import { OfflineService } from '@client/services/assessment/OfflineService';
+import { Assessment, AssessmentAnswer } from '@client/types/database';
 import { createMockAssessment, createMockAnswerData } from '../../data/assessment';
 
 export const createMockOfflineService = (): jest.Mocked<OfflineService> => ({

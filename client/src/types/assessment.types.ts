@@ -1,121 +1,108 @@
-/**
- * Enum for assessment question types
- */
-export enum QuestionType {
-  MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
-  NUMERIC = 'NUMERIC',
-  TEXT = 'TEXT',
-  LIKERT_SCALE = 'LIKERT_SCALE'
-}
+import { DisciplineType } from './discipline';
+import { PracticeSize } from './practice';
 
-/**
- * Enum for assessment categories
- */
+export { DisciplineType, PracticeSize };
+
 export enum AssessmentCategory {
   FINANCIAL = 'FINANCIAL',
   OPERATIONS = 'OPERATIONS',
+  PATIENTS = 'PATIENTS',
   MARKETING = 'MARKETING',
-  STAFFING = 'STAFFING',
-  COMPLIANCE = 'COMPLIANCE',
-  PATIENT_MANAGEMENT = 'PATIENT_MANAGEMENT',
-  FACILITIES = 'FACILITIES',
   TECHNOLOGY = 'TECHNOLOGY',
+  COMPLIANCE = 'COMPLIANCE',
+  PATIENT_CARE = 'PATIENT_CARE',
+  STAFFING = 'STAFFING',
+  FACILITIES = 'FACILITIES',
+  GEOGRAPHY = 'GEOGRAPHY',
   AUTOMATION = 'AUTOMATION'
 }
 
-/**
- * Enum for practice sizes
- */
-export enum PracticeSize {
-  SOLO = 'SOLO',
-  SMALL = 'SMALL',
-  MEDIUM = 'MEDIUM',
-  LARGE = 'LARGE',
-  ENTERPRISE = 'ENTERPRISE'
+export enum QuestionType {
+  MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
+  SINGLE_CHOICE = 'SINGLE_CHOICE',
+  TEXT = 'TEXT',
+  NUMBER = 'NUMBER',
+  NUMERIC = 'NUMERIC',
+  BOOLEAN = 'BOOLEAN',
+  SCALE = 'SCALE',
+  LIKERT_SCALE = 'LIKERT_SCALE'
 }
 
-/**
- * Enum for module status
- */
 export enum ModuleStatus {
-  NOT_STARTED = 'NOT_STARTED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  LOCKED = 'LOCKED',
-  AVAILABLE = 'AVAILABLE'
+  NOT_STARTED = 'not_started',
+  IN_PROGRESS = 'in_progress',
+  COMPLETED = 'completed',
+  SKIPPED = 'skipped',
+  LOCKED = 'locked',
+  AVAILABLE = 'available'
 }
 
-/**
- * Interface for question option
- */
 export interface QuestionOption {
   id: string;
-  text: string;
   value: string;
+  text: string;
   score: number;
 }
 
-/**
- * Interface for assessment question
- */
 export interface Question {
   id: string;
-  type: QuestionType;
   text: string;
-  description?: string;
-  options?: QuestionOption[];
+  type: QuestionType;
+  category: AssessmentCategory;
+  moduleId: string;
+  applicableDisciplines: DisciplineType[];
+  universalQuestion: boolean;
+  applicablePracticeSizes: PracticeSize[];
   required: boolean;
   weight: number;
   dependencies: string[];
-  tooltip?: string;
+  options?: QuestionOption[];
+  minScore?: number;
+  maxScore?: number;
+  helpText?: string;
+  benchmarkReference?: string;
+  impactAreas?: string[];
+  metadata?: Record<string, unknown>;
+  description?: string;
 }
 
-/**
- * Interface for assessment module
- */
-export interface Module {
+export interface QuestionModule {
   id: string;
-  name: string;
+  title: string;
+  name?: string;
   description: string;
-  estimatedTimeMinutes: number;
   categories: AssessmentCategory[];
-  status: ModuleStatus;
+  questions: Question[];
+  dependencies?: string[];
+  metadata?: Record<string, unknown>;
+  estimatedTimeMinutes?: number;
+  status?: ModuleStatus;
+  progress?: number;
+  prerequisites?: string[];
+  completedQuestions?: number;
+  totalQuestions?: number;
+  weight: number;
+}
+
+export interface AssessmentAnswer {
+  id: string;
+  assessment_id: string;
+  question_id: string;
+  answer: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Assessment {
+  id: string;
+  user_id: string;
+  status: string;
   progress: number;
-  prerequisites: string[];
-  completedQuestions: number;
-  totalQuestions: number;
+  current_module_id: string;
+  current_question_id: string;
+  created_at: string;
+  updated_at: string;
+  metadata?: Record<string, unknown>;
 }
 
-/**
- * Interface for assessment score
- */
-export interface Score {
-  questionId: string;
-  rawScore: number;
-  weightedScore: number;
-  maxPossible: number;
-  percentile?: number;
-}
-
-/**
- * Interface for module score
- */
-export interface ModuleScore {
-  moduleId: string;
-  scores: Score[];
-  totalRawScore: number;
-  totalWeightedScore: number;
-  maxPossible: number;
-  percentageScore: number;
-  percentile?: number;
-}
-
-/**
- * Interface for tooltip feedback
- */
-export interface TooltipFeedback {
-  questionId: string;
-  clarityRating: number;
-  feedback: string;
-  timestamp: string;
-} 
+export type Module = QuestionModule; 

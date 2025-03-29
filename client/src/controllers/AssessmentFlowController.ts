@@ -5,7 +5,7 @@ import {
   AssessmentState,
   StateSubscriber
 } from '../types/assessment';
-import { AssessmentService } from '../services/AssessmentService';
+import { AssessmentService } from '@services/AssessmentService';
 import { Assessment, AssessmentAnswer } from '../types/database';
 
 export class AssessmentFlowController {
@@ -438,14 +438,29 @@ export class AssessmentFlowController {
   }
 
   public async nextModule(): Promise<void> {
-    if (this.currentModule < this.modules.length - 1) {
-      this.currentModule++;
-      this.currentQuestion = 0;
-      const nextModule = this.modules[this.currentModule];
-      this.state.currentModuleId = nextModule.id;
-      this.state.currentQuestionId = nextModule.questions[0].id;
-      await this.persistState();
-      this.notifySubscribers();
+    if (!this.assessmentId) {
+      throw new Error('Assessment not initialized');
+    }
+
+    const prevState = { ...this.state };
+
+    try {
+      if (this.currentModule < this.modules.length - 1) {
+        this.currentModule++;
+        this.currentQuestion = 0;
+        const nextModule = this.modules[this.currentModule];
+        this.state.currentModuleId = nextModule.id;
+        this.state.currentQuestionId = nextModule.questions[0].id;
+        await this.persistState();
+        this.notifySubscribers();
+      }
+    } catch (error) {
+      // Rollback state on error
+      this.state = prevState;
+      this.currentModule = this.modules.findIndex(m => m.id === prevState.currentModuleId);
+      const currentModule = this.modules[this.currentModule];
+      this.currentQuestion = currentModule.questions.findIndex(q => q.id === prevState.currentQuestionId);
+      throw error;
     }
   }
 

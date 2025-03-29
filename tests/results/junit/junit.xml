@@ -1,0 +1,1246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="280" failures="22" errors="0" time="10.661">
+  <testsuite name="AssessmentPage" errors="0" failures="10" skipped="0" timestamp="2025-03-29T09:09:22" time="5.718" tests="10">
+    <testcase classname="AssessmentPage › Initial Rendering" name="renders navigation and first module content" time="0.003">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Initial Rendering" name="displays correct module statuses initially" time="0.001">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Initial Rendering" name="loads saved progress from localStorage if available" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Module Navigation" name="prevents navigation to locked modules" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Module Navigation" name="allows navigation between unlocked modules" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Module Navigation" name="preserves answers when navigating between modules" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Answer Management" name="updates progress when answering questions" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Answer Management" name="unlocks dependent modules when prerequisites are completed" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Answer Management" name="saves answers to localStorage after each change" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentPage › Answer Management" name="handles answer changes correctly" time="0">
+      <failure>TypeError: Cannot redefine property: matchMedia
+    at Function.defineProperty (&lt;anonymous&gt;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentPage.test.tsx:34:10)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusHook (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:95:7)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="AssessmentFlowController - Navigation" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:22" time="6.011" tests="6">
+    <testcase classname="AssessmentFlowController - Navigation" name="should navigate to next question" time="0.007">
+    </testcase>
+    <testcase classname="AssessmentFlowController - Navigation › Basic Navigation" name="should navigate between modules correctly" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentFlowController - Navigation › Basic Navigation" name="should handle edge cases in module navigation" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentFlowController - Navigation › Error Handling" name="should handle invalid navigation attempts" time="0">
+    </testcase>
+    <testcase classname="AssessmentFlowController - Navigation › State Management" name="should maintain state during navigation" time="0.002">
+    </testcase>
+    <testcase classname="AssessmentFlowController - Navigation › State Management" name="should handle module completion state" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Question Component" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:22" time="6.111" tests="15">
+    <testcase classname="Question Component" name="renders question text" time="0.202">
+    </testcase>
+    <testcase classname="Question Component" name="renders description when provided" time="0.003">
+    </testcase>
+    <testcase classname="Question Component › TEXT type" name="renders textarea for text input" time="0.026">
+    </testcase>
+    <testcase classname="Question Component › TEXT type" name="handles text input changes" time="0.016">
+    </testcase>
+    <testcase classname="Question Component › TEXT type" name="displays initial value when provided" time="0.053">
+    </testcase>
+    <testcase classname="Question Component › NUMERIC type" name="renders number input" time="0.005">
+    </testcase>
+    <testcase classname="Question Component › NUMERIC type" name="handles numeric input changes" time="0.023">
+    </testcase>
+    <testcase classname="Question Component › NUMERIC type" name="displays initial value when provided" time="0.01">
+    </testcase>
+    <testcase classname="Question Component › MULTIPLE_CHOICE type" name="renders all options" time="0.006">
+    </testcase>
+    <testcase classname="Question Component › MULTIPLE_CHOICE type" name="handles option selection" time="0.014">
+    </testcase>
+    <testcase classname="Question Component › MULTIPLE_CHOICE type" name="marks selected option as checked" time="0.008">
+    </testcase>
+    <testcase classname="Question Component › LIKERT_SCALE type" name="renders all scale options" time="0.063">
+    </testcase>
+    <testcase classname="Question Component › LIKERT_SCALE type" name="handles scale selection" time="0.027">
+    </testcase>
+    <testcase classname="Question Component › LIKERT_SCALE type" name="marks selected scale value as checked" time="0.01">
+    </testcase>
+    <testcase classname="Question Component › Accessibility" name="associates inputs with question text via aria-labelledby" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="AssessmentFlowController State Management" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:22" time="6.237" tests="9">
+    <testcase classname="AssessmentFlowController State Management" name="should persist state when moving to next question" time="0.012">
+    </testcase>
+    <testcase classname="AssessmentFlowController State Management" name="should save and persist answers" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentFlowController State Management" name="should handle answer updates" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentFlowController State Management" name="should restore and persist state" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentFlowController State Management" name="should roll back state when persistState fails" time="0.046">
+    </testcase>
+    <testcase classname="Helper Methods" name="should correctly identify if a module is complete" time="0.038">
+    </testcase>
+    <testcase classname="Helper Methods" name="should correctly identify if assessment is complete" time="0.037">
+    </testcase>
+    <testcase classname="Helper Methods" name="should correctly get questions for a module" time="0.007">
+    </testcase>
+    <testcase classname="Helper Methods" name="should correctly get current module questions" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="ResultsPresentation Component" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:28" time="0.683" tests="13">
+    <testcase classname="ResultsPresentation Component › Summary Section" name="should display practice information" time="0.179">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Summary Section" name="should show assessment date" time="0.009">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Summary Section" name="should display overall score prominently" time="0.044">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Category Results" name="should display category scores" time="0.008">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Category Results" name="should list strengths and improvements" time="0.083">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Recommendations" name="should display prioritized recommendations" time="0.015">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Recommendations" name="should show recommendation details on click" time="0.058">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Custom Variables" name="should display custom metrics with benchmarks" time="0.008">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Accessibility" name="should have proper headings structure" time="0.043">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Accessibility" name="should be keyboard navigable" time="0.038">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Accessibility" name="should have ARIA labels for interactive elements" time="0.014">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Responsive Design" name="should adapt layout for mobile screens" time="0.01">
+    </testcase>
+    <testcase classname="ResultsPresentation Component › Responsive Design" name="should stack sections vertically on narrow screens" time="0.013">
+    </testcase>
+  </testsuite>
+  <testsuite name="AssessmentFlowController Error Handling" errors="0" failures="2" skipped="0" timestamp="2025-03-29T09:09:22" time="6.469" tests="4">
+    <testcase classname="AssessmentFlowController Error Handling › Network Error Recovery" name="should handle network errors during state persistence" time="0.093">
+      <failure>Error: expect(received).rejects.toMatchObject(expected)
+
+- Expected  - 3
++ Received  + 1
+
+  Object {
+    &quot;code&quot;: &quot;UPDATE_ERROR&quot;,
+-   &quot;originalError&quot;: ObjectContaining {
+-     &quot;message&quot;: StringContaining &quot;Network error&quot;,
+-   },
++   &quot;originalError&quot;: [TypeError: this.supabase.from(...).update(...).eq(...).select is not a function],
+  }
+    at Object.toMatchObject (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/expect/build/index.js:218:22)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/integration/controllers/AssessmentFlowController.error.integration.test.ts:28:55)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="AssessmentFlowController Error Handling › Network Error Recovery" name="should handle concurrent update conflicts" time="0.003">
+      <failure>Error: expect(received).rejects.toMatchObject(expected)
+
+- Expected  - 2
++ Received  + 1
+
+  Object {
+-   &quot;code&quot;: &quot;SAVE_ERROR&quot;,
+-   &quot;message&quot;: &quot;Failed to save answer&quot;,
++   &quot;code&quot;: &quot;CREATE_ERROR&quot;,
+  }
+    at Object.toMatchObject (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/expect/build/index.js:218:22)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/integration/controllers/AssessmentFlowController.error.integration.test.ts:59:59)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="AssessmentFlowController Error Handling › State Restoration Error Handling" name="should handle errors during state restoration" time="0.011">
+    </testcase>
+    <testcase classname="AssessmentFlowController Error Handling › Initialization Error Handling" name="should prevent operations when not initialized" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="QuestionModule" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:22" time="6.539" tests="15">
+    <testcase classname="QuestionModule" name="renders module title" time="0.108">
+    </testcase>
+    <testcase classname="QuestionModule" name="renders module description when provided" time="0.006">
+    </testcase>
+    <testcase classname="QuestionModule" name="renders all questions" time="0.004">
+    </testcase>
+    <testcase classname="QuestionModule" name="calculates and displays correct completion percentage with no answers" time="0.15">
+    </testcase>
+    <testcase classname="QuestionModule" name="calculates and displays correct completion percentage with some answers" time="0.029">
+    </testcase>
+    <testcase classname="QuestionModule" name="calculates and displays correct completion percentage with all answers" time="0.008">
+    </testcase>
+    <testcase classname="QuestionModule" name="handles answer changes" time="0.023">
+    </testcase>
+    <testcase classname="QuestionModule › module expansion/collapse" name="starts expanded by default" time="0.011">
+    </testcase>
+    <testcase classname="QuestionModule › module expansion/collapse" name="collapses when header is clicked" time="0.025">
+    </testcase>
+    <testcase classname="QuestionModule › module expansion/collapse" name="expands when header is clicked while collapsed" time="0.017">
+    </testcase>
+    <testcase classname="QuestionModule › accessibility" name="progress bar has correct ARIA attributes" time="0.008">
+    </testcase>
+    <testcase classname="QuestionModule › accessibility" name="expand/collapse button has correct ARIA attributes" time="0.006">
+    </testcase>
+    <testcase classname="QuestionModule" name="should render question module correctly" time="0.002">
+    </testcase>
+    <testcase classname="QuestionModule" name="should handle answer selection" time="0.072">
+    </testcase>
+    <testcase classname="QuestionModule" name="should render question options correctly" time="0.02">
+    </testcase>
+  </testsuite>
+  <testsuite name="Question" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:28" time="0.445" tests="9">
+    <testcase classname="Question" name="should render multiple choice question correctly" time="0.007">
+    </testcase>
+    <testcase classname="Question" name="should handle multiple choice selection" time="0.065">
+    </testcase>
+    <testcase classname="Question" name="should render numeric question correctly" time="0.067">
+    </testcase>
+    <testcase classname="Question" name="should handle numeric input" time="0.009">
+    </testcase>
+    <testcase classname="Question" name="should render text question correctly" time="0.003">
+    </testcase>
+    <testcase classname="Question" name="should handle text input" time="0.036">
+    </testcase>
+    <testcase classname="Question" name="should render Likert scale question correctly" time="0.002">
+    </testcase>
+    <testcase classname="Question" name="should handle Likert scale selection" time="0.013">
+    </testcase>
+    <testcase classname="Question" name="should render question description when provided" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ProgressTracker" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:28" time="0.503" tests="9">
+    <testcase classname="ProgressTracker" name="should render progress tracker correctly" time="0.067">
+    </testcase>
+    <testcase classname="ProgressTracker" name="should show correct module progress" time="0.003">
+    </testcase>
+    <testcase classname="ProgressTracker › Progress Display" name="should display overall progress percentage" time="0.029">
+    </testcase>
+    <testcase classname="ProgressTracker › Progress Display" name="should show completion status for each module" time="0.029">
+    </testcase>
+    <testcase classname="ProgressTracker › Time Estimates" name="should display estimated time remaining" time="0.055">
+    </testcase>
+    <testcase classname="ProgressTracker › Accessibility" name="should have proper ARIA labels" time="0.034">
+    </testcase>
+    <testcase classname="ProgressTracker › Accessibility" name="should be keyboard navigable" time="0.041">
+    </testcase>
+    <testcase classname="ProgressTracker › Module Navigation" name="should highlight current module" time="0.004">
+    </testcase>
+    <testcase classname="ProgressTracker › Module Navigation" name="should indicate completed modules" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="QuestionService" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:28" time="0.343" tests="28">
+    <testcase classname="QuestionService › Core Question Operations" name="should retrieve a question by id" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Core Question Operations" name="should return undefined for non-existent question id" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Core Question Operations" name="should get all questions" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Module Operations" name="should get questions by module" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Module Operations" name="should handle empty module results" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Compliance Questions" name="should filter compliance questions" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Compliance Questions" name="should handle regulatory compliance questions" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Cross-Module Operations" name="should filter questions by discipline" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Cross-Module Operations" name="should filter questions by practice size" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Cross-Module Operations" name="should filter questions by type" time="0.008">
+    </testcase>
+    <testcase classname="QuestionService › Question Validation" name="should validate required fields in questions" time="0.015">
+    </testcase>
+    <testcase classname="QuestionService › Question Validation" name="should validate question type" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Question Validation" name="should validate multiple choice options" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Core Functionality › Question Creation and Validation" name="should create a valid question" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Core Functionality › Question Creation and Validation" name="should throw error for question without required fields" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Core Functionality › Question Creation and Validation" name="should throw error for invalid question type" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Core Functionality › Question Retrieval" name="should retrieve question by id" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Core Functionality › Question Retrieval" name="should return undefined for non-existent question" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Module Operations › Financial Module" name="should retrieve financial questions by category" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Module Operations › Financial Module" name="should retrieve cash flow planning questions" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Module Operations › Operations Module" name="should retrieve operations questions by category" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Module Operations › Operations Module" name="should retrieve scheduling questions" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Compliance Module" name="should load all compliance questions correctly" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Compliance Module" name="should include regulatory compliance questions" time="0.004">
+    </testcase>
+    <testcase classname="QuestionService › Compliance Module › Country-Specific Content" name="should return Australia-specific content for compliance questions" time="0">
+    </testcase>
+    <testcase classname="QuestionService › Cross-Module Operations › Filtering" name="should filter questions by practice size across modules" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Cross-Module Operations › Filtering" name="should filter questions by discipline across modules" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService › Cross-Module Operations › Filtering" name="should filter questions by multiple criteria" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="ScoreVisualization Component" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:22" time="6.656" tests="12">
+    <testcase classname="ScoreVisualization Component › Dashboard Display" name="should display overall score prominently" time="0.11">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Dashboard Display" name="should show all category scores" time="0.138">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Dashboard Display" name="should display score distribution chart" time="0.022">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Interactive Features" name="should show detailed information on category click" time="0.043">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Interactive Features" name="should allow switching between chart types" time="0.058">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Accessibility" name="should have proper ARIA labels for score meters" time="0.022">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Accessibility" name="should be keyboard navigable" time="0.025">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Accessibility" name="should provide screen reader descriptions for charts" time="0.005">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Responsive Design" name="should adapt layout for mobile screens" time="0.004">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Responsive Design" name="should stack charts vertically on narrow screens" time="0.005">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Recommendations" name="should display relevant recommendations" time="0.012">
+    </testcase>
+    <testcase classname="ScoreVisualization Component › Recommendations" name="should highlight categories with recommendations" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="QuestionPresentation" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:28" time="0.343" tests="17">
+    <testcase classname="QuestionPresentation" name="renders question text and description" time="0.01">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="shows required indicator for required questions" time="0.014">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="shows weight indicator" time="0.004">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="handles option selection" time="0.019">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="shows description when expanded" time="0.012">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="handles navigation button clicks" time="0.002">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="disables next button when required question is unanswered" time="0.002">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="enables next button when required question is answered" time="0.003">
+    </testcase>
+    <testcase classname="QuestionPresentation" name="shows validation error when trying to proceed without selection" time="0.002">
+    </testcase>
+    <testcase classname="QuestionPresentation › Accessibility" name="provides appropriate ARIA labels and roles" time="0.042">
+    </testcase>
+    <testcase classname="QuestionPresentation › Accessibility" name="announces validation errors to screen readers" time="0.015">
+    </testcase>
+    <testcase classname="QuestionPresentation › Progressive Disclosure" name="initially hides content when progressive disclosure is enabled" time="0.007">
+    </testcase>
+    <testcase classname="QuestionPresentation › Progressive Disclosure" name="shows all content when progressive disclosure is disabled" time="0.016">
+    </testcase>
+    <testcase classname="QuestionPresentation › Progressive Disclosure" name="focuses first option after expanding content" time="0.022">
+    </testcase>
+    <testcase classname="QuestionPresentation › Edge Cases" name="handles empty options array" time="0.004">
+    </testcase>
+    <testcase classname="QuestionPresentation › Edge Cases" name="handles high weight values" time="0.001">
+    </testcase>
+    <testcase classname="QuestionPresentation › Edge Cases" name="handles circular dependencies" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="ScoreVisualization" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.205" tests="1">
+    <testcase classname="ScoreVisualization" name="should render score visualization correctly" time="0.007">
+    </testcase>
+  </testsuite>
+  <testsuite name="ModuleService" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.176" tests="24">
+    <testcase classname="ModuleService › createModule" name="should add a valid module to the collection" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService › createModule" name="should validate required fields" time="0.011">
+    </testcase>
+    <testcase classname="ModuleService › createModule" name="should validate category" time="0.007">
+    </testcase>
+    <testcase classname="ModuleService › createModule" name="should validate applicable disciplines" time="0">
+    </testcase>
+    <testcase classname="ModuleService › createModule" name="should validate applicable practice sizes" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService › createModule" name="should validate benchmarks" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService › getModuleById" name="should return the module with matching id" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getModuleById" name="should return undefined if no module with id exists" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getModulesByCategory" name="should return modules with matching category" time="0.002">
+    </testcase>
+    <testcase classname="ModuleService › getModulesByCategory" name="should return empty array if no modules with category exist" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService › getModulesByDiscipline" name="should return modules applicable to the discipline" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService › getModulesByDiscipline" name="should include universal modules" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getModulesByDiscipline" name="should return empty array if no modules for discipline exist" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getModulesByPracticeSize" name="should return modules applicable to the practice size" time="0.002">
+    </testcase>
+    <testcase classname="ModuleService › getModulesByPracticeSize" name="should return empty array if no modules for practice size exist" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService › getFilteredModules" name="should filter modules by discipline" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getFilteredModules" name="should filter modules by practice size" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getFilteredModules" name="should filter modules by category" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getFilteredModules" name="should filter modules by multiple criteria" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getFilteredModules" name="should return empty array when no modules match filters" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService › getDisciplineSpecificModule" name="should return module with discipline-specific content merged" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getDisciplineSpecificModule" name="should return original module when no discipline-specific content exists" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getCountrySpecificModule" name="should return module with country-specific content merged" time="0">
+    </testcase>
+    <testcase classname="ModuleService › getCountrySpecificModule" name="should return original module when no country-specific content exists" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="AssessmentValidation" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.159" tests="4">
+    <testcase classname="AssessmentValidation › createAssessment" name="should validate assessment data" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentValidation › createAssessment" name="should reject invalid assessment data" time="0.002">
+    </testcase>
+    <testcase classname="AssessmentValidation › saveAnswer" name="should validate answer data" time="0">
+    </testcase>
+    <testcase classname="AssessmentValidation › saveAnswer" name="should reject invalid answer data" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ResearchDocumentationService" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.262" tests="14">
+    <testcase classname="ResearchDocumentationService › addResearchFinding" name="should add a valid research finding" time="0.001">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › addResearchFinding" name="should validate required fields" time="0.021">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › addResearchFinding" name="should validate category" time="0.001">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › addResearchFinding" name="should validate relevant disciplines" time="0.001">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › getResearchFindingsByCategory" name="should return findings with matching category" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › getResearchFindingsByCategory" name="should return empty array if no findings with category exist" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › getResearchFindingsByDiscipline" name="should return findings relevant to the discipline" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › getResearchFindingsByDiscipline" name="should return correct findings for a different discipline" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › getResearchFindingsByDiscipline" name="should return empty array if no findings for discipline exist" time="0.001">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › generateResearchSummary" name="should generate a comprehensive summary document" time="0.001">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › generateResearchSummary" name="should include category coverage statistics" time="0.002">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › generateResearchSummary" name="should identify gaps in research" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › exportResearchFindings" name="should export findings to the specified format" time="0.058">
+    </testcase>
+    <testcase classname="ResearchDocumentationService › exportResearchFindings" name="should filter exports by discipline when specified" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="QuestionService - All Modules" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:22" time="6.822" tests="16">
+    <testcase classname="QuestionService - All Modules › Loading All Questions" name="should load all questions correctly" time="0.705">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Financial Module Questions" name="should retrieve financial questions by category" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Financial Module Questions" name="should retrieve cash flow planning questions" time="0.002">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Operations Module Questions" name="should retrieve operations questions by category" time="0.03">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Operations Module Questions" name="should retrieve scheduling questions" time="0.017">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Staffing Module Questions" name="should retrieve staffing questions by category" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Staffing Module Questions" name="should retrieve professional development questions" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Technology Module Questions" name="should retrieve technology questions by category" time="0.002">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Technology Module Questions" name="should retrieve data security questions" time="0.002">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Patient Care Module Questions" name="should retrieve patient care questions by category" time="0.009">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Patient Care Module Questions" name="should retrieve outcomes tracking questions" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Filtering Questions Across Multiple Modules" name="should filter questions by practice size across modules" time="0.003">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Filtering Questions Across Multiple Modules" name="should filter questions by discipline across modules" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Filtering Questions Across Multiple Modules" name="should filter questions by multiple criteria across modules" time="0">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Question Types Across Modules" name="should retrieve multiple choice questions across modules" time="0.002">
+    </testcase>
+    <testcase classname="QuestionService - All Modules › Question Types Across Modules" name="should retrieve numeric questions across modules" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ResultsPresentation" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.398" tests="2">
+    <testcase classname="ResultsPresentation" name="should render results presentation correctly" time="0.175">
+    </testcase>
+    <testcase classname="ResultsPresentation" name="should show recommendation details when clicked" time="0.025">
+    </testcase>
+  </testsuite>
+  <testsuite name="ResearchDocumentationService - Integration" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.301" tests="9">
+    <testcase classname="ResearchDocumentationService - Integration › Research Finding Management" name="should add and retrieve research findings" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Research Finding Management" name="should get findings by category" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Research Finding Management" name="should get findings by discipline" time="0.001">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Research Summary Generation" name="should generate research summary" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Research Summary Generation" name="should identify research gaps" time="0">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Research Export" name="should export findings to markdown" time="0.02">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Research Export" name="should export findings to json" time="0.001">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Validation" name="should validate research finding structure" time="0.02">
+    </testcase>
+    <testcase classname="ResearchDocumentationService - Integration › Validation" name="should validate disciplines" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ModuleService - Integration" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.22" tests="9">
+    <testcase classname="ModuleService - Integration › Module Management" name="should retrieve all modules" time="0">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Management" name="should retrieve a specific module" time="0">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Management" name="should handle module not found" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Filtering" name="should filter modules by category" time="0">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Filtering" name="should filter modules by discipline" time="0">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Filtering" name="should filter modules by practice size" time="0">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Filtering" name="should handle combined filters" time="0">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Validation" name="should validate module structure" time="0.001">
+    </testcase>
+    <testcase classname="ModuleService - Integration › Module Validation" name="should throw error for invalid module" time="0.013">
+    </testcase>
+  </testsuite>
+  <testsuite name="QuestionnaireNavigation" errors="0" failures="2" skipped="0" timestamp="2025-03-29T09:09:22" time="7.023" tests="9">
+    <testcase classname="QuestionnaireNavigation › Module Navigation" name="renders module navigation items with progress indicators" time="0.051">
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Module Navigation" name="displays locked state for modules with unmet prerequisites" time="0.007">
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Module Navigation" name="allows navigation to unlocked modules" time="0.012">
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Time and Progress Display" name="displays overall assessment progress" time="0.012">
+      <failure>TestingLibraryElementError: Found multiple elements with the text: /0%/
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+&lt;span&gt;
+  Total Progress: 
+  0
+  %
+&lt;/span&gt;
+
+Ignored nodes: comments, script, style
+&lt;span
+  class=&quot;progress&quot;
+&gt;
+  0
+  %
+&lt;/span&gt;
+
+Ignored nodes: comments, script, style
+&lt;span
+  class=&quot;progress&quot;
+&gt;
+  0
+  %
+&lt;/span&gt;
+
+Ignored nodes: comments, script, style
+&lt;span
+  class=&quot;progress&quot;
+&gt;
+  0
+  %
+&lt;/span&gt;
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;nav
+      aria-label=&quot;Assessment Navigation&quot;
+      class=&quot;questionnaire-navigation&quot;
+      role=&quot;navigation&quot;
+    &gt;
+      &lt;div
+        class=&quot;progress-overview&quot;
+      &gt;
+        &lt;div
+          class=&quot;total-progress&quot;
+        &gt;
+          &lt;span&gt;
+            Total Progress: 
+            0
+            %
+          &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div
+          class=&quot;time-remaining&quot;
+        &gt;
+          &lt;span&gt;
+            Time Remaining: 
+            25
+             min
+          &lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;ul
+        aria-label=&quot;Assessment Modules&quot;
+        class=&quot;module-list&quot;
+        role=&quot;list&quot;
+      &gt;
+        &lt;li
+          aria-label=&quot;Module 1 - Available&quot;
+          aria-live=&quot;polite&quot;
+          data-testid=&quot;module-item-module1&quot;
+          role=&quot;listitem&quot;
+        &gt;
+          &lt;button
+            aria-disabled=&quot;false&quot;
+            class=&quot;module-button active &quot;
+            data-locked=&quot;false&quot;
+            data-testid=&quot;module-button-module1&quot;
+            tabindex=&quot;0&quot;
+            type=&quot;button&quot;
+          &gt;
+            &lt;div
+              class=&quot;module-info&quot;
+            &gt;
+              &lt;h3&gt;
+                Module 1
+              &lt;/h3&gt;
+              &lt;div
+                class=&quot;module-meta&quot;
+              &gt;
+                &lt;span
+                  class=&quot;time&quot;
+                &gt;
+                  30
+                   min
+                &lt;/span&gt;
+                &lt;span
+                  class=&quot;progress&quot;
+                &gt;
+                  0
+                  %
+                &lt;/span&gt;
+                &lt;span
+                  class=&quot;questions&quot;
+                &gt;
+                  0
+                  /
+                  3
+                   questions
+                &lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/button&gt;
+        &lt;/li&gt;
+        &lt;li
+          aria-label=&quot;Module 2 - Available&quot;
+          aria-live=&quot;polite&quot;
+          data-testid=&quot;module-item-module2&quot;
+          role=&quot;listitem&quot;
+        &gt;
+          &lt;button
+            aria-disabled=&quot;false&quot;
+            class=&quot;module-button  &quot;
+            data-locked=&quot;false&quot;
+            data-testid=&quot;module-button-module2&quot;
+            tabindex=&quot;0&quot;
+            type=&quot;button&quot;
+          &gt;
+            &lt;div
+              class=&quot;module-info&quot;
+            &gt;
+              &lt;h3&gt;
+                Module 2
+              &lt;/h3&gt;
+              &lt;div
+                class=&quot;module-meta&quot;
+              &gt;
+                &lt;span
+                  class=&quot;time&quot;
+                &gt;
+                  30
+                   min
+                &lt;/span&gt;
+                &lt;span
+                  class=&quot;progress&quot;
+                &gt;
+                  0
+                  %
+                &lt;/span&gt;
+                &lt;span
+                  class=&quot;questions&quot;
+                &gt;
+                  0
+                  /
+                  3
+                   questions
+                &lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/button&gt;
+        &lt;/li&gt;
+        &lt;li
+          aria-label=&quot;Module 3 - Available&quot;
+          aria-live=&quot;polite&quot;
+          data-testid=&quot;module-item-module3&quot;
+          role=&quot;listitem&quot;
+        &gt;
+          &lt;button
+            aria-disabled=&quot;false&quot;
+            class=&quot;module-button  &quot;
+            data-locked=&quot;false&quot;
+            data-testid=&quot;module-button-module3&quot;
+            tabindex=&quot;0&quot;
+            type=&quot;button&quot;
+          &gt;
+            &lt;div
+              class=&quot;module-info&quot;
+            &gt;
+              &lt;h3&gt;
+                Module 3
+              &lt;/h3&gt;
+              &lt;div
+                class=&quot;module-meta&quot;
+              &gt;
+                &lt;span
+                  class=&quot;time&quot;
+                &gt;
+                  30
+                   min
+                &lt;/span&gt;
+                &lt;span
+                  class=&quot;progress&quot;
+                &gt;
+                  0
+                  %
+                &lt;/span&gt;
+                &lt;span
+                  class=&quot;questions&quot;
+                &gt;
+                  0
+                  /
+                  3
+                   questions
+                &lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/button&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+    at Object.getElementError (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:37:19)
+    at getElementError (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:20:35)
+    at getMultipleElementsFoundError (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:23:10)
+    at /Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+    at /Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/integration/components/QuestionnaireNavigation.integration.test.tsx:86:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Time and Progress Display" name="displays estimated completion time for each module" time="0.009">
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Responsive Design" name="renders mobile menu on small screens" time="0.144">
+      <failure>TestingLibraryElementError: Unable to find an accessible element with the role &quot;list&quot;
+
+Here are the accessible roles:
+
+  navigation:
+
+  Name &quot;Assessment Navigation&quot;:
+  &lt;nav
+    aria-label=&quot;Assessment Navigation&quot;
+    class=&quot;questionnaire-navigation&quot;
+    role=&quot;navigation&quot;
+  /&gt;
+
+  --------------------------------------------------
+  button:
+
+  Name &quot;Toggle navigation menu&quot;:
+  &lt;button
+    aria-controls=&quot;mobile-menu&quot;
+    aria-expanded=&quot;false&quot;
+    class=&quot;mobile-menu-button&quot;
+    data-testid=&quot;mobile-menu-button&quot;
+  /&gt;
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;nav
+      aria-label=&quot;Assessment Navigation&quot;
+      class=&quot;questionnaire-navigation&quot;
+      role=&quot;navigation&quot;
+    &gt;
+      &lt;div
+        class=&quot;mobile-navigation&quot;
+      &gt;
+        &lt;button
+          aria-controls=&quot;mobile-menu&quot;
+          aria-expanded=&quot;false&quot;
+          class=&quot;mobile-menu-button&quot;
+          data-testid=&quot;mobile-menu-button&quot;
+        &gt;
+          &lt;span
+            aria-hidden=&quot;true&quot;
+            class=&quot;menu-icon&quot;
+          &gt;
+            ☰
+          &lt;/span&gt;
+          &lt;span
+            class=&quot;sr-only&quot;
+          &gt;
+            Toggle navigation menu
+          &lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/nav&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+    at Object.getElementError (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:37:19)
+    at /Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+    at /Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+    at /Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/integration/components/QuestionnaireNavigation.integration.test.tsx:123:33)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Accessibility" name="supports keyboard navigation" time="0.038">
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Accessibility" name="provides appropriate ARIA labels and roles" time="0.135">
+    </testcase>
+    <testcase classname="QuestionnaireNavigation › Accessibility" name="announces module status changes" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="Business Area Interconnectedness" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.248" tests="2">
+    <testcase classname="Business Area Interconnectedness › Business Impact Analysis" name="verifies critical business area impacts" time="0.001">
+    </testcase>
+    <testcase classname="Business Area Interconnectedness › Cross-Module Analysis" name="identifies highly interconnected questions" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="AssessmentError" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.203" tests="3">
+    <testcase classname="AssessmentError" name="should create an error with message and code" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentError" name="should store original error when provided" time="0.001">
+    </testcase>
+    <testcase classname="AssessmentError" name="should be instanceof Error" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="OfflineService" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.194" tests="9">
+    <testcase classname="OfflineService › storeOfflineData" name="should store data in localStorage" time="0.001">
+    </testcase>
+    <testcase classname="OfflineService › storeOfflineData" name="should append to existing data" time="0.001">
+    </testcase>
+    <testcase classname="OfflineService › getOfflineData" name="should retrieve stored data by key" time="0">
+    </testcase>
+    <testcase classname="OfflineService › getOfflineData" name="should return undefined for non-existent key" time="0.001">
+    </testcase>
+    <testcase classname="OfflineService › getAllOfflineData" name="should retrieve all stored data" time="0">
+    </testcase>
+    <testcase classname="OfflineService › getAllOfflineData" name="should return empty array when no data exists" time="0.001">
+    </testcase>
+    <testcase classname="OfflineService › clearOfflineData" name="should remove all stored data" time="0.001">
+    </testcase>
+    <testcase classname="OfflineService › removeOfflineData" name="should remove specific key from stored data" time="0.001">
+    </testcase>
+    <testcase classname="OfflineService › removeOfflineData" name="should handle removing non-existent key" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="QuestionService - Compliance Questions" errors="0" failures="0" skipped="0" timestamp="2025-03-29T09:09:29" time="0.29" tests="23">
+    <testcase classname="QuestionService - Compliance Questions › Compliance Questions Loading" name="should load all compliance questions correctly" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Compliance Questions › Compliance Questions Loading" name="should include regulatory compliance questions" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Compliance Questions › Regulatory Compliance Questions" name="should retrieve privacy training question by id" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Compliance Questions › Regulatory Compliance Questions" name="should retrieve workplace safety question by id" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Compliance Questions › Regulatory Compliance Questions" name="should retrieve CPD question by id" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Compliance Questions › Question Filtering" name="should filter compliance questions by practice size" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Compliance Questions › Question Filtering" name="should filter compliance questions by discipline" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Compliance Questions › Country-Specific Content" name="should return Australia-specific content for compliance questions" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should create a valid question" time="0.008">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for question without required fields" time="0.011">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for invalid question type" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for invalid question category" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for question without applicable disciplines" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for question without applicable practice sizes" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for multiple choice question without options" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for numeric question without min/max score" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for numeric question with invalid min/max range" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Creation and Validation" name="should throw error for question with invalid weight" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Retrieval Methods" name="should retrieve questions by module" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Retrieval Methods" name="should retrieve questions by type" time="0.001">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Retrieval Methods" name="should retrieve questions by practice size" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Retrieval Methods" name="should retrieve discipline-specific questions" time="0">
+    </testcase>
+    <testcase classname="QuestionService - Core Functionality › Question Retrieval Methods" name="should retrieve questions by discipline including universal" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="AssessmentService" errors="0" failures="8" skipped="0" timestamp="2025-03-29T09:09:22" time="9.486" tests="8">
+    <testcase classname="AssessmentService › createAssessment" name="should create a new assessment" time="0.014">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:45:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentService › createAssessment" name="should handle creation errors" time="0.001">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:71:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentService › getAssessment" name="should get an assessment by id" time="0.001">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:104:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentService › getAssessment" name="should handle not found errors" time="0.002">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:130:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentService › updateAssessment" name="should update an assessment" time="0">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:156:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentService › updateAssessment" name="should handle update errors" time="0">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:183:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentService › getAnswers" name="should get answers for an assessment" time="0.001">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:203:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="AssessmentService › getAnswers" name="should handle errors when getting answers" time="0.002">
+      <failure>TypeError: Cannot read properties of undefined (reading &apos;from&apos;)
+    at Object.&lt;anonymous&gt; (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/tests/unit/services/AssessmentService.test.ts:229:21)
+    at Promise.then.completed (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at _runTestsForDescribeBlock (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:121:9)
+    at run (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/Users/heartofgold/Documents/Cursor Projects/cursor-auto-rules-agile-workflow/node_modules/jest-runner/build/testWorker.js:106:12)</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { DatabaseSchema } from '../../client/src/types/database';
+import { DatabaseSchema } from '@client/types/database';
 
 export interface TestUser {
   id: string;

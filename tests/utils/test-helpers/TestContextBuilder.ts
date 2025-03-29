@@ -1,8 +1,8 @@
-import { AssessmentFlowController } from '../../../client/src/controllers/AssessmentFlowController';
-import { AssessmentService } from '../../../client/src/services/AssessmentService';
-import { practiceService, assessmentModuleService, assessmentResponseService } from '../../../client/src/services/database';
+import { AssessmentFlowController } from '@client/controllers/AssessmentFlowController';
+import { AssessmentService } from '@client/services/AssessmentService';
+import { practiceService, assessmentModuleService, assessmentResponseService } from '@client/services/database';
 import { createMockService } from '../mock-helpers/create-mock-service';
-import { ModuleCategory, QuestionModule, Question, QuestionType } from '../../../client/src/types/assessment';
+import { ModuleCategory, QuestionModule, Question, QuestionType } from '@client/types/assessment';
 import { MockDataFactory } from './MockDataFactory';
 
 export interface TestModuleOptions {

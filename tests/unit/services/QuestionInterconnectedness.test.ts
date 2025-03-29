@@ -1,9 +1,9 @@
 import '@jest/globals';
-import { QuestionService } from '../../../server/src/services/QuestionService';
-import { Question } from '../../../server/src/models/Question';
-import { AssessmentCategory } from '../../../server/src/models/AssessmentCategory';
-import { loadAllQuestions } from '../../../server/src/data/questions';
-import { BusinessImpact, businessImpacts } from '../../../server/src/data/businessImpacts';
+import { QuestionService } from '@server/services/QuestionService';
+import { Question } from '@server/models/Question';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { loadAllQuestions } from '@server/data/questions';
+import { BusinessImpact, businessImpacts } from '@server/data/businessImpacts';
 
 /**
  * Helper function to find questions that match specific keywords

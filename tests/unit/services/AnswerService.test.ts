@@ -1,17 +1,16 @@
 import { jest } from '@jest/globals';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { DatabaseSchema } from '../../../../client/src/types/database';
-import { createMockSupabaseClient } from '../../../__mocks__/services/supabase/client';
-import { AnswerService } from '../../../../client/src/services/assessment/AnswerService';
-import { generateMockAnswer, generateMockResponse } from '../../../__mocks__/data/generators';
-import { OfflineService } from '../../../../client/src/services/assessment/OfflineService';
-import { createMockOfflineService } from '../../../__mocks__/services/offline';
-import { MockFilterBuilder, MockQueryBuilder } from '../../../__mocks__/services/supabase/types';
-import { AssessmentError } from '../../../../client/src/services/assessment/AssessmentError';
+import { DatabaseSchema, AssessmentAnswer as DBAssessmentAnswer } from '@client/types/database';
+import { createMockSupabaseClient, createMockOfflineService } from '../../utils/test-helpers';
+import { AnswerService } from '@client/services/assessment/AnswerService';
+import { generateMockAnswer, generateMockResponse, generateMockId } from '@__mocks__/data/generators';
+import { OfflineService } from '@client/services/assessment/OfflineService';
+import { MockFilterBuilder, MockQueryBuilder } from '@__mocks__/services/supabase/types';
+import { AssessmentError } from '@client/services/assessment/AssessmentError';
 
 describe('AnswerService', () => {
-  let mockSupabaseClient: jest.Mocked<SupabaseClient<DatabaseSchema>>;
-  let mockOfflineService: jest.Mocked<OfflineService>;
+  let mockSupabaseClient: ReturnType<typeof createMockSupabaseClient>;
+  let mockOfflineService: ReturnType<typeof createMockOfflineService>;
   let answerService: AnswerService;
 
   beforeEach(() => {
@@ -21,74 +20,79 @@ describe('AnswerService', () => {
   });
 
   describe('saveAnswer', () => {
-    it('should save a new answer when online', async () => {
-      const mockAnswer = generateMockAnswer();
-      const mockResponse = generateMockResponse(mockAnswer);
-      mockOfflineService.isOnline = true;
-      const queryBuilder = mockSupabaseClient.from('answers') as unknown as MockQueryBuilder<'answers'>;
-      const filterBuilder = queryBuilder.insert(mockAnswer) as unknown as MockFilterBuilder<'answers'>;
-      filterBuilder.single().mockResolvedValue(mockResponse);
-
-      const result = await answerService.saveAnswer(mockAnswer);
-
-      expect(queryBuilder.insert).toHaveBeenCalledWith(mockAnswer);
-      expect(filterBuilder.single).toHaveBeenCalled();
-      expect(result).toEqual(mockAnswer);
-    });
-
-    it('should throw an error if answer creation fails', async () => {
-      const mockAnswer = generateMockAnswer();
-      const error = new Error('Failed to save answer');
-      mockOfflineService.isOnline = true;
-      const queryBuilder = mockSupabaseClient.from('answers') as unknown as MockQueryBuilder<'answers'>;
-      const filterBuilder = queryBuilder.insert(mockAnswer) as unknown as MockFilterBuilder<'answers'>;
-      filterBuilder.single().mockRejectedValue(error);
-
-      await expect(answerService.saveAnswer(mockAnswer)).rejects.toThrow(error);
-    });
-
-    it('should store answer offline when offline', async () => {
-      const mockAnswer = generateMockAnswer();
-      Object.defineProperty(mockOfflineService, 'isOnline', {
-        get: jest.fn().mockReturnValue(false),
-        configurable: true
-      });
-      await answerService.saveAnswer(mockAnswer);
-      expect(mockOfflineService.storeOfflineData).toHaveBeenCalledWith(expect.stringMatching(/^answer_\d+$/), mockAnswer);
-    });
-
-    it('should throw AssessmentError when validation fails', async () => {
-      const invalidAnswer = {
-        // Missing required fields
+    it('should save answer when online', async () => {
+      mockOfflineService.isOnline.mockReturnValue(true);
+      const answer = {
+        assessment_id: 'test-assessment',
+        question_id: 'test-question',
+        answer: { value: 'test' }
       };
-      mockOfflineService.isOnline = true;
+
+      await answerService.saveAnswer(answer);
+      expect(mockOfflineService.isOnline).toHaveBeenCalled();
+    });
+
+    it('should save answer offline when not online', async () => {
+      mockOfflineService.isOnline.mockReturnValue(false);
+      const answer = {
+        assessment_id: 'test-assessment',
+        question_id: 'test-question',
+        answer: { value: 'test' }
+      };
+
+      await answerService.saveAnswer(answer);
+      expect(mockOfflineService.storeOfflineData).toHaveBeenCalled();
+    });
+
+    it('should throw error for invalid answer', async () => {
+      mockOfflineService.isOnline.mockReturnValue(true);
+      const invalidAnswer = {
+        assessment_id: 'test-assessment',
+        question_id: 'test-question',
+        answer: { value: 'test' }
+      };
 
       await expect(answerService.saveAnswer(invalidAnswer))
-        .rejects.toThrow(AssessmentError);
+        .rejects.toThrow('Invalid answer data');
     });
 
-    it('should throw AssessmentError when offline and validation fails', async () => {
-      const invalidAnswer = {
-        // Missing required fields
+    it('should handle network errors', async () => {
+      mockOfflineService.isOnline.mockReturnValue(true);
+      const answer = {
+        assessment_id: 'test-assessment',
+        question_id: 'test-question',
+        answer: { value: 'test' }
       };
-      Object.defineProperty(mockOfflineService, 'isOnline', {
-        get: jest.fn().mockReturnValue(false),
-        configurable: true
-      });
 
-      await expect(answerService.saveAnswer(invalidAnswer))
-        .rejects.toThrow(AssessmentError);
+      const mockClient = createMockSupabaseClient({ simulateNetworkError: true });
+      answerService = new AnswerService(mockClient, mockOfflineService);
+
+      await expect(answerService.saveAnswer(answer))
+        .rejects.toThrow('Network error');
+    });
+  });
+
+  describe('getAnswers', () => {
+    it('should get answers when online', async () => {
+      mockOfflineService.isOnline.mockReturnValue(true);
+      await answerService.getAnswers('test-assessment');
+      expect(mockOfflineService.isOnline).toHaveBeenCalled();
+    });
+
+    it('should get answers from offline storage when not online', async () => {
+      mockOfflineService.isOnline.mockReturnValue(false);
+      await answerService.getAnswers('test-assessment');
+      expect(mockOfflineService.getOfflineData).toHaveBeenCalled();
     });
   });
 
   describe('updateAnswer', () => {
     it('should update an existing answer when online', async () => {
       const mockAnswer = generateMockAnswer();
-      const mockResponse = generateMockResponse(mockAnswer);
-      mockOfflineService.isOnline = true;
-      const queryBuilder = mockSupabaseClient.from('answers') as unknown as MockQueryBuilder<'answers'>;
-      const filterBuilder = queryBuilder.update(mockAnswer).eq('id', mockAnswer.id) as unknown as MockFilterBuilder<'answers'>;
-      filterBuilder.single().mockResolvedValue(mockResponse);
+      mockOfflineService.isOnline.mockReturnValue(true);
+      const queryBuilder = mockSupabaseClient.from('assessment_answers') as unknown as MockQueryBuilder<'assessment_answers'>;
+      const filterBuilder = queryBuilder.update(mockAnswer).eq('id', mockAnswer.id) as unknown as MockFilterBuilder<'assessment_answers'>;
+      filterBuilder.single().mockResolvedValue(generateMockResponse(mockAnswer));
 
       const result = await answerService.updateAnswer(mockAnswer.id, mockAnswer);
 
@@ -101,9 +105,9 @@ describe('AnswerService', () => {
     it('should throw an error if answer update fails', async () => {
       const mockAnswer = generateMockAnswer();
       const error = new Error('Failed to update answer');
-      mockOfflineService.isOnline = true;
-      const queryBuilder = mockSupabaseClient.from('answers') as unknown as MockQueryBuilder<'answers'>;
-      const filterBuilder = queryBuilder.update(mockAnswer).eq('id', mockAnswer.id) as unknown as MockFilterBuilder<'answers'>;
+      mockOfflineService.isOnline.mockReturnValue(true);
+      const queryBuilder = mockSupabaseClient.from('assessment_answers') as unknown as MockQueryBuilder<'assessment_answers'>;
+      const filterBuilder = queryBuilder.update(mockAnswer).eq('id', mockAnswer.id) as unknown as MockFilterBuilder<'assessment_answers'>;
       filterBuilder.single().mockRejectedValue(error);
 
       await expect(answerService.updateAnswer(mockAnswer.id, mockAnswer)).rejects.toThrow(error);
@@ -111,10 +115,7 @@ describe('AnswerService', () => {
 
     it('should store answer offline when offline', async () => {
       const mockAnswer = generateMockAnswer();
-      Object.defineProperty(mockOfflineService, 'isOnline', {
-        get: jest.fn().mockReturnValue(false),
-        configurable: true
-      });
+      mockOfflineService.isOnline.mockReturnValue(false);
       mockOfflineService.getOfflineData.mockReturnValue(mockAnswer);
       await answerService.updateAnswer(mockAnswer.id, mockAnswer);
       expect(mockOfflineService.storeOfflineData).toHaveBeenCalledWith(`answer_${mockAnswer.id}`, mockAnswer);
@@ -122,9 +123,11 @@ describe('AnswerService', () => {
 
     it('should throw AssessmentError when validation fails', async () => {
       const invalidAnswer = {
-        // Missing required fields
+        assessment_id: 'test-assessment',
+        question_id: 'test-question',
+        answer: { value: 'test' }
       };
-      mockOfflineService.isOnline = true;
+      mockOfflineService.isOnline.mockReturnValue(true);
 
       await expect(answerService.updateAnswer('1', invalidAnswer))
         .rejects.toThrow(AssessmentError);
@@ -132,12 +135,11 @@ describe('AnswerService', () => {
 
     it('should throw AssessmentError when offline and validation fails', async () => {
       const invalidAnswer = {
-        // Missing required fields
+        assessment_id: 'test-assessment',
+        question_id: 'test-question',
+        answer: { value: 'test' }
       };
-      Object.defineProperty(mockOfflineService, 'isOnline', {
-        get: jest.fn().mockReturnValue(false),
-        configurable: true
-      });
+      mockOfflineService.isOnline.mockReturnValue(false);
 
       await expect(answerService.updateAnswer('1', invalidAnswer))
         .rejects.toThrow(AssessmentError);
@@ -145,14 +147,81 @@ describe('AnswerService', () => {
 
     it('should throw AssessmentError when offline and answer not found', async () => {
       const answer = generateMockAnswer();
-      Object.defineProperty(mockOfflineService, 'isOnline', {
-        get: jest.fn().mockReturnValue(false),
-        configurable: true
-      });
+      mockOfflineService.isOnline.mockReturnValue(false);
       mockOfflineService.getOfflineData.mockReturnValue(null);
 
       await expect(answerService.updateAnswer('1', answer))
         .rejects.toThrow(AssessmentError);
+    });
+  });
+
+  describe('Answer Management', () => {
+    const answer = {
+      assessment_id: generateMockId(),
+      question_id: generateMockId(),
+      answer: { value: 'test', type: 'text' },
+      metadata: { source: 'test', timestamp: new Date().toISOString() }
+    };
+
+    it('should save answer in offline mode', async () => {
+      mockOfflineService.isOnline.mockReturnValue(false);
+      const offlineId = generateMockId();
+      jest.spyOn(Date, 'now').mockReturnValue(parseInt(offlineId));
+      await answerService.saveAnswer(answer);
+      expect(mockOfflineService.storeOfflineData).toHaveBeenCalledWith(`answer_${offlineId}`, {
+        ...answer,
+        id: offlineId,
+        created_at: new Date(parseInt(offlineId)).toISOString(),
+        updated_at: new Date(parseInt(offlineId)).toISOString()
+      });
+    });
+
+    it('should handle invalid answers', async () => {
+      const invalidAnswer = {
+        assessment_id: generateMockId(),
+        question_id: generateMockId(),
+        answer: { value: null, type: 'text' }
+      };
+      await expect(answerService.saveAnswer(invalidAnswer)).rejects.toThrow();
+    });
+
+    it('should save answer in online mode', async () => {
+      mockOfflineService.isOnline.mockReturnValue(true);
+      const mockResponse = generateMockResponse({
+        ...answer,
+        id: generateMockId(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as DBAssessmentAnswer);
+
+      const mockQueryBuilder = {
+        insert: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue(mockResponse)
+      } as any;
+
+      const mockClient = {
+        from: jest.fn().mockReturnValue(mockQueryBuilder)
+      } as any;
+
+      answerService = new AnswerService(mockClient, mockOfflineService);
+      await answerService.saveAnswer(answer);
+      expect(mockClient.from).toHaveBeenCalledWith('assessment_answers');
+      expect(mockQueryBuilder.insert).toHaveBeenCalledWith(answer);
+    });
+
+    it('should handle network errors', async () => {
+      mockOfflineService.isOnline.mockReturnValue(true);
+      const mockQueryBuilder = {
+        insert: jest.fn().mockReturnThis(),
+        single: jest.fn().mockRejectedValue(new Error('Network error'))
+      } as any;
+
+      const mockClient = {
+        from: jest.fn().mockReturnValue(mockQueryBuilder)
+      } as any;
+
+      answerService = new AnswerService(mockClient, mockOfflineService);
+      await expect(answerService.saveAnswer(answer)).rejects.toThrow('Failed to save answer');
     });
   });
 }); 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { QuestionModule } from '../components/assessment/QuestionModule';
-import { QuestionnaireNavigation } from '../components/assessment/QuestionnaireNavigation';
-import { PracticeSizeSelector } from '../components/assessment/PracticeSizeSelector';
-import { AssessmentCategory, Module, ModuleStatus, Question, QuestionType } from '../types/assessment.types';
+import { QuestionModule } from '@components/assessment/QuestionModule';
+import { QuestionnaireNavigation } from '@components/assessment/QuestionnaireNavigation';
+import { PracticeSizeSelector } from '@components/assessment/PracticeSizeSelector';
+import { AssessmentCategory, Module, ModuleStatus, Question, QuestionType, DisciplineType, PracticeSize } from '@/types/assessment.types';
 import './AssessmentPage.css';
 
 interface ModuleContent {
@@ -11,34 +11,6 @@ interface ModuleContent {
   description: string;
   questions: Question[];
 }
-
-// Move static data outside component
-const INITIAL_NAVIGATION_MODULES: Module[] = [
-  {
-    id: 'mod-financial-001',
-    name: 'Financial Health Assessment',
-    description: 'This module evaluates your practice\'s financial health including revenue tracking, expense management, and cash flow planning.',
-    estimatedTimeMinutes: 15,
-    categories: [AssessmentCategory.FINANCIAL],
-    status: ModuleStatus.IN_PROGRESS,
-    progress: 50,
-    prerequisites: [],
-    completedQuestions: 1,
-    totalQuestions: 2
-  },
-  {
-    id: 'mod-compliance-001',
-    name: 'Compliance Risk Assessment',
-    description: 'This module evaluates your practice\'s compliance with healthcare regulations and risk management procedures.',
-    estimatedTimeMinutes: 20,
-    categories: [AssessmentCategory.COMPLIANCE],
-    status: ModuleStatus.LOCKED,
-    progress: 0,
-    prerequisites: ['mod-financial-001'],
-    completedQuestions: 0,
-    totalQuestions: 2
-  }
-];
 
 const INITIAL_MODULE_CONTENTS: ModuleContent[] = [
   {
@@ -54,6 +26,11 @@ const INITIAL_MODULE_CONTENTS: ModuleContent[] = [
         required: true,
         weight: 1,
         dependencies: [],
+        category: AssessmentCategory.FINANCIAL,
+        moduleId: 'mod-financial-001',
+        applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+        universalQuestion: true,
+        applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM, PracticeSize.LARGE],
         options: [
           { id: 'fin-cash-001-opt1', value: 'excellent', score: 5, text: '>90% of AR under 30 days, <2% over 90 days' },
           { id: 'fin-cash-001-opt2', value: 'good', score: 4, text: '>80% of AR under 30 days, <5% over 90 days' },
@@ -70,6 +47,11 @@ const INITIAL_MODULE_CONTENTS: ModuleContent[] = [
         required: true,
         weight: 1,
         dependencies: [],
+        category: AssessmentCategory.FINANCIAL,
+        moduleId: 'mod-financial-001',
+        applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+        universalQuestion: true,
+        applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM, PracticeSize.LARGE],
         options: [
           { id: 'fin-cash-002-opt1', value: 'robust', score: 5, text: '≥6 months of operating expenses' },
           { id: 'fin-cash-002-opt2', value: 'strong', score: 4, text: '4-5 months of operating expenses' },
@@ -93,6 +75,11 @@ const INITIAL_MODULE_CONTENTS: ModuleContent[] = [
         required: true,
         weight: 1,
         dependencies: [],
+        category: AssessmentCategory.COMPLIANCE,
+        moduleId: 'mod-compliance-001',
+        applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+        universalQuestion: true,
+        applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM, PracticeSize.LARGE],
         options: [
           { id: 'comp-risk-001-opt1', value: 'recent_external', score: 5, text: 'Within past year by qualified external party' },
           { id: 'comp-risk-001-opt2', value: 'recent_internal', score: 3, text: 'Within past year internally' },
@@ -109,6 +96,11 @@ const INITIAL_MODULE_CONTENTS: ModuleContent[] = [
         required: true,
         weight: 1,
         dependencies: [],
+        category: AssessmentCategory.COMPLIANCE,
+        moduleId: 'mod-compliance-001',
+        applicableDisciplines: [DisciplineType.PHYSIOTHERAPY],
+        universalQuestion: true,
+        applicablePracticeSizes: [PracticeSize.SMALL, PracticeSize.MEDIUM, PracticeSize.LARGE],
         options: [
           { id: 'comp-risk-002-opt1', value: 'comprehensive', score: 5, text: 'Yes, comprehensive plan with regular testing and updates' },
           { id: 'comp-risk-002-opt2', value: 'documented', score: 3, text: 'Yes, documented plan but not regularly tested' },
@@ -117,6 +109,39 @@ const INITIAL_MODULE_CONTENTS: ModuleContent[] = [
         ]
       }
     ]
+  }
+];
+
+const INITIAL_NAVIGATION_MODULES: Module[] = [
+  {
+    id: 'mod-financial-001',
+    title: 'Financial Health Assessment',
+    name: 'Financial Health Assessment',
+    description: 'This module evaluates your practice\'s financial health including revenue tracking, expense management, and cash flow planning.',
+    estimatedTimeMinutes: 15,
+    categories: [AssessmentCategory.FINANCIAL],
+    status: ModuleStatus.IN_PROGRESS,
+    progress: 0,
+    prerequisites: [],
+    completedQuestions: 0,
+    totalQuestions: 2,
+    weight: 1,
+    questions: INITIAL_MODULE_CONTENTS[0].questions
+  },
+  {
+    id: 'mod-compliance-001',
+    title: 'Compliance Risk Assessment',
+    name: 'Compliance Risk Assessment',
+    description: 'This module evaluates your practice\'s compliance with healthcare regulations and risk management procedures.',
+    estimatedTimeMinutes: 20,
+    categories: [AssessmentCategory.COMPLIANCE],
+    status: ModuleStatus.LOCKED,
+    progress: 0,
+    prerequisites: ['mod-financial-001'],
+    completedQuestions: 0,
+    totalQuestions: 2,
+    weight: 1,
+    questions: INITIAL_MODULE_CONTENTS[1].questions
   }
 ];
 
@@ -179,7 +204,7 @@ const AssessmentPage: React.FC = () => {
         const progress = calculateModuleProgress(module.id);
         const isComplete = progress === 100;
         const prerequisites = module.prerequisites || [];
-        const prereqsComplete = prerequisites.every(prereq => 
+        const prereqsComplete = prerequisites.every((prereq: string) => 
           calculateModuleProgress(prereq) === 100
         );
 
@@ -199,13 +224,22 @@ const AssessmentPage: React.FC = () => {
   // Handle module selection
   const handleModuleSelect = useCallback((moduleId: string) => {
     const module = navigationModules.find(m => m.id === moduleId);
-    if (!module || module.status === ModuleStatus.LOCKED) {
+    if (!module) return;
+
+    // Check if module is locked
+    const prerequisites = module.prerequisites || [];
+    const prereqsComplete = prerequisites.every(prereq => 
+      calculateModuleProgress(prereq) === 100
+    );
+
+    if (!prereqsComplete) {
       // Don't change current module if trying to select a locked one
       return;
     }
+
     setCurrentModule(moduleId);
     setCurrentCategory(module.categories[0]);
-  }, [navigationModules]);
+  }, [navigationModules, calculateModuleProgress]);
 
   // Handle answer changes
   const handleAnswerChange = useCallback((questionId: string, value: string | number) => {
@@ -280,6 +314,10 @@ const AssessmentPage: React.FC = () => {
     }
   }, []);
 
+  // Handle undefined estimatedTimeMinutes in navigation
+  const totalEstimatedTime = navigationModules.reduce((acc, m) => acc + (m.estimatedTimeMinutes || 0), 0);
+  const remainingTime = navigationModules.reduce((acc, m) => acc + (m.status === ModuleStatus.COMPLETED ? 0 : (m.estimatedTimeMinutes || 0)), 0);
+
   return (
     <div className="assessment-page">
       {!practiceSize && process.env.NODE_ENV !== 'test' ? (
@@ -297,8 +335,8 @@ const AssessmentPage: React.FC = () => {
               onModuleSelect={handleModuleSelect}
               currentCategory={currentCategory}
               onCategorySelect={setCurrentCategory}
-              totalEstimatedTime={navigationModules.reduce((acc, m) => acc + m.estimatedTimeMinutes, 0)}
-              remainingTime={navigationModules.reduce((acc, m) => acc + (m.status === ModuleStatus.COMPLETED ? 0 : m.estimatedTimeMinutes), 0)}
+              totalEstimatedTime={totalEstimatedTime}
+              remainingTime={remainingTime}
             />
           </header>
           <main className="assessment-content">

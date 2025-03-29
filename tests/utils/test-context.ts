@@ -1,7 +1,29 @@
 import { jest } from '@jest/globals';
 import { TestTransaction } from './test-isolation';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { DatabaseSchema } from '@client/types/database';
+import { AssessmentService } from '@client/services/AssessmentService';
+import { OfflineService } from '@client/services/assessment/OfflineService';
+import { createMockSupabaseClient } from '@__mocks__/services/supabase/client';
+import { createMockOfflineService } from './test-isolation';
+
+export interface TestContext {
+  mockSupabaseClient: jest.Mocked<SupabaseClient<DatabaseSchema>>;
+  mockOfflineService: jest.Mocked<OfflineService>;
+  assessmentService: AssessmentService;
+  controller?: any;
+  modules?: any[];
+}
 
 export interface TestContextOptions {
+  moduleOptions?: {
+    moduleCount: number;
+    questionsPerModule: number;
+  };
+  mockBehavior?: {
+    simulateError?: boolean;
+    simulateOffline?: boolean;
+  };
   setupFn?: () => Promise<void> | void;
   teardownFn?: () => Promise<void> | void;
   mockDate?: Date;
@@ -122,4 +144,47 @@ export function mockDate(date: string | Date): Date {
  */
 export function restoreDate(): void {
   jest.useRealTimers();
+}
+
+export const createTestContext = async (options: TestContextOptions = {}): Promise<TestContext> => {
+  const mockSupabaseClient = createMockSupabaseClient();
+  const mockOfflineService = createMockOfflineService();
+
+  const assessmentService = new AssessmentService(mockSupabaseClient);
+
+  const context: TestContext = {
+    mockSupabaseClient,
+    mockOfflineService,
+    assessmentService
+  };
+
+  if (options.moduleOptions) {
+    context.modules = createTestModules(options.moduleOptions);
+    context.controller = createTestController(context);
+  }
+
+  return context;
+};
+
+function createTestModules(options: TestContextOptions['moduleOptions']) {
+  const { moduleCount = 2, questionsPerModule = 2 } = options || {};
+  return Array.from({ length: moduleCount }, (_, i) => ({
+    id: `module${i + 1}`,
+    title: `Test Module ${i + 1}`,
+    questions: Array.from({ length: questionsPerModule }, (_, j) => ({
+      id: `q${i + 1}-${j + 1}`,
+      text: `Test Question ${j + 1} in Module ${i + 1}`,
+      type: 'multiple_choice'
+    }))
+  }));
+}
+
+function createTestController(context: TestContext) {
+  // Implementation depends on your controller class
+  return {
+    initialize: jest.fn(),
+    navigate: jest.fn(),
+    submit: jest.fn(),
+    getState: jest.fn()
+  };
 } 

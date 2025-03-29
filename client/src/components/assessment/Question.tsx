@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { QuestionType, QuestionOption as QuestionOptionType } from '../../types/assessment.types';
+import { QuestionType, QuestionOption } from '../../types/assessment';
 import './Question.css';
 
 interface QuestionProps {
@@ -7,7 +7,7 @@ interface QuestionProps {
   text: string;
   description?: string;
   type: QuestionType;
-  options?: QuestionOptionType[];
+  options?: QuestionOption[];
   value?: string | number;
   onChange: (value: string | number) => void;
 }
@@ -97,6 +97,7 @@ const Question = memo(({
                   value={option.value}
                   checked={value === option.value}
                   onChange={() => handleOptionChange(option.value)}
+                  aria-label={option.text}
                 />
                 <span className="likert-value">{option.value}</span>
                 <span className="likert-text">{option.text}</span>

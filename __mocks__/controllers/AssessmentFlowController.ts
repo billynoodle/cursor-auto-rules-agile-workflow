@@ -1,6 +1,6 @@
-import { AssessmentFlowController } from '../../../client/src/controllers/assessment/AssessmentFlowController';
+import { AssessmentFlowController } from '@client/controllers/assessment/AssessmentFlowController';
 import { createMockAssessment, createMockAnswerData } from '../data/assessment';
-import { Answer } from '../../../client/src/types/assessment';
+import { Answer } from '@client/types/assessment';
 
 export const createMockAssessmentFlowController = (): jest.Mocked<AssessmentFlowController> => ({
   initialize: jest.fn().mockImplementation(async () => {

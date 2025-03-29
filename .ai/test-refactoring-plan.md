@@ -201,7 +201,7 @@ Tasks:
    - External API clients
    - API responses
    - Request handlers
-   - API utilities
+   - API utilities  
 
 #### 2.2 Naming Conventions
 - Unit tests: `*.test.ts`
@@ -336,6 +336,11 @@ describe('AssessmentFlow', () => {
    - Create consistent interfaces
    - Document mock behaviors
    - Add type safety
+
+4. **Import Paths**
+   - Update import paths to use new structure
+   - Ensure all imports use aliases
+   - Add migration guides
 
 #### 3. Migration Strategy for Existing Tests
 

@@ -1,12 +1,12 @@
 import '@jest/globals';
-import { QuestionService } from '../../../server/src/services/QuestionService';
-import { Question } from '../../../server/src/models/Question';
-import { QuestionType } from '../../../server/src/models/QuestionType';
-import { AssessmentCategory } from '../../../server/src/models/AssessmentCategory';
-import { DisciplineType } from '../../../server/src/models/DisciplineType';
-import { PracticeSize } from '../../../server/src/models/PracticeSize';
-import { Country } from '../../../server/src/models/Country';
-import { loadAllQuestions } from '../../../server/src/data/questions';
+import { QuestionService } from '@server/services/QuestionService';
+import { Question } from '@server/models/Question';
+import { QuestionType } from '@server/models/QuestionType';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { DisciplineType } from '@server/models/DisciplineType';
+import { PracticeSize } from '@server/models/PracticeSize';
+import { Country } from '@server/models/Country';
+import { loadAllQuestions } from '@server/data/questions';
 
 // Import individual module question sets for specific testing
 import * as financial from '../../../server/src/data/questions/financial';
@@ -18,7 +18,7 @@ import * as marketing from '../../../server/src/data/questions/marketing';
 import * as compliance from '../../../server/src/data/questions/compliance';
 import * as facilities from '../../../server/src/data/questions/facilities';
 import * as geography from '../../../server/src/data/questions/geography';
-import * as automation from '../../../server/src/data/questions/automation';
+import * as automation from '@server/data/questions/automation';
 
 describe('QuestionService - All Modules', () => {
   let questionService: QuestionService;

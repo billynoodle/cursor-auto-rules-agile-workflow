@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { ResultsPresentation } from '../../../../client/src/components/assessment/ResultsPresentation';
+import { ResultsPresentation } from '@client/components/assessment/ResultsPresentation';
 
 describe('ResultsPresentation Component', () => {
   const mockResults = {

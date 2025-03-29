@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Question, QuestionOption, QuestionType } from '../../types/assessment.types';
+import { Question, QuestionOption, QuestionType } from '@/types/assessment.types';
 import './QuestionPresentation.css';
 
 interface QuestionPresentationProps {
@@ -141,7 +141,7 @@ export const QuestionPresentation: React.FC<QuestionPresentationProps> = ({
             {getWeightIndicator(question.weight)}
           </span>
         </h2>
-        {question.description && (
+        {question.helpText && (
           <div 
             id={descriptionId}
             className="help-text" 
@@ -151,7 +151,7 @@ export const QuestionPresentation: React.FC<QuestionPresentationProps> = ({
             onMouseLeave={() => setShowTooltip(false)}
           >
             <span className="visually-hidden">More information about this question</span>
-            <p>{question.description}</p>
+            <p>{question.helpText}</p>
           </div>
         )}
       </div>
@@ -167,8 +167,8 @@ export const QuestionPresentation: React.FC<QuestionPresentationProps> = ({
         </button>
       ) : (
         <>
-          {question.description && (
-            <p className="question-description">{question.description}</p>
+          {question.helpText && (
+            <p className="question-description">{question.helpText}</p>
           )}
           <div 
             className="options-container" 
@@ -179,7 +179,7 @@ export const QuestionPresentation: React.FC<QuestionPresentationProps> = ({
             {(!question.options || question.options.length === 0) ? (
               <p className="no-options-message">No options available</p>
             ) : (
-              question.options.map((option, index) => (
+              question.options.map((option: QuestionOption, index: number) => (
                 <div key={option.id} className="option">
                   <input
                     ref={index === 0 ? firstOptionRef : null}

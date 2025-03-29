@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Database } from '../types/supabase';
+import { Database } from '@types/supabase';
 
 /**
  * Service for practice-related database operations

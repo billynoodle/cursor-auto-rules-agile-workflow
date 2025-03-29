@@ -1,5 +1,5 @@
 import React from 'react';
-import { Question } from '../../../client/src/types/assessment.types';
+import { Question } from '@client/types/assessment.types';
 
 export const QuestionPresentation: React.FC<{
   question: Question;

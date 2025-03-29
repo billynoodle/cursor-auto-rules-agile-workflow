@@ -1,7 +1,7 @@
-import { AssessmentState } from '../../../client/src/types/assessment';
+import { AssessmentState } from '@client/types/assessment';
 import { createTestContext, setupTestEnvironment } from './__setup__/setup';
-import { AssessmentFlowController } from '../../../client/src/controllers/AssessmentFlowController';
-import { createMockAnswer, createMockAnswerData } from '../../__mocks__/data/assessment';
+import { AssessmentFlowController } from '@client/controllers/AssessmentFlowController';
+import { createMockAnswer, createMockAnswerData } from '@__mocks__/data/assessment';
 
 describe('AssessmentFlowController State Management', () => {
   setupTestEnvironment();
@@ -33,7 +33,7 @@ describe('AssessmentFlowController State Management', () => {
 
     await controller.saveAnswer({
       questionId: answer.question_id,
-      value: answer.answer,
+      value: { value: 'Test answer' },
       timestamp
     });
 
@@ -60,12 +60,12 @@ describe('AssessmentFlowController State Management', () => {
 
     await controller.saveAnswer({
       questionId: firstAnswer.question_id,
-      value: firstAnswer.answer,
+      value: { value: 'First answer' },
       timestamp
     });
     await controller.saveAnswer({
       questionId: updatedAnswer.question_id,
-      value: updatedAnswer.answer,
+      value: { value: 'Updated answer' },
       timestamp
     });
 
@@ -137,12 +137,20 @@ describe('Helper Methods', () => {
     // Initially no modules are complete
     expect(controller.isModuleComplete('module1')).toBe(false);
     
+    const timestamp = new Date().toISOString();
     // Answer all questions in module1
     for (const question of modules[0].questions) {
       await controller.saveAnswer({
         questionId: question.id,
-        value: { value: 'test' },
-        timestamp: new Date().toISOString()
+        value: {
+          value: 'test',
+          metadata: {
+            rawScore: 10,
+            weightedScore: 10,
+            maxPossible: 10
+          }
+        },
+        timestamp
       });
     }
     
@@ -157,13 +165,21 @@ describe('Helper Methods', () => {
     // Initially assessment is not complete
     expect(controller.isAssessmentComplete()).toBe(false);
     
+    const timestamp = new Date().toISOString();
     // Answer all questions in all modules
     for (const module of modules) {
       for (const question of module.questions) {
         await controller.saveAnswer({
           questionId: question.id,
-          value: { value: 'test' },
-          timestamp: new Date().toISOString()
+          value: {
+            value: 'test',
+            metadata: {
+              rawScore: 10,
+              weightedScore: 10,
+              maxPossible: 10
+            }
+          },
+          timestamp
         });
       }
     }

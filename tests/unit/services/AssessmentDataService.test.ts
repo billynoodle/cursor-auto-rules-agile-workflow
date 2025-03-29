@@ -1,11 +1,15 @@
 import { jest } from '@jest/globals';
-import { AssessmentService, AssessmentError } from '../../../client/src/services/AssessmentService';
-import { Assessment, DatabaseSchema } from '../../../client/src/types/database';
+import { AssessmentService, AssessmentError } from '@client/services/AssessmentService';
+import { Assessment, DatabaseSchema } from '@client/types/database';
 import { PostgrestError } from '@supabase/postgrest-js';
 import { createIsolatedTestContext } from '../../utils/test-isolation';
-import { BaseTestContext, withTestContext } from '../../utils/test-context';
+import { BaseTestContext } from '../../utils/test-context';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { MockFilterBuilder, MockQueryBuilder } from '../../../__mocks__/services/supabase/types';
+import { MockFilterBuilder, MockQueryBuilder } from '@__mocks__/services/supabase/types';
+import { createMockSupabaseClient } from '@__mocks__/services/supabase/client';
+import { AssessmentDataService } from '@client/services/assessment/AssessmentDataService';
+import { generateMockAssessment, generateMockResponse } from '@__mocks__/data/generators';
+import { AssessmentStatus } from '@client/types/assessment';
 
 type AssessmentRow = Assessment;
 type AssessmentInsert = Omit<Assessment, 'id' | 'created_at' | 'updated_at'>;
@@ -25,9 +29,12 @@ class AssessmentTestContext extends BaseTestContext {
 }
 
 describe('AssessmentService', () => {
-  const { context } = withTestContext(() => new AssessmentTestContext());
+  let context: AssessmentTestContext;
+  let mockSupabaseClient: ReturnType<typeof createMockSupabaseClient>;
 
   beforeEach(async () => {
+    mockSupabaseClient = createMockSupabaseClient();
+    context = new AssessmentTestContext();
     await context.initialize();
   });
 
@@ -43,26 +50,27 @@ describe('AssessmentService', () => {
         status: 'draft'
       };
 
-      const mockResponse = {
-        data: { ...assessment, id: '1', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-        error: null,
-        count: null,
-        status: 200,
-        statusText: 'OK'
+      const mockResponse = generateMockResponse({
+        ...assessment,
+        id: '1',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+
+      const queryBuilder = {
+        insert: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue(mockResponse)
       };
 
-      const { mockSupabaseClient } = await createIsolatedTestContext<AssessmentService>(
-        (client: SupabaseClient<DatabaseSchema>) => context.service,
-        { isOnline: true }
-      );
+      const mockClient = {
+        from: jest.fn().mockReturnValue(queryBuilder)
+      } as unknown as SupabaseClient<DatabaseSchema>;
 
-      const queryBuilder = mockSupabaseClient.from('assessments') as unknown as MockQueryBuilder<'assessments'>;
-      const filterBuilder = queryBuilder.insert(assessment) as unknown as MockFilterBuilder<'assessments'>;
-      filterBuilder.single().mockResolvedValue(mockResponse);
+      context.service = new AssessmentService(mockClient);
 
       const result = await context.service.createAssessment(assessment);
       expect(result).toEqual(mockResponse.data);
-      expect(mockSupabaseClient.from).toHaveBeenCalledWith('assessments');
+      expect(mockClient.from).toHaveBeenCalledWith('assessments');
       expect(queryBuilder.insert).toHaveBeenCalledWith(expect.objectContaining(assessment));
     });
 
@@ -145,13 +153,7 @@ describe('AssessmentService', () => {
         updated_at: new Date().toISOString()
       };
 
-      const mockResponse = {
-        data: assessment,
-        error: null,
-        count: null,
-        status: 200,
-        statusText: 'OK'
-      };
+      const mockResponse = generateMockResponse(assessment);
 
       const { mockSupabaseClient } = await createIsolatedTestContext<AssessmentService>(
         (client: SupabaseClient<DatabaseSchema>) => context.service,
@@ -202,6 +204,51 @@ describe('AssessmentService', () => {
       const result = await context.service.getAssessment(assessment.id);
       expect(result).toEqual(assessment);
       expect(mockOfflineService.getOfflineData).toHaveBeenCalledWith(`assessment_${assessment.id}`);
+    });
+  });
+});
+
+describe('AssessmentDataService', () => {
+  let mockSupabaseClient: ReturnType<typeof createMockSupabaseClient>;
+  let service: AssessmentDataService;
+
+  beforeEach(() => {
+    mockSupabaseClient = createMockSupabaseClient();
+    service = new AssessmentDataService(mockSupabaseClient);
+  });
+
+  describe('Assessment Data Management', () => {
+    it('should save assessment data', async () => {
+      const mockAssessment = generateMockAssessment();
+      const mockResponse = generateMockResponse(mockAssessment);
+
+      const mockQueryBuilder = {
+        insert: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue(mockResponse)
+      } as any;
+
+      const mockClient = {
+        from: jest.fn().mockReturnValue(mockQueryBuilder)
+      } as any;
+
+      service = new AssessmentDataService(mockClient);
+      await service.saveAssessmentData(mockAssessment);
+      expect(mockClient.from).toHaveBeenCalledWith('assessments');
+      expect(mockQueryBuilder.insert).toHaveBeenCalledWith(mockAssessment);
+    });
+
+    it('should handle errors when saving assessment data', async () => {
+      const mockQueryBuilder = {
+        insert: jest.fn().mockReturnThis(),
+        single: jest.fn().mockRejectedValue(new Error('Failed to save'))
+      } as any;
+
+      const mockClient = {
+        from: jest.fn().mockReturnValue(mockQueryBuilder)
+      } as any;
+
+      service = new AssessmentDataService(mockClient);
+      await expect(service.saveAssessmentData(generateMockAssessment())).rejects.toThrow();
     });
   });
 }); 

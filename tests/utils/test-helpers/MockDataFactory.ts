@@ -1,67 +1,107 @@
-import { ModuleCategory, QuestionModule, Question as ClientQuestion, QuestionOption } from '../../../client/src/types/assessment';
+import { 
+  QuestionType as ClientQuestionType,
+  AssessmentCategory as ClientAssessmentCategory,
+  PracticeSize as ClientPracticeSize,
+  ModuleStatus,
+  Question as ClientQuestion,
+  Module,
+  QuestionOption
+} from '../../../client/src/types/assessment.types';
 import { Assessment, AssessmentAnswer } from '../../../client/src/types/database';
-import { Question as ServerQuestion } from '../../../server/src/models/Question';
-import { QuestionType } from '../../../server/src/models/QuestionType';
-import { AssessmentCategory } from '../../../server/src/models/AssessmentCategory';
-import { DisciplineType } from '../../../server/src/models/DisciplineType';
-import { PracticeSize } from '../../../server/src/models/PracticeSize';
+import { 
+  Question as ServerQuestion,
+  QuestionType as ServerQuestionType,
+  AssessmentCategory as ServerAssessmentCategory,
+  DisciplineType,
+  PracticeSize as ServerPracticeSize
+} from '@server/models';
 
 export class MockDataFactory {
   private static questionTypes = [
-    QuestionType.TEXT,
-    QuestionType.MULTIPLE_CHOICE,
-    QuestionType.NUMERIC,
-    QuestionType.LIKERT_SCALE
+    ServerQuestionType.TEXT,
+    ServerQuestionType.MULTIPLE_CHOICE,
+    ServerQuestionType.NUMERIC,
+    ServerQuestionType.LIKERT_SCALE
   ];
 
-  private static categories: ModuleCategory[] = ['financial', 'operations', 'marketing', 'staffing', 'compliance'];
-  
+  private static categories = [
+    ServerAssessmentCategory.FINANCIAL,
+    ServerAssessmentCategory.OPERATIONS,
+    ServerAssessmentCategory.MARKETING,
+    ServerAssessmentCategory.STAFFING,
+    ServerAssessmentCategory.COMPLIANCE
+  ];
+
   private static disciplines = [
     DisciplineType.PHYSIOTHERAPY,
     DisciplineType.OCCUPATIONAL_THERAPY,
     DisciplineType.SPEECH_PATHOLOGY
   ];
-  
+
   private static practiceSizes = [
-    PracticeSize.SMALL,
-    PracticeSize.MEDIUM,
-    PracticeSize.LARGE
+    ServerPracticeSize.SMALL,
+    ServerPracticeSize.MEDIUM,
+    ServerPracticeSize.LARGE
   ];
 
-  static createServerQuestion(params: Partial<ServerQuestion> = {}): ServerQuestion {
+  static createQuestion(params: Partial<ServerQuestion> = {}): ServerQuestion {
     const id = params.id || `question-${Math.random().toString(36).substring(7)}`;
-    const type = params.type || this.questionTypes[Math.floor(Math.random() * this.questionTypes.length)];
+    const type = params.type || ServerQuestionType.MULTIPLE_CHOICE;
+    const text = params.text || `Test Question ${id}`;
+    const moduleId = params.moduleId || 'test-module';
+    const category = params.category || ServerAssessmentCategory.FINANCIAL;
+    const applicableDisciplines = params.applicableDisciplines || [DisciplineType.PHYSIOTHERAPY];
+    const applicablePracticeSizes = params.applicablePracticeSizes || [ServerPracticeSize.SMALL];
+    const weight = params.weight || 1;
     
     const question: ServerQuestion = {
       id,
       type,
-      text: params.text || `Test Question ${id}`,
-      moduleId: params.moduleId || 'test-module',
-      category: params.category || AssessmentCategory.COMPLIANCE,
-      weight: params.weight || 1,
-      applicableDisciplines: params.applicableDisciplines || [DisciplineType.PHYSIOTHERAPY],
+      text,
+      moduleId,
+      category,
+      applicableDisciplines,
       universalQuestion: params.universalQuestion ?? false,
-      applicablePracticeSizes: params.applicablePracticeSizes || [PracticeSize.SMALL],
-      options: type === QuestionType.MULTIPLE_CHOICE ? this.createQuestionOptions() : undefined,
-      minScore: type === QuestionType.NUMERIC ? (params.minScore ?? 0) : undefined,
-      maxScore: type === QuestionType.NUMERIC ? (params.maxScore ?? 100) : undefined
+      options: type === ServerQuestionType.MULTIPLE_CHOICE ? this.createQuestionOptions() : undefined,
+      weight,
+      applicablePracticeSizes,
+      minScore: type === ServerQuestionType.NUMERIC ? (params.minScore ?? 0) : undefined,
+      maxScore: type === ServerQuestionType.NUMERIC ? (params.maxScore ?? 100) : undefined,
+      ...params
     };
+
+    // Ensure multiple choice questions have options
+    if (type === ServerQuestionType.MULTIPLE_CHOICE && !question.options) {
+      question.options = this.createQuestionOptions();
+    }
 
     return question;
   }
 
   static createClientQuestion(params: Partial<ClientQuestion> = {}): ClientQuestion {
     const id = params.id || `question-${Math.random().toString(36).substring(7)}`;
-    const serverType = this.questionTypes[Math.floor(Math.random() * this.questionTypes.length)];
-    const clientType = serverType.toLowerCase() as ClientQuestion['type'];
+    const type = params.type || ClientQuestionType.MULTIPLE_CHOICE;
     
     const question: ClientQuestion = {
       id,
-      type: params.type || clientType,
+      type,
       text: params.text || `Test Question ${id}`,
+      description: params.description,
+      category: params.category || ClientAssessmentCategory.FINANCIAL,
       moduleId: params.moduleId || 'test-module',
+      applicableDisciplines: params.applicableDisciplines || [DisciplineType.PHYSIOTHERAPY],
+      universalQuestion: params.universalQuestion ?? false,
+      applicablePracticeSizes: params.applicablePracticeSizes || [ClientPracticeSize.SMALL],
+      options: type === ClientQuestionType.MULTIPLE_CHOICE ? this.createQuestionOptions() : undefined,
+      required: params.required ?? true,
       weight: params.weight || 1,
-      options: serverType === QuestionType.MULTIPLE_CHOICE ? this.createQuestionOptions() : undefined
+      dependencies: params.dependencies || [],
+      minScore: params.minScore,
+      maxScore: params.maxScore,
+      helpText: params.helpText,
+      benchmarkReference: params.benchmarkReference,
+      impactAreas: params.impactAreas,
+      metadata: params.metadata
     };
 
     return question;
@@ -76,17 +116,25 @@ export class MockDataFactory {
     }));
   }
 
-  static createModule(params: Partial<QuestionModule> = {}): QuestionModule {
+  static createModule(params: Partial<Module> = {}): Module {
     const id = params.id || `module-${Math.random().toString(36).substring(7)}`;
-    const questionCount = params.questions?.length || 3;
     
-    const module: QuestionModule = {
+    const module: Module = {
       id,
       title: params.title || `Test Module ${id}`,
+      name: params.name || `Test Module ${id}`,
       description: params.description || `Description for module ${id}`,
-      category: params.category || this.categories[Math.floor(Math.random() * this.categories.length)],
-      questions: params.questions || Array.from({ length: questionCount }, () => 
-        this.createClientQuestion({ moduleId: id }))
+      categories: params.categories || [ClientAssessmentCategory.FINANCIAL],
+      questions: params.questions || [],
+      weight: params.weight || 1,
+      estimatedTimeMinutes: params.estimatedTimeMinutes || 30,
+      status: params.status || ModuleStatus.NOT_STARTED,
+      progress: params.progress || 0,
+      prerequisites: params.prerequisites || [],
+      completedQuestions: params.completedQuestions || 0,
+      totalQuestions: params.totalQuestions || 10,
+      dependencies: params.dependencies || [],
+      metadata: params.metadata
     };
 
     return module;
@@ -121,7 +169,7 @@ export class MockDataFactory {
     };
   }
 
-  static createBulkModules(count: number, params: Partial<QuestionModule> = {}): QuestionModule[] {
+  static createBulkModules(count: number, params: Partial<Module> = {}): Module[] {
     return Array.from({ length: count }, (_, i) => 
       this.createModule({
         ...params,
@@ -130,18 +178,9 @@ export class MockDataFactory {
     );
   }
 
-  static createBulkClientQuestions(count: number, params: Partial<ClientQuestion> = {}): ClientQuestion[] {
+  static createBulkQuestions(count: number, params: Partial<ServerQuestion> = {}): ServerQuestion[] {
     return Array.from({ length: count }, (_, i) => 
-      this.createClientQuestion({
-        ...params,
-        id: params.id ? `${params.id}-${i}` : undefined
-      })
-    );
-  }
-
-  static createBulkServerQuestions(count: number, params: Partial<ServerQuestion> = {}): ServerQuestion[] {
-    return Array.from({ length: count }, (_, i) => 
-      this.createServerQuestion({
+      this.createQuestion({
         ...params,
         id: params.id ? `${params.id}-${i}` : undefined
       })

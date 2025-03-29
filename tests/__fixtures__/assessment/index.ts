@@ -1,81 +1,158 @@
 import { MockDataFactory } from '../../utils/test-helpers/MockDataFactory';
-import { QuestionModule, Question, QuestionType, ModuleCategory } from '../../../client/src/types/assessment';
-import { Assessment, AssessmentAnswer } from '../../../client/src/types/database';
+import { QuestionModule, Question, QuestionType, AssessmentCategory, ModuleCategory } from '@client/types/assessment';
+import { Assessment, AssessmentAnswer } from '@client/types/database';
+import { DisciplineType } from '@server/models/DisciplineType';
+import { PracticeSize } from '@server/models/PracticeSize';
 
 // Common test modules with predictable data
-export const testModules: QuestionModule[] = [
-  MockDataFactory.createModule({
+export const mockModules: QuestionModule[] = [
+  {
     id: 'financial-module',
     title: 'Financial Assessment',
-    description: 'Evaluate financial health and metrics',
-    category: 'financial',
+    description: 'Evaluate financial health and practices',
+    categories: [AssessmentCategory.FINANCIAL],
+    weight: 1,
+    metadata: {
+      category: 'financial' as ModuleCategory
+    },
     questions: [
-      MockDataFactory.createQuestion({
-        id: 'fin-q1',
-        type: 'numeric',
+      {
+        id: 'qmodule1-1',
         text: 'What is your annual revenue?',
+        type: QuestionType.NUMBER,
+        category: AssessmentCategory.FINANCIAL,
         moduleId: 'financial-module',
-        weight: 2
-      }),
-      MockDataFactory.createQuestion({
-        id: 'fin-q2',
-        type: 'multiple_choice',
-        text: 'How do you handle financial planning?',
+        applicableDisciplines: [],
+        universalQuestion: true,
+        weight: 1,
+        applicablePracticeSizes: [],
+        required: true,
+        dependencies: [],
+        helpText: 'Enter your annual revenue in dollars',
+        metadata: {
+          difficulty: 'medium',
+          timeEstimate: 120
+        }
+      },
+      {
+        id: 'qmodule1-2',
+        text: 'How do you track expenses?',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: AssessmentCategory.FINANCIAL,
         moduleId: 'financial-module',
-        weight: 1
-      })
+        applicableDisciplines: [],
+        universalQuestion: true,
+        weight: 1,
+        applicablePracticeSizes: [],
+        required: true,
+        dependencies: [],
+        helpText: 'Select your expense tracking method',
+        options: [
+          { id: 'opt1', text: 'Spreadsheet', value: 'spreadsheet', score: 5 },
+          { id: 'opt2', text: 'Accounting Software', value: 'software', score: 10 }
+        ],
+        metadata: {
+          difficulty: 'medium',
+          timeEstimate: 120
+        }
+      }
     ]
-  }),
-  MockDataFactory.createModule({
+  },
+  {
     id: 'operations-module',
     title: 'Operations Assessment',
     description: 'Evaluate operational efficiency',
-    category: 'operations',
+    categories: [AssessmentCategory.OPERATIONS],
+    weight: 1,
+    metadata: {
+      category: 'operations' as ModuleCategory
+    },
     questions: [
-      MockDataFactory.createQuestion({
-        id: 'ops-q1',
-        type: 'text',
-        text: 'Describe your patient scheduling process',
+      {
+        id: 'qmodule2-1',
+        text: 'How many employees do you have?',
+        type: QuestionType.NUMBER,
+        category: AssessmentCategory.OPERATIONS,
         moduleId: 'operations-module',
-        weight: 1
-      }),
-      MockDataFactory.createQuestion({
-        id: 'ops-q2',
-        type: 'boolean',
-        text: 'Do you use electronic health records?',
+        applicableDisciplines: [],
+        universalQuestion: true,
+        weight: 1,
+        applicablePracticeSizes: [],
+        required: true,
+        dependencies: [],
+        helpText: 'Enter the total number of employees',
+        metadata: {
+          difficulty: 'medium',
+          timeEstimate: 120
+        }
+      },
+      {
+        id: 'qmodule2-2',
+        text: 'What scheduling system do you use?',
+        type: QuestionType.MULTIPLE_CHOICE,
+        category: AssessmentCategory.OPERATIONS,
         moduleId: 'operations-module',
-        weight: 1
-      })
+        applicableDisciplines: [],
+        universalQuestion: true,
+        weight: 1,
+        applicablePracticeSizes: [],
+        required: true,
+        dependencies: [],
+        helpText: 'Select your scheduling system type',
+        options: [
+          { id: 'opt1', text: 'Paper Calendar', value: 'paper', score: 5 },
+          { id: 'opt2', text: 'Digital Calendar', value: 'digital', score: 10 }
+        ],
+        metadata: {
+          difficulty: 'medium',
+          timeEstimate: 120
+        }
+      }
     ]
-  })
+  }
 ];
+
+// Helper to check if a question is numeric
+const isNumericQuestion = (type: QuestionType): boolean => type === QuestionType.NUMBER;
 
 // Common test assessments
 export const testAssessments: Record<string, Assessment> = {
-  empty: MockDataFactory.createAssessment({
+  empty: {
     id: 'empty-assessment',
-    current_module_id: testModules[0].id,
-    current_question_id: testModules[0].questions[0].id,
+    user_id: 'test-user',
+    current_module_id: mockModules[0].id,
+    current_question_id: mockModules[0].questions[0].id,
     progress: 0,
-    completed_modules: []
-  }),
-  inProgress: MockDataFactory.createAssessment({
+    completed_modules: [],
+    is_complete: false,
+    status: 'draft',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  inProgress: {
     id: 'in-progress-assessment',
-    current_module_id: testModules[1].id,
-    current_question_id: testModules[1].questions[0].id,
+    user_id: 'test-user',
+    current_module_id: mockModules[1].id,
+    current_question_id: mockModules[1].questions[0].id,
     progress: 50,
-    completed_modules: [testModules[0].id],
-    status: 'in_progress'
-  }),
-  completed: MockDataFactory.createAssessment({
+    completed_modules: [mockModules[0].id],
+    is_complete: false,
+    status: 'in_progress',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  completed: {
     id: 'completed-assessment',
-    current_module_id: testModules[1].id,
-    current_question_id: testModules[1].questions[1].id,
+    user_id: 'test-user',
+    current_module_id: mockModules[1].id,
+    current_question_id: mockModules[1].questions[1].id,
     progress: 100,
-    completed_modules: testModules.map(m => m.id),
+    completed_modules: mockModules.map(m => m.id),
     is_complete: true,
-    status: 'completed'
-  })
+    status: 'completed',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  }
 };
 
 // Common test answers
@@ -84,25 +161,25 @@ export const testAnswers: Record<string, AssessmentAnswer[]> = {
   inProgress: [
     MockDataFactory.createAssessmentAnswer({
       assessment_id: testAssessments.inProgress.id,
-      question_id: testModules[0].questions[0].id,
+      question_id: mockModules[0].questions[0].id,
       answer: { value: 500000 }
     }),
     MockDataFactory.createAssessmentAnswer({
       assessment_id: testAssessments.inProgress.id,
-      question_id: testModules[0].questions[1].id,
+      question_id: mockModules[0].questions[1].id,
       answer: { value: 'value-2' }
     })
   ],
-  completed: testModules.flatMap(module =>
+  completed: mockModules.flatMap(module =>
     module.questions.map(question =>
       MockDataFactory.createAssessmentAnswer({
         assessment_id: testAssessments.completed.id,
         question_id: question.id,
         answer: {
-          value: question.type === 'numeric' ? 750000 :
-                 question.type === 'boolean' ? true :
-                 question.type === 'multiple_choice' ? 'value-1' :
-                 'Sample answer text'
+          value: question.type === QuestionType.NUMBER ? 750000 :
+                 question.type === QuestionType.MULTIPLE_CHOICE ? 'value-1' :
+                 question.type === QuestionType.TEXT ? 'Sample answer text' :
+                 'Unknown type'
         }
       })
     )
@@ -112,17 +189,17 @@ export const testAnswers: Record<string, AssessmentAnswer[]> = {
 // Test scenarios combining different states
 export const testScenarios = {
   emptyAssessment: {
-    modules: testModules,
+    modules: mockModules,
     assessment: testAssessments.empty,
     answers: testAnswers.empty
   },
   inProgressAssessment: {
-    modules: testModules,
+    modules: mockModules,
     assessment: testAssessments.inProgress,
     answers: testAnswers.inProgress
   },
   completedAssessment: {
-    modules: testModules,
+    modules: mockModules,
     assessment: testAssessments.completed,
     answers: testAnswers.completed
   }

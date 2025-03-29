@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
-import AssessmentPage from '../../../client/src/pages/AssessmentPage';
+import { AssessmentStatus, QuestionType, AssessmentCategory } from '@client/types/assessment';
+import { DisciplineType } from '@client/types/discipline';
+import { PracticeSize } from '@client/types/practice';
 
 test.describe('Assessment Page E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -28,7 +30,7 @@ test.describe('Assessment Page E2E Tests', () => {
     await page.getByRole('button', { name: 'Start Assessment' }).click();
 
     // Answer first question
-    await page.getByRole('radio', { name: 'Option A' }).click();
+    await page.getByRole('radio', { name: 'Basic tracking for some patients' }).click();
     await page.getByRole('button', { name: 'Next' }).click();
 
     // Check progress is updated
@@ -51,10 +53,10 @@ test.describe('Assessment Page E2E Tests', () => {
     await page.getByRole('button', { name: 'Start Assessment' }).click();
 
     // Complete all questions
-    for (const option of ['Option A', 'Option B']) {
-      await page.getByRole('radio', { name: option }).click();
-      await page.getByRole('button', { name: 'Next' }).click();
-    }
+    await page.getByRole('radio', { name: 'Basic tracking for some patients' }).click();
+    await page.getByRole('button', { name: 'Next' }).click();
+    await page.getByRole('radio', { name: '85-95%' }).click();
+    await page.getByRole('button', { name: 'Next' }).click();
 
     // Check completion screen
     await expect(page.getByText('Assessment Complete')).toBeVisible();
@@ -66,7 +68,7 @@ test.describe('Assessment Page E2E Tests', () => {
     await page.getByRole('button', { name: 'Start Assessment' }).click();
 
     // Answer first question
-    await page.getByRole('radio', { name: 'Option A' }).click();
+    await page.getByRole('radio', { name: 'Basic tracking for some patients' }).click();
     await page.getByRole('button', { name: 'Next' }).click();
 
     // Refresh page
@@ -86,7 +88,7 @@ test.describe('Assessment Page E2E Tests', () => {
     await context.route('**/api/**', route => route.abort());
 
     // Try to save answer
-    await page.getByRole('radio', { name: 'Option A' }).click();
+    await page.getByRole('radio', { name: 'Basic tracking for some patients' }).click();
     await page.getByRole('button', { name: 'Next' }).click();
 
     // Check error handling

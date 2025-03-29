@@ -6,11 +6,13 @@ import {
   generateMockAssessment,
   generateMockAnswers,
   generateFullMockData,
-  GeneratorOptions
+  GeneratorOptions,
+  TEST_USER_ID,
+  TEST_ASSESSMENT_ID,
+  generateQuestionId,
+  QUESTION_ID_PREFIX,
+  QUESTION_ID_SEPARATOR
 } from './generators';
-
-export const TEST_USER_ID = '00000000-0000-0000-0000-000000000001';
-export const TEST_ASSESSMENT_ID = '00000000-0000-0000-0000-000000000002';
 
 export interface MockOptions {
   simulateNetworkError?: boolean;
@@ -23,7 +25,12 @@ export {
   generateMockModules,
   generateMockAssessment,
   generateMockAnswers,
-  generateFullMockData
+  generateFullMockData,
+  TEST_USER_ID,
+  TEST_ASSESSMENT_ID,
+  generateQuestionId,
+  QUESTION_ID_PREFIX,
+  QUESTION_ID_SEPARATOR
 };
 export type { GeneratorOptions };
 
@@ -32,45 +39,87 @@ export const mockModules = generateMockModules();
 export const mockAssessment = generateMockAssessment();
 export const mockAnswers = generateMockAnswers(mockModules);
 
-export const createMockAnswer = (value: any): Answer => ({ value });
-
-export const createMockAssessment = (overrides: Partial<Assessment> = {}): Assessment => ({
-  id: TEST_ASSESSMENT_ID,
-  user_id: TEST_USER_ID,
-  current_module_id: 'module1',
-  current_question_id: 'q1',
-  progress: 0,
-  completed_modules: [],
-  is_complete: false,
-  status: 'draft',
-  metadata: { source: 'test' },
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-  ...overrides
+export const createMockAnswer = (value: any): Answer => ({
+  value,
+  metadata: {
+    rawScore: 10,
+    weightedScore: 10,
+    maxPossible: 10,
+    timestamp: new Date().toISOString()
+  }
 });
+
+export const createMockAssessment = (overrides: Partial<Assessment> = {}): Assessment => {
+  const defaultModuleId = 'module1';
+  return {
+    id: TEST_ASSESSMENT_ID,
+    user_id: TEST_USER_ID,
+    current_module_id: defaultModuleId,
+    current_question_id: generateQuestionId(defaultModuleId, 1),
+    progress: 0,
+    completed_modules: [],
+    is_complete: false,
+    status: 'draft',
+    metadata: { source: 'test' },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    ...overrides
+  };
+};
 
 export const createMockAnswerData = (overrides: Partial<AssessmentAnswer> = {}): AssessmentAnswer => ({
   id: '456',
   assessment_id: TEST_ASSESSMENT_ID,
   question_id: 'q1',
-  answer: { value: 'Test answer' },
+  answer: {
+    value: 'Test answer',
+    metadata: {
+      rawScore: 10,
+      weightedScore: 10,
+      maxPossible: 10,
+      timestamp: new Date().toISOString()
+    }
+  },
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
   ...overrides
 });
 
-export const createMockSupabaseClient = (mockResponse?: any): SupabaseClient<DatabaseSchema> => {
-  const defaultResponse = mockResponse || {
-    data: createMockAssessment(),
-    error: null
-  };
-
+export const createMockSupabaseClient = (mockOptions: MockOptions = {}): jest.Mocked<SupabaseClient<DatabaseSchema>> => {
   const mockMethods = {
     select: jest.fn().mockReturnThis(),
     eq: jest.fn().mockReturnThis(),
     is: jest.fn().mockReturnThis(),
-    single: jest.fn().mockResolvedValue(defaultResponse),
-    insert: jest.fn().mockReturnThis(),
+    single: jest.fn().mockImplementation(() => {
+      if (mockOptions.simulateNetworkError) {
+        return Promise.resolve(mockErrorScenarios.networkError);
+      }
+      if (mockOptions.simulateConflict) {
+        return Promise.resolve(mockErrorScenarios.conflict);
+      }
+      return Promise.resolve({
+        data: createMockAssessment(),
+        error: null
+      });
+    }),
+    insert: jest.fn().mockImplementation((data) => ({
+      select: jest.fn().mockReturnThis(),
+      single: jest.fn().mockImplementation(() => {
+        if (mockOptions.simulateNetworkError) {
+          return Promise.resolve(mockErrorScenarios.networkError);
+        }
+        if (mockOptions.simulateConflict) {
+          return Promise.resolve(mockErrorScenarios.conflict);
+        }
+        return Promise.resolve({
+          data: {
+            ...createMockAssessment(),
+            ...data
+          },
+          error: null
+        });
+      })
+    })),
     update: jest.fn().mockReturnThis(),
     upsert: jest.fn().mockReturnThis(),
     delete: jest.fn().mockReturnThis(),
@@ -94,8 +143,38 @@ export const createMockSupabaseClient = (mockResponse?: any): SupabaseClient<Dat
   };
 
   const mockClient = {
-    from: jest.fn().mockReturnValue(mockMethods)
-  } as unknown as SupabaseClient<DatabaseSchema>;
+    from: jest.fn().mockReturnValue(mockMethods),
+    auth: {
+      getUser: jest.fn(),
+      signIn: jest.fn(),
+      signOut: jest.fn(),
+      onAuthStateChange: jest.fn(),
+      getSession: jest.fn()
+    },
+    realtime: {
+      connect: jest.fn(),
+      disconnect: jest.fn(),
+      removeAllChannels: jest.fn(),
+      removeChannel: jest.fn(),
+      getChannels: jest.fn()
+    },
+    functions: {
+      invoke: jest.fn()
+    },
+    storage: {
+      from: jest.fn(),
+      listBuckets: jest.fn(),
+      getBucket: jest.fn(),
+      createBucket: jest.fn(),
+      deleteBucket: jest.fn()
+    },
+    removeAllChannels: jest.fn(),
+    removeAllSubscriptions: jest.fn(),
+    removeSubscription: jest.fn(),
+    getChannels: jest.fn(),
+    channel: jest.fn(),
+    rpc: jest.fn()
+  } as unknown as jest.Mocked<SupabaseClient<DatabaseSchema>>;
 
   return mockClient;
 };

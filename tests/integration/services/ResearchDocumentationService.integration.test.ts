@@ -1,7 +1,7 @@
 import { IntegrationTestUtils, setupTestEnvironment } from '../../utils/controller-test-utils';
-import { ResearchDocumentationService, ResearchFinding } from '../../../server/src/services/ResearchDocumentationService';
-import { AssessmentCategory } from '../../../server/src/models/AssessmentCategory';
-import { DisciplineType } from '../../../server/src/models/DisciplineType';
+import { ResearchDocumentationService, ResearchFinding } from '@server/services/ResearchDocumentationService';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { DisciplineType } from '@server/models/DisciplineType';
 
 describe('ResearchDocumentationService - Integration', () => {
   setupTestEnvironment();

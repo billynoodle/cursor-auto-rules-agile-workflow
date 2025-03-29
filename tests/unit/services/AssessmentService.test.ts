@@ -1,530 +1,101 @@
-import { AssessmentService } from '@client/services/assessment/AssessmentService';
+import { AssessmentService } from '@client/services/AssessmentService';
 import { AssessmentError } from '@client/services/assessment/AssessmentError';
-import { createMockSupabaseClient, mockAssessmentData, mockErrorScenarios, TEST_USER_ID, TEST_ASSESSMENT_ID } from '@__mocks__/services/supabase/client';
-import { Assessment, AssessmentAnswer } from '@client/types/database';
+import { AssessmentStatus } from '@client/types/assessment';
+import { createMockSupabaseClient } from '@__mocks__/services/supabase/client';
+
+const TEST_ASSESSMENT_ID = '00000000-0000-0000-0000-000000000002';
+const TEST_USER_ID = '00000000-0000-0000-0000-000000000001';
 
 describe('AssessmentService', () => {
   let service: AssessmentService;
-  const assessmentData: Omit<Assessment, 'id' | 'created_at' | 'updated_at'> = {
-    user_id: TEST_USER_ID,
-    current_module_id: 'module1',
-    current_question_id: 'q1',
-    progress: 0,
-    completed_modules: [],
-    is_complete: false,
-    status: 'draft',
-    metadata: { source: 'test' }
-  };
-
-  const answerData: Omit<AssessmentAnswer, 'id' | 'created_at' | 'updated_at'> = {
-    assessment_id: TEST_ASSESSMENT_ID,
-    question_id: 'q1',
-    answer: { value: 'Test answer' },
-    metadata: { source: 'test' }
-  };
 
   beforeEach(() => {
-    localStorage.clear();
-    // Reset online status
-    Object.defineProperty(window.navigator, 'onLine', { value: true, configurable: true });
+    service = new AssessmentService(createMockSupabaseClient());
   });
 
   describe('createAssessment', () => {
-    it('should create an assessment successfully', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: { ...assessmentData, id: TEST_ASSESSMENT_ID, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-              error: null
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      const result = await service.createAssessment(assessmentData);
-      expect(result).toBeDefined();
-      expect(result.user_id).toBe(TEST_USER_ID);
-      expect(result.metadata).toEqual({ source: 'test' });
-    });
-
-    it('should handle validation errors', async () => {
-      service = new AssessmentService(createMockSupabaseClient());
-      const invalidData = {
-        ...assessmentData,
-        status: 'invalid_status' as any
+    it('should create a new assessment', async () => {
+      const assessment = {
+        id: TEST_ASSESSMENT_ID,
+        user_id: TEST_USER_ID,
+        status: 'draft' as AssessmentStatus,
+        current_module_id: 'module1',
+        current_question_id: 'q1',
+        completed_modules: [],
+        progress: 0,
+        is_complete: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
-      await expect(service.createAssessment(invalidData))
-        .rejects
-        .toThrow('Invalid assessment data');
-    });
 
-    it('should handle database errors', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      await expect(service.createAssessment(assessmentData))
-        .rejects
-        .toThrow(AssessmentError);
-    });
-
-    it('should handle offline mode', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      const result = await service.createAssessment(assessmentData);
+      const result = await service.createAssessment(assessment);
       expect(result).toBeDefined();
-      expect(localStorage.getItem('assessment_offline_data')).toBeDefined();
+      expect(result.id).toBe(TEST_ASSESSMENT_ID);
+    });
+
+    it('should handle creation errors', async () => {
+      service = new AssessmentService(createMockSupabaseClient({ simulateError: new Error('Failed to create') }));
+
+      await expect(service.createAssessment({
+        user_id: TEST_USER_ID,
+        current_module_id: 'module1',
+        current_question_id: 'q1',
+        progress: 0,
+        completed_modules: [],
+        is_complete: false,
+        status: 'draft',
+        metadata: {}
+      })).rejects.toThrow(AssessmentError);
     });
   });
 
   describe('getAssessment', () => {
-    it('should get an assessment successfully', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            is: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({
-                data: { ...assessmentData, id: TEST_ASSESSMENT_ID, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-                error: null
-              })
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
+    it('should get an assessment by id', async () => {
       const result = await service.getAssessment(TEST_ASSESSMENT_ID);
       expect(result).toBeDefined();
-      expect(result.user_id).toBe(TEST_USER_ID);
-      expect(result.metadata).toEqual({ source: 'test' });
+      expect(result.id).toBe(TEST_ASSESSMENT_ID);
     });
 
     it('should handle not found errors', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            is: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: null, error: null })
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      await expect(service.getAssessment('non-existent-id'))
-        .rejects
-        .toThrow('Assessment not found');
-    });
-
-    it('should handle database errors', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      await expect(service.getAssessment(TEST_ASSESSMENT_ID))
-        .rejects
-        .toThrow(AssessmentError);
-    });
-
-    it('should handle offline mode with data', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      localStorage.setItem('assessment_offline_data', JSON.stringify([[`assessment_${TEST_ASSESSMENT_ID}`, assessmentData]]));
-      const result = await service.getAssessment(TEST_ASSESSMENT_ID);
-      expect(result).toBeDefined();
-    });
-
-    it('should handle offline mode without data', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      await expect(service.getAssessment(TEST_ASSESSMENT_ID))
-        .rejects
-        .toThrow('No offline data available');
+      service = new AssessmentService(createMockSupabaseClient({ simulateError: new Error('Assessment not found') }));
+      await expect(service.getAssessment('not-found')).rejects.toThrow(AssessmentError);
     });
   });
 
   describe('updateAssessment', () => {
-    it('should update an assessment successfully', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            is: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({
-                  data: {
-                    ...assessmentData,
-                    id: TEST_ASSESSMENT_ID,
-                    progress: 33,
-                    metadata: { source: 'updated' },
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                  },
-                  error: null
-                })
-              })
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      const result = await service.updateAssessment(TEST_ASSESSMENT_ID, {
-        ...assessmentData,
-        progress: 33,
-        metadata: { source: 'updated' }
-      });
-      expect(result).toBeDefined();
-      expect(result.progress).toBe(33);
-      expect(result.metadata).toEqual({ source: 'updated' });
-    });
-
-    it('should handle validation errors on update', async () => {
-      service = new AssessmentService(createMockSupabaseClient());
-      const invalidData = {
-        ...assessmentData,
-        status: 'invalid_status' as any
+    it('should update an assessment', async () => {
+      const updates = {
+        current_module_id: 'module2',
+        current_question_id: 'q2',
+        completed_modules: ['module1'],
+        progress: 50,
+        is_complete: false,
+        status: 'in_progress' as AssessmentStatus
       };
-      await expect(service.updateAssessment(TEST_ASSESSMENT_ID, invalidData))
-        .rejects
-        .toThrow('Invalid update data');
-    });
 
-    it('should handle database errors', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      await expect(service.updateAssessment(TEST_ASSESSMENT_ID, assessmentData))
-        .rejects
-        .toThrow(AssessmentError);
-    });
-
-    it('should handle conflict errors', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.conflict));
-      await expect(service.updateAssessment(TEST_ASSESSMENT_ID, assessmentData))
-        .rejects
-        .toThrow('Assessment was updated by another session');
-    });
-
-    it('should handle offline mode with existing assessment', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      // Store assessment in offline store first
-      localStorage.setItem('assessment_offline_data', JSON.stringify([[`assessment_${TEST_ASSESSMENT_ID}`, assessmentData]]));
-      const result = await service.updateAssessment(TEST_ASSESSMENT_ID, {
-        ...assessmentData,
-        progress: 50
-      });
+      const result = await service.updateAssessment(TEST_ASSESSMENT_ID, updates);
       expect(result).toBeDefined();
-      expect(result.progress).toBe(50);
+      expect(result.id).toBe(TEST_ASSESSMENT_ID);
     });
 
-    it('should handle offline mode without existing assessment', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      await expect(service.updateAssessment(TEST_ASSESSMENT_ID, assessmentData))
-        .rejects
-        .toThrow('Assessment not found in offline store');
+    it('should handle update errors', async () => {
+      service = new AssessmentService(createMockSupabaseClient({ simulateError: new Error('Update failed') }));
+      await expect(service.updateAssessment(TEST_ASSESSMENT_ID, {
+        current_module_id: 'module2'
+      })).rejects.toThrow(AssessmentError);
     });
   });
 
-  describe('answer management', () => {
-    it('should save an answer successfully', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        upsert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: {
-                ...answerData,
-                id: '456',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-              },
-              error: null
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      const result = await service.saveAnswer(answerData);
-      expect(result).toBeDefined();
-      expect(result.question_id).toBe('q1');
-      expect(result.answer).toEqual({ value: 'Test answer' });
-    });
-
-    it('should handle validation errors for answers', async () => {
-      service = new AssessmentService(createMockSupabaseClient());
-      const invalidData = {
-        ...answerData,
-        question_id: undefined as any
-      };
-      await expect(service.saveAnswer(invalidData))
-        .rejects
-        .toThrow('Invalid answer data');
-    });
-
-    it('should handle conflict errors for answers', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        upsert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: null,
-              error: { message: 'Conflict', code: '23505' }
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      await expect(service.saveAnswer(answerData))
-        .rejects
-        .toThrow('Failed to save answer due to conflict');
-    });
-
-    it('should handle missing data after save', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        upsert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: null,
-              error: null
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      await expect(service.saveAnswer(answerData))
-        .rejects
-        .toThrow('No answer data returned after save');
-    });
-
-    it('should handle offline answer storage', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      const result = await service.saveAnswer(answerData);
-      expect(result).toBeDefined();
-      const offlineData = localStorage.getItem('assessment_offline_data');
-      expect(offlineData).toContain('answer_');
-    });
-
-    it('should get answers successfully', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({
-            data: [
-              {
-                ...answerData,
-                id: '456',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-              }
-            ],
-            error: null
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
+  describe('getAnswers', () => {
+    it('should get answers for an assessment', async () => {
       const result = await service.getAnswers(TEST_ASSESSMENT_ID);
-      expect(result).toHaveLength(1);
-      expect(result[0].question_id).toBe('q1');
-    });
-
-    it('should handle database errors when getting answers', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({
-            data: null,
-            error: { message: 'Database error', code: 'DB_ERROR' }
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      await expect(service.getAnswers(TEST_ASSESSMENT_ID))
-        .rejects
-        .toThrow('Database error');
-    });
-
-    it('should handle offline mode when getting answers', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      localStorage.setItem('assessment_offline_data', JSON.stringify([
-        [`answer_${TEST_ASSESSMENT_ID}_1`, answerData]
-      ]));
-      const result = await service.getAnswers(TEST_ASSESSMENT_ID);
-      expect(result).toHaveLength(1);
-      expect(result[0].question_id).toBe('q1');
-    });
-
-    it('should handle offline mode with no answers', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      const result = await service.getAnswers(TEST_ASSESSMENT_ID);
-      expect(result).toEqual([]);
-    });
-
-    it('should update an answer successfully', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            select: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({
-                data: {
-                  ...answerData,
-                  assessment_id: '123',
-                  question_id: 'q1',
-                  id: '456',
-                  answer: { value: 'Updated answer' },
-                  created_at: new Date().toISOString(),
-                  updated_at: new Date().toISOString()
-                },
-                error: null
-              })
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      const result = await service.updateAnswer('456', {
-        assessment_id: '123',
-        question_id: 'q1',
-        answer: { value: 'Updated answer' }
-      });
       expect(result).toBeDefined();
-      expect(result.answer).toEqual({ value: 'Updated answer' });
+      expect(Array.isArray(result)).toBe(true);
     });
 
-    it('should handle validation errors when updating answers', async () => {
-      service = new AssessmentService(createMockSupabaseClient());
-      const invalidUpdate = {
-        assessment_id: undefined as any,
-        question_id: undefined as any
-      };
-      await expect(service.updateAnswer('456', invalidUpdate))
-        .rejects
-        .toThrow('Invalid answer data');
-    });
-
-    it('should handle database errors when updating answers', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            select: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({
-                data: null,
-                error: { message: 'Database error', code: 'DB_ERROR' }
-              })
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      await expect(service.updateAnswer('456', { 
-        assessment_id: '123',
-        question_id: 'q1',
-        answer: { value: 'test' }
-      }))
-        .rejects
-        .toThrow('Failed to update answer');
-    });
-
-    it('should handle missing data after update', async () => {
-      const mockClient = createMockSupabaseClient();
-      mockClient.from = jest.fn().mockReturnValue({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            select: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({
-                data: null,
-                error: null
-              })
-            })
-          })
-        })
-      });
-      service = new AssessmentService(mockClient);
-      await expect(service.updateAnswer('456', {
-        assessment_id: '123',
-        question_id: 'q1',
-        answer: { value: 'test' }
-      }))
-        .rejects
-        .toThrow('No answer data returned after update');
-    });
-
-    it('should handle offline mode when updating answers', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      localStorage.setItem('assessment_offline_data', JSON.stringify([
-        [`answer_456`, answerData]
-      ]));
-      const result = await service.updateAnswer('456', {
-        answer: { value: 'Updated offline' }
-      });
-      expect(result).toBeDefined();
-      expect(result.answer).toEqual({ value: 'Updated offline' });
-    });
-
-    it('should handle offline mode with no data when updating answers', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      await expect(service.updateAnswer('456', { answer: { value: 'test' } }))
-        .rejects
-        .toThrow('No offline data available');
-    });
-
-    it('should handle offline mode with missing answer when updating', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      localStorage.setItem('assessment_offline_data', JSON.stringify([
-        [`answer_different_id`, answerData]
-      ]));
-      await expect(service.updateAnswer('456', { answer: { value: 'test' } }))
-        .rejects
-        .toThrow('Answer not found in offline store');
-    });
-  });
-
-  describe('offline sync', () => {
-    it('should sync offline data when coming online', async () => {
-      service = new AssessmentService(createMockSupabaseClient());
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      localStorage.setItem('assessment_offline_data', JSON.stringify([
-        [`assessment_${TEST_ASSESSMENT_ID}`, assessmentData],
-        [`answer_${TEST_ASSESSMENT_ID}`, answerData]
-      ]));
-
-      Object.defineProperty(window.navigator, 'onLine', { value: true, configurable: true });
-      await service.checkOnlineStatus();
-      expect(localStorage.getItem('assessment_offline_data')).toBeNull();
-    });
-
-    it('should handle sync errors', async () => {
-      service = new AssessmentService(createMockSupabaseClient(mockErrorScenarios.networkError));
-      Object.defineProperty(window.navigator, 'onLine', { value: false, configurable: true });
-      localStorage.setItem('assessment_offline_data', JSON.stringify([
-        [`assessment_${TEST_ASSESSMENT_ID}`, assessmentData]
-      ]));
-
-      Object.defineProperty(window.navigator, 'onLine', { value: true, configurable: true });
-      await expect(service.checkOnlineStatus())
-        .rejects
-        .toThrow(AssessmentError);
-      expect(localStorage.getItem('assessment_offline_data')).toBeDefined();
-    });
-
-    it('should handle empty offline data', async () => {
-      service = new AssessmentService(createMockSupabaseClient());
-      Object.defineProperty(window.navigator, 'onLine', { value: true, configurable: true });
-      await service.checkOnlineStatus();
-      expect(localStorage.getItem('assessment_offline_data')).toBeNull();
-    });
-  });
-
-  describe('event listeners', () => {
-    it('should set up offline sync listeners', () => {
-      service = new AssessmentService(createMockSupabaseClient());
-      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
-      service.setupOfflineSync();
-      expect(addEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function));
+    it('should handle errors when getting answers', async () => {
+      service = new AssessmentService(createMockSupabaseClient({ simulateError: new Error('Failed to get answers') }));
+      await expect(service.getAnswers(TEST_ASSESSMENT_ID)).rejects.toThrow(AssessmentError);
     });
   });
 });

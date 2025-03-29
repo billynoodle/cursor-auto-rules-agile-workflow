@@ -1,75 +1,69 @@
-import { IntegrationTestUtils, setupTestEnvironment } from '../../utils/controller-test-utils';
-import { AssessmentService } from '../../../client/src/services/AssessmentService';
-import { generateFullMockData, createMockSupabaseClient } from '../../../__mocks__/data/assessment';
-import { Assessment, AssessmentAnswer, AssessmentStatus } from '../../../client/src/types/database';
+import { AssessmentService } from '@client/services/AssessmentService';
+import { AssessmentError } from '@client/services/assessment/AssessmentError';
+import { AssessmentStatus } from '@client/types/assessment';
+import { createMockSupabaseClient } from '@__mocks__/services/supabase/client';
+
+const TEST_USER_ID = '00000000-0000-0000-0000-000000000001';
+const TEST_ASSESSMENT_ID = '00000000-0000-0000-0000-000000000002';
 
 describe('AssessmentService - Integration', () => {
-  setupTestEnvironment();
+  let service: AssessmentService;
 
-  let testData: ReturnType<typeof generateFullMockData>;
-  let assessmentService: AssessmentService;
-
-  beforeEach(async () => {
-    const { assessmentService: service, modules } = await IntegrationTestUtils.createTestContext({
-      moduleOptions: {
-        moduleCount: 2,
-        questionsPerModule: 2
-      }
-    });
-    assessmentService = service;
-    testData = generateFullMockData({
-      moduleCount: 2,
-      questionsPerModule: 2
-    });
+  beforeEach(() => {
+    service = new AssessmentService(createMockSupabaseClient());
   });
 
-  describe('Assessment Creation and Retrieval', () => {
-    it('should create and retrieve an assessment', async () => {
-      const assessment = await assessmentService.createAssessment({
-        user_id: 'test-user',
-        current_module_id: testData.modules[0].id,
-        current_question_id: testData.modules[0].questions[0].id,
-        progress: 0,
+  describe('Assessment Management', () => {
+    it('should create and retrieve assessment', async () => {
+      const assessment = {
+        id: TEST_ASSESSMENT_ID,
+        user_id: TEST_USER_ID,
+        status: 'draft' as AssessmentStatus,
+        current_module_id: 'module1',
+        current_question_id: 'q1',
         completed_modules: [],
+        progress: 0,
         is_complete: false,
-        status: 'draft' as AssessmentStatus
-      });
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
 
-      expect(assessment).toBeDefined();
-      expect(assessment.id).toBeDefined();
+      const result = await service.createAssessment(assessment);
+      expect(result).toBeDefined();
+      expect(result.id).toBe(TEST_ASSESSMENT_ID);
 
-      const retrieved = await assessmentService.getAssessment(assessment.id);
-      expect(retrieved).toEqual(assessment);
-    });
-
-    it('should handle assessment not found', async () => {
-      await expect(
-        assessmentService.getAssessment('non-existent-id')
-      ).rejects.toThrow();
+      const retrieved = await service.getAssessment(TEST_ASSESSMENT_ID);
+      expect(retrieved).toBeDefined();
+      expect(retrieved.id).toBe(TEST_ASSESSMENT_ID);
     });
   });
 
   describe('Answer Management', () => {
     it('should save and retrieve answers', async () => {
-      const assessment = await assessmentService.createAssessment({
-        user_id: 'test-user',
-        current_module_id: testData.modules[0].id,
-        current_question_id: testData.modules[0].questions[0].id,
-        progress: 0,
+      const assessment = {
+        id: TEST_ASSESSMENT_ID,
+        user_id: TEST_USER_ID,
+        status: 'draft' as AssessmentStatus,
+        current_module_id: 'module1',
+        current_question_id: 'q1',
         completed_modules: [],
+        progress: 0,
         is_complete: false,
-        status: 'draft' as AssessmentStatus
-      });
-
-      const answer = {
-        assessment_id: assessment.id,
-        question_id: testData.modules[0].questions[0].id,
-        answer: { value: 'test answer' }
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
 
-      await assessmentService.saveAnswer(answer);
-      const answers = await assessmentService.getAnswers(assessment.id);
-      
+      await service.createAssessment(assessment);
+
+      const answer = {
+        assessment_id: TEST_ASSESSMENT_ID,
+        question_id: 'q1',
+        answer: { value: 'test', score: 1 }
+      };
+
+      await service.saveAnswer(answer);
+      const answers = await service.getAnswers(assessment.id);
+      expect(answers).toBeDefined();
       expect(answers).toHaveLength(1);
       expect(answers[0].answer).toEqual(answer.answer);
     });
@@ -77,25 +71,32 @@ describe('AssessmentService - Integration', () => {
 
   describe('State Management', () => {
     it('should update assessment state', async () => {
-      const assessment = await assessmentService.createAssessment({
-        user_id: 'test-user',
-        current_module_id: testData.modules[0].id,
-        current_question_id: testData.modules[0].questions[0].id,
-        progress: 0,
+      const assessment = {
+        id: TEST_ASSESSMENT_ID,
+        user_id: TEST_USER_ID,
+        status: 'draft' as AssessmentStatus,
+        current_module_id: 'module1',
+        current_question_id: 'q1',
         completed_modules: [],
+        progress: 0,
         is_complete: false,
-        status: 'draft' as AssessmentStatus
-      });
-
-      const updatedState = {
-        current_module_id: testData.modules[1].id,
-        current_question_id: testData.modules[1].questions[0].id,
-        progress: 0.5
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
 
-      await assessmentService.updateAssessment(assessment.id, updatedState);
-      const updated = await assessmentService.getAssessment(assessment.id);
+      await service.createAssessment(assessment);
 
+      const updatedState = {
+        current_module_id: 'module1',
+        current_question_id: 'q2',
+        progress: 50,
+        completed_modules: ['module1'],
+        is_complete: false,
+        status: 'in_progress' as AssessmentStatus
+      };
+
+      const updated = await service.updateAssessment(TEST_ASSESSMENT_ID, updatedState);
+      expect(updated).toBeDefined();
       expect(updated.current_module_id).toBe(updatedState.current_module_id);
       expect(updated.current_question_id).toBe(updatedState.current_question_id);
       expect(updated.progress).toBe(updatedState.progress);

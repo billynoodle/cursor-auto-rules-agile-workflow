@@ -1,10 +1,10 @@
 import { IntegrationTestUtils, setupTestEnvironment } from '../../utils/controller-test-utils';
-import { ModuleService } from '../../../server/src/services/ModuleService';
-import { generateFullMockData } from '../../../__mocks__/data/assessment';
-import { Module } from '../../../server/src/models/AssessmentModule';
-import { AssessmentCategory } from '../../../server/src/models/AssessmentCategory';
-import { DisciplineType } from '../../../server/src/models/DisciplineType';
-import { PracticeSize } from '../../../server/src/models/PracticeSize';
+import { ModuleService } from '@server/services/ModuleService';
+import { generateFullMockData } from '@__mocks__/data/assessment';
+import { Module } from '@server/models/AssessmentModule';
+import { AssessmentCategory } from '@server/models/AssessmentCategory';
+import { DisciplineType } from '@server/models/DisciplineType';
+import { PracticeSize } from '@server/models/PracticeSize';
 
 describe('ModuleService - Integration', () => {
   setupTestEnvironment();

@@ -1,12 +1,26 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "types": ["jest", "node", "@testing-library/jest-dom"],
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["client/src/*"],
+      "@server/*": ["server/src/*"],
+      "@__mocks__/*": ["__mocks__/*"],
+      "@mocks/*": ["__mocks__/*"],
+      "@test/*": ["tests/*"],
+      "../../../../client/src/*": ["client/src/*"],
+      "../../../../server/src/*": ["server/src/*"],
+      "../../../client/src/*": ["client/src/*"],
+      "../../../server/src/*": ["server/src/*"],
+      "../../client/src/*": ["client/src/*"],
+      "../../server/src/*": ["server/src/*"]
+    }
   },
-  "include": ["client/src/**/*", "server/src/**/*", "tests/**/*"],
-  "exclude": ["node_modules"]
+  "include": [
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "__mocks__/**/*.ts",
+    "__mocks__/**/*.tsx"
+  ]
 } 

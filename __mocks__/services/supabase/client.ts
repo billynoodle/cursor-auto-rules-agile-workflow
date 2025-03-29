@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { PostgrestBuilder, PostgrestFilterBuilder, PostgrestQueryBuilder, PostgrestSingleResponse, PostgrestError, PostgrestResponseFailure } from '@supabase/postgrest-js';
+import { PostgrestQueryBuilder } from '@supabase/postgrest-js';
+import { PostgrestBuilder, PostgrestFilterBuilder, PostgrestSingleResponse, PostgrestError, PostgrestResponseFailure } from '@supabase/postgrest-js';
 import { DatabaseSchema } from '@client/types/database';
 import { TableName, TableRow, TableInsert, TableUpdate, MockFilterBuilder, MockQueryBuilder } from './types';
 
@@ -8,124 +9,147 @@ export interface MockOptions {
   simulateNetworkError?: boolean;
   simulateTimeout?: boolean;
   simulateConflict?: boolean;
+  simulateError?: Error;
 }
 
-export function createMockSupabaseClient(options: MockOptions = {}): jest.Mocked<SupabaseClient<DatabaseSchema>> {
-  const mockData = new Map<string, any>();
-  const mockError = new Map<string, any>();
+export type MockSupabaseOptions = MockOptions;
 
-  function createFilterBuilder<T extends TableName>(tableName: T): MockFilterBuilder<T> {
-    const mockSingle = jest.fn().mockImplementation((): Promise<PostgrestSingleResponse<TableRow<T>>> => {
-      if (options.simulateNetworkError) {
-        const response: PostgrestResponseFailure = {
-          data: null,
-          error: {
-            name: 'NetworkError',
-            code: 'NETWORK_ERROR',
-            message: 'Network error',
-            details: 'Failed to connect to the server',
-            hint: 'Check your internet connection'
-          },
-          count: null,
-          status: 500,
-          statusText: 'Network Error',
-        };
-        return Promise.resolve(response);
+export const TEST_USER_ID = '00000000-0000-0000-0000-000000000001';
+export const TEST_ASSESSMENT_ID = '00000000-0000-0000-0000-000000000002';
+
+export const mockErrorScenarios: Record<string, MockOptions> = {
+  networkError: { simulateNetworkError: true },
+  timeout: { simulateTimeout: true },
+  conflict: { simulateConflict: true },
+};
+
+export const mockAssessmentData = {
+  id: TEST_ASSESSMENT_ID,
+  user_id: TEST_USER_ID,
+  current_module_id: 'module2',
+  current_question_id: 'q2',
+  completed_modules: [],
+  progress: 50,
+  status: 'draft' as const,
+  is_complete: false,
+  metadata: { source: 'test' },
+  created_at: new Date('2025-03-29T02:22:41.521Z').toISOString(),
+  updated_at: new Date('2025-03-29T02:22:41.521Z').toISOString()
+};
+
+export const mockAnswerData = {
+  id: 'test-answer-id',
+  assessment_id: TEST_ASSESSMENT_ID,
+  question_id: 'q1',
+  answer: { value: 'Test answer' },
+  metadata: { source: 'test' },
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString()
+};
+
+export const createMockSupabaseClient = (options: MockOptions = {}): jest.Mocked<SupabaseClient<DatabaseSchema>> => {
+  const mockResponse = (data: any = null) => {
+    if (options.simulateError) {
+      return Promise.reject(options.simulateError);
+    }
+    if (options.simulateNetworkError) {
+      return Promise.reject({ message: 'Network error', code: 'NETWORK_ERROR' });
+    }
+    if (options.simulateConflict) {
+      return Promise.reject({ message: 'Conflict error', code: 'CONFLICT' });
+    }
+    return Promise.resolve({ 
+      data: data || { 
+        id: TEST_ASSESSMENT_ID,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }, 
+      error: null,
+      count: null,
+      status: 200,
+      statusText: 'OK'
+    });
+  };
+
+  const createChainedMethods = (data: any = null) => {
+    const methods = {
+      select: jest.fn().mockReturnThis(),
+      single: jest.fn().mockImplementation(() => mockResponse(data)),
+      eq: jest.fn().mockReturnThis(),
+      neq: jest.fn().mockReturnThis(),
+      gt: jest.fn().mockReturnThis(),
+      gte: jest.fn().mockReturnThis(),
+      lt: jest.fn().mockReturnThis(),
+      lte: jest.fn().mockReturnThis(),
+      like: jest.fn().mockReturnThis(),
+      ilike: jest.fn().mockReturnThis(),
+      is: jest.fn().mockReturnThis(),
+      in: jest.fn().mockReturnThis(),
+      contains: jest.fn().mockReturnThis(),
+      containedBy: jest.fn().mockReturnThis(),
+      range: jest.fn().mockReturnThis(),
+      textSearch: jest.fn().mockReturnThis(),
+      match: jest.fn().mockReturnThis(),
+      not: jest.fn().mockReturnThis(),
+      or: jest.fn().mockReturnThis(),
+      filter: jest.fn().mockReturnThis(),
+      execute: jest.fn().mockImplementation(() => mockResponse(data))
+    };
+
+    // Make all methods chainable
+    Object.values(methods).forEach(method => {
+      if (typeof method === 'function') {
+        method.mockReturnValue(methods);
       }
-      if (options.simulateTimeout) {
-        const response: PostgrestResponseFailure = {
-          data: null,
-          error: {
-            name: 'TimeoutError',
-            code: 'TIMEOUT',
-            message: 'Timeout error',
-            details: 'Request timed out',
-            hint: 'Try again later'
-          },
-          count: null,
-          status: 408,
-          statusText: 'Timeout',
-        };
-        return Promise.resolve(response);
-      }
-      if (options.simulateConflict) {
-        const response: PostgrestResponseFailure = {
-          data: null,
-          error: {
-            name: 'ConflictError',
-            code: 'CONFLICT',
-            message: 'Conflict error',
-            details: 'Resource was modified by another request',
-            hint: 'Refresh and try again'
-          },
-          count: null,
-          status: 409,
-          statusText: 'Conflict',
-        };
-        return Promise.resolve(response);
-      }
-      return Promise.resolve({
-        data: mockData.get(tableName) as TableRow<T>,
-        error: null,
-        count: null,
-        status: 200,
-        statusText: 'OK',
-      });
     });
 
-    const filterBuilder = {
-      single: jest.fn().mockReturnValue({
-        mockResolvedValue: (value: PostgrestSingleResponse<TableRow<T>>) => {
-          mockData.set(tableName, value.data);
-          mockError.set(tableName, value.error);
-          return mockSingle;
-        },
-        mockRejectedValue: (error: any) => {
-          mockData.set(tableName, null);
-          mockError.set(tableName, error);
-          return mockSingle;
-        },
-        then: (resolve: any) => Promise.resolve(mockSingle()).then(resolve),
-      }),
-      eq: jest.fn().mockReturnThis(),
-    } as unknown as MockFilterBuilder<T>;
+    return methods;
+  };
 
-    return filterBuilder;
-  }
+  const mockQueryBuilder = {
+    ...createChainedMethods(),
+    insert: jest.fn().mockImplementation((data) => createChainedMethods(data)),
+    update: jest.fn().mockImplementation((data) => createChainedMethods(data)),
+    upsert: jest.fn().mockImplementation((data) => createChainedMethods(data)),
+    delete: jest.fn().mockImplementation(() => createChainedMethods()),
+    select: jest.fn().mockImplementation(() => createChainedMethods())
+  } as unknown as jest.Mocked<PostgrestQueryBuilder<any, any, any>>;
 
-  function createQueryBuilder<T extends TableName>(tableName: T): MockQueryBuilder<T> {
-    const filterBuilder = createFilterBuilder(tableName);
-    const queryBuilder = {
-      select: jest.fn().mockReturnValue(filterBuilder),
-      insert: jest.fn().mockReturnValue(filterBuilder),
-      update: jest.fn().mockReturnValue(filterBuilder),
-      upsert: jest.fn().mockReturnValue(filterBuilder),
-      delete: jest.fn().mockReturnValue(filterBuilder),
-      eq: jest.fn().mockReturnValue(filterBuilder),
-    } as MockQueryBuilder<T>;
-
-    return queryBuilder;
-  }
-
-  const client = {
-    from: jest.fn((tableName: TableName) => createQueryBuilder(tableName)),
+  const mockClient = {
+    from: jest.fn().mockReturnValue(mockQueryBuilder),
     auth: {
-      getSession: jest.fn(),
       getUser: jest.fn(),
-      signInWithPassword: jest.fn(),
+      signIn: jest.fn(),
       signOut: jest.fn(),
       onAuthStateChange: jest.fn(),
+      getSession: jest.fn()
     },
     realtime: {
-      channel: jest.fn(),
+      connect: jest.fn(),
+      disconnect: jest.fn(),
+      removeAllChannels: jest.fn(),
+      removeChannel: jest.fn(),
+      getChannels: jest.fn()
     },
     functions: {
-      invoke: jest.fn(),
+      invoke: jest.fn()
     },
     storage: {
       from: jest.fn(),
+      listBuckets: jest.fn(),
+      getBucket: jest.fn(),
+      createBucket: jest.fn(),
+      deleteBucket: jest.fn()
     },
+    removeAllChannels: jest.fn(),
+    removeAllSubscriptions: jest.fn(),
+    removeSubscription: jest.fn(),
+    getChannels: jest.fn(),
+    channel: jest.fn(),
+    rpc: jest.fn()
   } as unknown as jest.Mocked<SupabaseClient<DatabaseSchema>>;
 
-  return client;
-}
+  return mockClient;
+};
+
+export { createMockSupabaseClient as default };
